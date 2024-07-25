@@ -65,6 +65,11 @@ export default function Authenticated({ user, header, children }) {
                                             >
                                                 Role
                                             </Dropdown.Link>
+                                            <Dropdown.Link
+                                                href={route("permission.index")}
+                                            >
+                                                Permission
+                                            </Dropdown.Link>
                                         </Dropdown.Content>
                                     </Dropdown>
                                 </div>
@@ -178,6 +183,13 @@ export default function Authenticated({ user, header, children }) {
                             active={route().current("user.index")}
                         >
                             User
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href={route("role.index")}
+                            active={route().current("role.index")}
+                        >
+                            Role
                         </ResponsiveNavLink>
                     </div>
 

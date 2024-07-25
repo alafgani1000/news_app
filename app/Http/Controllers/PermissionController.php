@@ -21,7 +21,7 @@ class PermissionController extends Controller
         $permissions = Permission::where(function (Builder $query) use($search) {
             return $query->where('name', 'like', '%'.$search.'%');
         })->orderBy($sort)->paginate($perPage);
-        return Inertia::render('Role/Index', [
+        return Inertia::render('Permission/Index', [
             'permissions' => $permissions,
             'pgSearch' => $search,
             'pgPerPage' => $perPage

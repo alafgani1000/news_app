@@ -5,7 +5,13 @@ import parse from "html-react-parser";
 import Modal from "@/Components/Modal";
 import axios from "axios";
 
-export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
+export default function Index({
+    auth,
+    permissions,
+    pgSearch,
+    pgSort,
+    pgPerPage,
+}) {
     const [search, setSearch] = useState(pgSearch || "");
     const [sort, setSort] = useState(pgSort || "");
     const [perPage, setPerPage] = useState(pgPerPage || 10);
@@ -16,7 +22,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
     const [id, setId] = useState("");
     const [idDelete, setIdDelete] = useState("");
     const [isEdit, setIsEdit] = useState(false);
-    const [formTitle, setFormTitle] = useState("Create New Role");
+    const [formTitle, setFormTitle] = useState("Create New Permission");
 
     const handleSearch = () => {
         // handle search
@@ -49,7 +55,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
         setId(data.id);
         setIsEdit(true);
         setModalCreate(true);
-        setFormTitle("Update Role");
+        setFormTitle("Update Permission");
     };
 
     useEffect(() => {
@@ -61,7 +67,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
         setName("");
         setId("");
         setIsEdit(false);
-        setFormTitle("Create New Role");
+        setFormTitle("Create New Permission");
     };
 
     const closeModalDelete = () => {
@@ -78,10 +84,10 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
         setIdDelete(data.id);
     };
 
-    const deleteRole = (e) => {
+    const deletePermission = (e) => {
         e.preventDefault();
         axios
-            .delete(`/role/${idDelete}/delete`)
+            .delete(`/permission/${idDelete}/delete`)
             .then((res) => {
                 closeModalDelete();
                 handleRefresh();
@@ -91,11 +97,11 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
             });
     };
 
-    const saveRole = (e) => {
+    const savePermission = (e) => {
         e.preventDefault();
         if (isEdit === false) {
             axios
-                .post("/role", {
+                .post("/permission", {
                     name: name,
                 })
                 .then((res) => {
@@ -107,7 +113,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                 });
         } else if (isEdit === true) {
             axios
-                .put(`/role/${id}/update`, {
+                .put(`/permission/${id}/update`, {
                     name: name,
                 })
                 .then((res) => {
@@ -125,7 +131,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Role
+                    Permission
                 </h2>
             }
         >
@@ -136,7 +142,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                     <div className="bg-white rounded-md shadow">
                         <div className="text-gray-900 relative overflow-x-auto">
                             <div className="bg-white p-3 mt-0 mb-4 text-gray-800 font-bold border-b border-zinc rounded-t-md text-lg">
-                                Data Role
+                                Data Permission
                             </div>
                             <div className="flex justify-end mr-8">
                                 <button
@@ -146,7 +152,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                                     <span className="text-sm mr-2">
                                         <i className="bi bi-plus-square"></i>
                                     </span>
-                                    New Role
+                                    New Permission
                                 </button>
                             </div>
                             <div className="lg:mx-8 md:mx-8 mx-0 my-8 border border-zinc-100 md:rounded-lg lg:rounded-lg">
@@ -216,7 +222,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {roles.data.map((role, index) => {
+                                        {permissions.data.map((role, index) => {
                                             return (
                                                 <tr
                                                     className="border-t last:border-b"
@@ -257,68 +263,71 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                                 {/* pagination */}
                                 <div className="hidden mt-4 mb-4 w-full md:block md:w-auto">
                                     <ul className="flex justify-center items-center -space-x-px text-base h-10">
-                                        {roles.links.map((link, index) => {
-                                            return (
-                                                <li
-                                                    key={index}
-                                                    className="first:rounded-l-md border last:rounded-e-md"
-                                                >
-                                                    {link.active === false ? (
-                                                        link.url === null ? (
-                                                            <Link
-                                                                href={null}
-                                                                className="flex items-center justify-center px-2 py-1 text-sm lg:text-base md:px-3 md:py-2"
-                                                                disabled
-                                                            >
-                                                                {parse(
-                                                                    link.label
-                                                                )}
-                                                            </Link>
+                                        {permissions.links.map(
+                                            (link, index) => {
+                                                return (
+                                                    <li
+                                                        key={index}
+                                                        className="first:rounded-l-md border last:rounded-e-md"
+                                                    >
+                                                        {link.active ===
+                                                        false ? (
+                                                            link.url ===
+                                                            null ? (
+                                                                <Link
+                                                                    href={null}
+                                                                    className="flex items-center justify-center px-2 py-1 text-sm lg:text-base md:px-3 md:py-2"
+                                                                    disabled
+                                                                >
+                                                                    {parse(
+                                                                        link.label
+                                                                    )}
+                                                                </Link>
+                                                            ) : (
+                                                                <Link
+                                                                    href={`${link.url}&search=${search}&perPage=${perPage}`}
+                                                                    className="flex items-center justify-center px-2 py-1 text-sm lg:text-base md:px-3 md:py-2"
+                                                                    disabled
+                                                                >
+                                                                    {parse(
+                                                                        link.label
+                                                                    )}
+                                                                </Link>
+                                                            )
                                                         ) : (
                                                             <Link
-                                                                href={`${link.url}&search=${search}&perPage=${perPage}`}
-                                                                className="flex items-center justify-center px-2 py-1 text-sm lg:text-base md:px-3 md:py-2"
-                                                                disabled
+                                                                href={null}
+                                                                className="flex items-center justify-center px-2 py-1 lg:text-base bg-slate-100 text-sm md:px-3 md:py-2"
                                                             >
-                                                                {parse(
+                                                                {`${parse(
                                                                     link.label
-                                                                )}
+                                                                )}`}
                                                             </Link>
-                                                        )
-                                                    ) : (
-                                                        <Link
-                                                            href={null}
-                                                            className="flex items-center justify-center px-2 py-1 lg:text-base bg-slate-100 text-sm md:px-3 md:py-2"
-                                                        >
-                                                            {`${parse(
-                                                                link.label
-                                                            )}`}
-                                                        </Link>
-                                                    )}
-                                                </li>
-                                            );
-                                        })}
+                                                        )}
+                                                    </li>
+                                                );
+                                            }
+                                        )}
                                     </ul>
                                 </div>
                                 <div className="md:hidden lg:hidden">
                                     <div className="grid grid-cols-2 text-sm md:grid-cols-2 lg:grid-cols-2 md:text-base lg:text-base space-x-4 my-4 mx-8">
                                         <div className="flex justify-start text-zinc-600 ">
                                             <span className="py-2 px-2 bg-zinc-100 rounded">
-                                                Page {roles.current_page}
-                                                &nbsp; from {
-                                                    roles.last_page
-                                                }{" "}
+                                                Page {permissions.current_page}
+                                                &nbsp; from{" "}
+                                                {permissions.last_page}{" "}
                                             </span>{" "}
                                         </div>
                                         <div className="flex justify-start space-x-4">
                                             <Link
-                                                href={`${roles.prev_page_url}&search=${search}&perPage=${perPage}`}
+                                                href={`${permissions.prev_page_url}&search=${search}&perPage=${perPage}`}
                                                 className="border py-2 px-4 rounded-md hover:bg-sky-500 hover:border-sky-500 hover:text-white"
                                             >
                                                 Prev
                                             </Link>
                                             <Link
-                                                href={`${roles.next_page_url}&search=${search}&perPage=${perPage}`}
+                                                href={`${permissions.next_page_url}&search=${search}&perPage=${perPage}`}
                                                 className="border py-2 px-4 rounded-md hover:bg-sky-500 hover:border-sky-500 hover:text-white"
                                             >
                                                 Next
@@ -342,12 +351,12 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                             <i className="bi bi-x-lg"></i>
                         </button>
                     </div>
-                    <form onSubmit={saveRole} className="px-6 pb-6">
+                    <form onSubmit={savePermission} className="px-6 pb-6">
                         <h2 className="text-lg font-medium text-gray-900">
                             {formTitle}
                         </h2>
                         <div className="grid mt-4">
-                            <label className="mb-2">Role Name:</label>
+                            <label className="mb-2">Permission Name:</label>
                             <input
                                 type="text"
                                 className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
@@ -379,10 +388,10 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                             <i className="bi bi-x-lg"></i>
                         </button>
                     </div>
-                    <form onSubmit={deleteRole} className="px-6 pb-6">
+                    <form onSubmit={deletePermission} className="px-6 pb-6">
                         <div className="mt-4">
                             <h2 className="text-lg font-medium text-gray-900">
-                                Are you sure you want to delete this role?
+                                Are you sure you want to delete this permission?
                             </h2>
 
                             <p className="mt-1 text-sm text-gray-600">

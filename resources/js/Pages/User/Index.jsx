@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 import parse from "html-react-parser";
 
-export default function Edit({ auth, users, pgSearch, pgSort, pgPerPage }) {
+export default function Index({ auth, users, pgSearch, pgSort, pgPerPage }) {
     const [search, setSearch] = useState(pgSearch || "");
     const [sort, setSort] = useState(pgSort || "");
     const [perPage, setPerPage] = useState(pgPerPage || 10);
@@ -51,7 +51,7 @@ export default function Edit({ auth, users, pgSearch, pgSort, pgPerPage }) {
                                 Data User
                             </div>
                             <div className="flex justify-end mr-8">
-                                <button className="border py-2 px-3 bg-blue-500 hover:text-white hover:bg-blue-600 hover:border-blue-500 rounded-lg text-white">
+                                <button className="border py-2 px-3 bg-blue-500 hover:text-white hover:bg-blue-600 hover:border-blue-500 rounded-md text-white">
                                     <span className="text-sm mr-2">
                                         <i className="bi bi-plus-square"></i>
                                     </span>
