@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -17,6 +18,7 @@ class UserController extends Controller
         $search = $request->search;
         $perPage = isset($request->perPage) ? $request->perPage : 10;
         $sort = isset($request->sort) ? $request->sort : 'id';
+        $roles = Role::orderBy('name','asc')->get();
         $users = User::where(function (Builder $query) use($search) {
             return $query->where('name', 'like', '%'.$search.'%')
                         ->orWhere('email', 'like', '%'.$search.'%');
@@ -24,7 +26,8 @@ class UserController extends Controller
         return Inertia::render('User/Index', [
             'users' => $users,
             'pgSearch' => $search,
-            'pgPerPage' => $perPage
+            'pgPerPage' => $perPage,
+            'roles' => $roles,
         ]);
     }
 

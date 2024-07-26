@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RolePermissionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function () {
 
     // user
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
+    Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
 
     // role
     Route::get('/roles', [RoleController::class, 'index'])->name('role.index');
@@ -51,6 +53,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/permission', [PermissionController::class, 'store'])->name('permission.store');
     Route::put('/permission/{id}/update', [PermissionController::class, 'update'])->name('permission.update');
     Route::delete('/permission/{id}/delete', [PermissionController::class, 'delete'])->name('permission.delete');
+
+    // Role have permission
+    Route::get('/role-permissions', [RolePermissionController::class, 'index'])->name('role-perms.index');
+    Route::post('/role-permission', [RolePermissionController::class, 'store'])->name('role-perms.store');
+    Route::post('/role-permission-revoke', [RolePermissionController::class, 'revoke'])->name('role-perms.revoke');
+    Route::get('/role-permission/{id}/data', [RolePermissionCOntroller::class, 'dataPermission'])->name('role-perms.data');
 });
 
 require __DIR__.'/auth.php';

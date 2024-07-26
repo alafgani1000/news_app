@@ -70,6 +70,11 @@ export default function Authenticated({ user, header, children }) {
                                             >
                                                 Permission
                                             </Dropdown.Link>
+                                            <Dropdown.Link
+                                                href={route("role-perms.index")}
+                                            >
+                                                Role Have Permission
+                                            </Dropdown.Link>
                                         </Dropdown.Content>
                                     </Dropdown>
                                 </div>
@@ -191,6 +196,13 @@ export default function Authenticated({ user, header, children }) {
                         >
                             Role
                         </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href={route("role-perms.index")}
+                            active={route().current("role.index")}
+                        >
+                            Role Have Permission
+                        </ResponsiveNavLink>
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
@@ -230,7 +242,7 @@ export default function Authenticated({ user, header, children }) {
             <main>{children}</main>
 
             <div className="max-w-7xl mx-auto px-0 md:px-6 lg:px-8 space-y-6">
-                <div className="bg-white overflow-hidden shadow-sm lg:rounded-md md:rounded-md py-4 px-4">
+                <div className="bg-white overflow-hidden shadow-sm lg:rounded md:rounded py-4 px-4">
                     <div className="text-gray-400">2024 Free Sorfware</div>
                 </div>
             </div>

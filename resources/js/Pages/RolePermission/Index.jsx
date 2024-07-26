@@ -5,18 +5,25 @@ import parse from "html-react-parser";
 import Modal from "@/Components/Modal";
 import axios from "axios";
 
-export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
+export default function Index({
+    auth,
+    roles,
+    pgSearch,
+    pgSort,
+    pgPerPage,
+    permissions,
+}) {
     const [search, setSearch] = useState(pgSearch || "");
     const [sort, setSort] = useState(pgSort || "");
     const [perPage, setPerPage] = useState(pgPerPage || 10);
     const [wasSearch, setWasSearch] = useState(false);
     const [modalCreate, setModalCreate] = useState(false);
     const [modalConfirmDelete, setModalConfirmDelete] = useState(false);
-    const [name, setName] = useState("");
-    const [id, setId] = useState("");
+    const [permissionName, setPermissionName] = useState("");
     const [idDelete, setIdDelete] = useState("");
-    const [isEdit, setIsEdit] = useState(false);
-    const [formTitle, setFormTitle] = useState("Create New Role");
+    const [formTitle, setFormTitle] = useState("Assigning Permissions to");
+    const [roleSelected, setRoleSelected] = useState({});
+    const [permissionSelected, setPermissionSelected] = useState({});
 
     const handleSearch = () => {
         // handle search
@@ -44,12 +51,20 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
         );
     };
 
-    const handleEdit = (data) => {
-        setName(data.name);
-        setId(data.id);
-        setIsEdit(true);
+    const dataPermisson = () => {
+        axios
+            .get(`/role-permission/${roleSelected.id}/data`)
+            .then((res) => {
+                setRoleSelected(res.data);
+            })
+            .catch((res) => {
+                console.log(res.data);
+            });
+    };
+
+    const assigningPermission = (data) => {
+        setRoleSelected(data);
         setModalCreate(true);
-        setFormTitle("Update Role");
     };
 
     useEffect(() => {
@@ -58,33 +73,31 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
 
     const closeModal = () => {
         setModalCreate(false);
-        setName("");
-        setId("");
-        setIsEdit(false);
-        setFormTitle("Create New Role");
+        setPermissionName("");
+        setRoleSelected({});
+        handleRefresh();
     };
 
     const closeModalDelete = () => {
         setModalConfirmDelete(false);
+        setPermissionSelected({});
         setIdDelete("");
     };
 
-    const showModalCreate = () => {
-        setModalCreate(true);
-    };
-
-    const confirmDeleteRole = (data) => {
+    const confirmDeletePermission = (data) => {
+        setPermissionSelected(data);
         setModalConfirmDelete(true);
-        setIdDelete(data.id);
     };
 
-    const deleteRole = (e) => {
-        e.preventDefault();
+    const detachPermission = () => {
         axios
-            .delete(`/role/${idDelete}/delete`)
+            .post(`/role-permission-revoke`, {
+                roleName: roleSelected.name,
+                permissionName: permissionSelected.name,
+            })
             .then((res) => {
                 closeModalDelete();
-                handleRefresh();
+                dataPermisson();
             })
             .catch((res) => {
                 console.log(res.data);
@@ -93,31 +106,17 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
 
     const saveRole = (e) => {
         e.preventDefault();
-        if (isEdit === false) {
-            axios
-                .post("/role", {
-                    name: name,
-                })
-                .then((res) => {
-                    handleRefresh();
-                    closeModal();
-                })
-                .catch((error) => {
-                    console.log(error.response.data);
-                });
-        } else if (isEdit === true) {
-            axios
-                .put(`/role/${id}/update`, {
-                    name: name,
-                })
-                .then((res) => {
-                    handleRefresh();
-                    closeModal();
-                })
-                .catch((error) => {
-                    console.log(error.response.data);
-                });
-        }
+        axios
+            .post("/role-permission", {
+                roleName: roleSelected.name,
+                permissionName: permissionName,
+            })
+            .then((res) => {
+                dataPermisson();
+            })
+            .catch((error) => {
+                console.log(error.response.data);
+            });
     };
 
     return (
@@ -125,7 +124,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Role
+                    Role Have Permission
                 </h2>
             }
         >
@@ -136,19 +135,9 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                     <div className="bg-white rounded-md shadow">
                         <div className="text-gray-900 relative overflow-x-auto">
                             <div className="bg-white p-3 mt-0 mb-4 text-gray-800 font-bold border-b border-zinc rounded-t-md text-lg">
-                                Data Role
+                                Assigning Permissions to Roles
                             </div>
-                            <div className="flex justify-end mr-8">
-                                <button
-                                    onClick={showModalCreate}
-                                    className="border border-blue-500 py-2 px-3 bg-blue-500 hover:text-white hover:bg-blue-600 hover:border-blue-600 rounded text-white text-sm"
-                                >
-                                    <span className="text-sm mr-2">
-                                        <i className="bi bi-plus-square"></i>
-                                    </span>
-                                    New Role
-                                </button>
-                            </div>
+                            {/* <div className="flex justify-end mr-8"></div> */}
                             <div className="lg:mx-8 md:mx-8 mx-0 my-8 border border-zinc-100 md:rounded-lg lg:rounded-lg">
                                 <div className="grid bg-zinc-100 py-4 px-4 border-b border-zinc-200 items-center">
                                     <div className="lg:flex lg:space-x-4 justify-start">
@@ -208,7 +197,10 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                                     <thead className="bg-zinc-100 p-2">
                                         <tr className="p-8">
                                             <th className="text-left py-4 px-4">
-                                                Name
+                                                Role
+                                            </th>
+                                            <th className="text-left py-4 px-4">
+                                                Permmission
                                             </th>
                                             <th className="text-left py-4 px-4">
                                                 Action
@@ -225,27 +217,40 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                                                     <td className="text-left py-3 px-4">
                                                         {role.name}
                                                     </td>
+                                                    <td className="text-left py-3 px-4">
+                                                        <div className="flex flex-wrap space-x-1 space-y-1">
+                                                            {role.permissions.map(
+                                                                (
+                                                                    value,
+                                                                    index
+                                                                ) => {
+                                                                    return (
+                                                                        <div
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                            className="bg-rose-500 text-white px-2 py-1 rounded-full text-xs font-bold"
+                                                                        >
+                                                                            {
+                                                                                value.name
+                                                                            }
+                                                                        </div>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </div>
+                                                    </td>
                                                     <td className="content-center">
                                                         <div className="flex flex-wrap space-x-1">
                                                             <button
                                                                 onClick={() => {
-                                                                    handleEdit(
+                                                                    assigningPermission(
                                                                         role
                                                                     );
                                                                 }}
-                                                                className="bg-yellow-500 px-3 py-2 text-white text-sm rounded"
+                                                                className="bg-slate-500 px-3 py-2 text-white text-sm rounded hover:bg-blue-600"
                                                             >
-                                                                <i className="bi bi-pencil-square"></i>
-                                                            </button>
-                                                            <button
-                                                                onClick={() => {
-                                                                    confirmDeleteRole(
-                                                                        role
-                                                                    );
-                                                                }}
-                                                                className="bg-rose-600 px-3 py-2 text-white text-sm rounded"
-                                                            >
-                                                                <i className="bi bi-trash3-fill"></i>
+                                                                <i className="bi bi-gear-wide-connected"></i>
                                                             </button>
                                                         </div>
                                                     </td>
@@ -333,7 +338,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
             </div>
 
             <Modal show={modalCreate}>
-                <div className="bg-white rounded md:w-96 lg:w-96 sm:w-96 w-full mx-auto">
+                <div className="bg-white rounded max-w-3xl w-full mx-auto">
                     <div className="flex flex-col items-end m-0 p-0">
                         <button
                             onClick={() => closeModal()}
@@ -344,28 +349,78 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                     </div>
                     <form onSubmit={saveRole} className="px-6 pb-6">
                         <h2 className="text-lg font-medium text-gray-900">
-                            {formTitle}
+                            {formTitle} {roleSelected.name}
                         </h2>
                         <div className="grid mt-4">
-                            <label className="mb-2">Role Name:</label>
-                            <input
-                                type="text"
-                                className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
+                            <label className="mb-2">Permission Name</label>
+                            <select
+                                value={permissionName}
                                 onChange={(e) => {
-                                    setName(e.target.value);
+                                    setPermissionName(e.target.value);
                                 }}
-                                value={name}
-                            />
+                                className="rounded focus:ring-sky-500 focus:border-sky-500"
+                            >
+                                <option>-- Please Select Role --</option>
+                                {permissions.map((value, index) => {
+                                    return (
+                                        <option key={index} value={value.name}>
+                                            {value.name}
+                                        </option>
+                                    );
+                                })}
+                            </select>
                             <div className="grid justify-end mt-4">
                                 <button
                                     type="submit"
-                                    className="border border-sky-500 py-2 px-4 rounded-md text-sm bg-sky-500 text-white hover:bg-sky-600"
+                                    className="border border-blue-500 py-2 px-4 rounded-md text-sm bg-blue-500 text-white hover:bg-blue-600"
                                 >
-                                    Save
+                                    Set
                                 </button>
                             </div>
                         </div>
                     </form>
+                    <div className="px-6 pb-6">
+                        <table className="text-sm md:text-base w-full table-auto">
+                            <thead className="bg-zinc-100 p-2 border border-zinc-100">
+                                <tr className="p-8">
+                                    <th className="text-left py-4 px-4">
+                                        Permission
+                                    </th>
+                                    <th className="text-left py-4 px-4">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {roleSelected.permissions?.map(
+                                    (value, index) => {
+                                        return (
+                                            <tr
+                                                key={index}
+                                                className="border-t border-b border-zinc-100"
+                                            >
+                                                <td className="px-4 py-2">
+                                                    {value.name}
+                                                </td>
+                                                <td className="px-4">
+                                                    <button
+                                                        onClick={() => {
+                                                            confirmDeletePermission(
+                                                                value
+                                                            );
+                                                        }}
+                                                        className="bg-rose-500 px-3 py-1 text-sm text-white font-bold rounded hover:bg-rose-600"
+                                                    >
+                                                        X
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </Modal>
 
@@ -374,15 +429,16 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                     <div className="flex flex-col items-end m-0 p-0">
                         <button
                             onClick={() => closeModalDelete()}
-                            className="bg-zinc-700 px-3 py-1 text-white hover:bg-black rounded-tr"
+                            className="bg-zinc-700 px-3 py-1 text-white hover:bg-rose-600 rounded-tr"
                         >
                             <i className="bi bi-x-lg"></i>
                         </button>
                     </div>
-                    <form onSubmit={deleteRole} className="px-6 pb-6">
+                    <form className="px-6 pb-6">
                         <div className="mt-4">
                             <h2 className="text-lg font-medium text-gray-900">
-                                Are you sure you want to delete this role?
+                                Are you sure you want to remove{" "}
+                                {roleSelected.name} permission?
                             </h2>
 
                             <p className="mt-1 text-sm text-gray-600">
@@ -390,10 +446,11 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                             </p>
                             <div className="grid justify-end mt-4">
                                 <button
+                                    onClick={() => detachPermission()}
                                     type="submit"
-                                    className="border border-rose-500 py-2 px-4 rounded text-sm bg-rose-500 text-white hover:bg-rose-600"
+                                    className="border border-rose-500 py-2 px-4 rounded text-sm bg-rose-500 text-white hover:bg-rose-600 font-bold"
                                 >
-                                    Delete
+                                    Remove
                                 </button>
                             </div>
                         </div>

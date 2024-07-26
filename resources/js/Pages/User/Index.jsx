@@ -2,8 +2,16 @@ import { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 import parse from "html-react-parser";
+import Modal from "@/Components/Modal";
 
-export default function Index({ auth, users, pgSearch, pgSort, pgPerPage }) {
+export default function Index({
+    auth,
+    users,
+    pgSearch,
+    pgSort,
+    pgPerPage,
+    roles,
+}) {
     const [search, setSearch] = useState(pgSearch || "");
     const [sort, setSort] = useState(pgSort || "");
     const [perPage, setPerPage] = useState(pgPerPage || 10);
@@ -13,8 +21,10 @@ export default function Index({ auth, users, pgSearch, pgSort, pgPerPage }) {
         name: false,
         email: false,
     });
+    const [modalCreate, setModalCreate] = useState(false);
+    const [formData, setFormData] = useState({});
 
-    function handleSearch() {
+    const handleSearch = () => {
         // handle search
         if (wasSearch) {
             router.get(
@@ -26,7 +36,27 @@ export default function Index({ auth, users, pgSearch, pgSort, pgPerPage }) {
                 }
             );
         }
-    }
+    };
+
+    const handleRefresh = () => {
+        // handle refresh
+        router.get(
+            route(route().current()),
+            { search: search, sort: sort, perPage: perPage },
+            {
+                replace: true,
+                preserveState: true,
+            }
+        );
+    };
+
+    const closeModalCreate = () => {
+        setModalCreate(false);
+    };
+
+    const createUser = () => {
+        setModalCreate(true);
+    };
 
     useEffect(() => {
         handleSearch();
@@ -51,8 +81,13 @@ export default function Index({ auth, users, pgSearch, pgSort, pgPerPage }) {
                                 Data User
                             </div>
                             <div className="flex justify-end mr-8">
-                                <button className="border py-2 px-3 bg-blue-500 hover:text-white hover:bg-blue-600 hover:border-blue-500 rounded-md text-white">
-                                    <span className="text-sm mr-2">
+                                <button
+                                    onClick={() => {
+                                        createUser();
+                                    }}
+                                    className="border py-2 px-3 bg-blue-500 hover:text-white hover:bg-blue-600 hover:border-blue-500 rounded-md text-white text-sm"
+                                >
+                                    <span className="text-xs mr-2">
                                         <i className="bi bi-plus-square"></i>
                                     </span>
                                     New User
@@ -127,6 +162,9 @@ export default function Index({ auth, users, pgSearch, pgSort, pgPerPage }) {
                                             <th className="py-4 text-left hidden mb:block lg:block sm:block align-middle">
                                                 Email
                                             </th>
+                                            <th className="text-left py-4">
+                                                Action
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -148,6 +186,16 @@ export default function Index({ auth, users, pgSearch, pgSort, pgPerPage }) {
                                                     </td>
                                                     <td className="hidden mb:block lg:block sm:block">
                                                         {user.email}
+                                                    </td>
+                                                    <td>
+                                                        <div className="flex flex-wrap space-x-1">
+                                                            <button className="bg-yellow-500 py-1 px-2 rounded text-white font-bold">
+                                                                <i className="bi bi-pencil-fill"></i>
+                                                            </button>
+                                                            <button className="bg-rose-500 py-1 px-2 rounded text-white font-bold">
+                                                                <i className="bi bi-x-lg"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             );
@@ -231,6 +279,85 @@ export default function Index({ auth, users, pgSearch, pgSort, pgPerPage }) {
                     </div>
                 </div>
             </div>
+
+            <Modal show={modalCreate}>
+                <div className="bg-white rounded max-w-3xl w-full mx-auto">
+                    <div className="flex flex-col items-end m-0 p-0">
+                        <button
+                            onClick={() => closeModalCreate()}
+                            className="bg-zinc-700 px-3 py-1 text-white hover:bg-rose-600 rounded-tr"
+                        >
+                            <i className="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <form onSubmit={createUser} className="px-6 pb-6">
+                        <h2 className="text-lg font-medium text-gray-900">
+                            Create User
+                        </h2>
+                        <div className="grid mt-4">
+                            <label className="mb-2">Name:</label>
+                            <input
+                                type="text"
+                                className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                }}
+                            />
+                        </div>
+                        <div className="grid mt-4">
+                            <label className="mb-2">Email:</label>
+                            <input
+                                type="email"
+                                className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                }}
+                            />
+                        </div>
+                        <div className="grid mt-4">
+                            <label className="mb-2">Password:</label>
+                            <input
+                                type="password"
+                                className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                }}
+                            />
+                        </div>
+                        <div className="grid mt-4">
+                            <label className="mb-2">Re Password:</label>
+                            <input
+                                type="password"
+                                className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                }}
+                            />
+                        </div>
+                        <div className="grid mt-4">
+                            <label className="mb-2">Role:</label>
+                            <select className="rounded-lg focus:ring-sky-500 focus:border-sky-500">
+                                <option>-- Please select role --</option>
+                                {roles.map((value, key) => {
+                                    return (
+                                        <option value={value.name}>
+                                            {value.name}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+                        <div className="grid justify-end mt-4">
+                            <button
+                                type="submit"
+                                className="border border-sky-500 py-2 px-4 rounded-md text-sm bg-sky-500 text-white hover:bg-sky-600"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
         </AuthenticatedLayout>
     );
 }
