@@ -5,6 +5,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\MediaController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -59,6 +62,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/role-permission', [RolePermissionController::class, 'store'])->name('role-perms.store');
     Route::post('/role-permission-revoke', [RolePermissionController::class, 'revoke'])->name('role-perms.revoke');
     Route::get('/role-permission/{id}/data', [RolePermissionCOntroller::class, 'dataPermission'])->name('role-perms.data');
+
+    // news
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+
+    // media
+    Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+
+    // setting
+    Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
+
 });
 
 require __DIR__.'/auth.php';

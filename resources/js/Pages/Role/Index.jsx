@@ -124,7 +124,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                <h2 className="font-semibold text-xl text-gray-600 leading-tight">
                     Role
                 </h2>
             }
@@ -135,7 +135,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 md:px-8 space-y-6">
                     <div className="bg-white rounded-md shadow">
                         <div className="text-gray-900 relative overflow-x-auto">
-                            <div className="bg-white p-3 mt-0 mb-4 text-gray-800 font-bold border-b border-zinc rounded-t-md text-lg">
+                            <div className="bg-white p-3 mt-0 mb-4 text-gray-600 font-bold border-b border-zinc rounded-t-md text-xl">
                                 Data Role
                             </div>
                             <div className="flex justify-end mr-8">

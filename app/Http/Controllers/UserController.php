@@ -31,8 +31,34 @@ class UserController extends Controller
         ]);
     }
 
-    public function store()
+    public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'password' => ['required', 'same:repassword'],
+            'role' => ['required']
+        ]);
 
+        $user = User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $user->assignRole($request->role);
+
+        return "Create User Success";
+    }
+
+    public function changeRole(Request $request, $id)
+    {
+        $dataUser =  User::where('id', $id)->first();
+        if(!is_null($dataUser->roles()->first())) {
+            $dataUser->removeRole($dataUser->roles()->first()->name);
+        }
+        $dataUser->assignRole($request->role);
     }
 }

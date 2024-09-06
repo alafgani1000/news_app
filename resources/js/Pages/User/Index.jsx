@@ -66,7 +66,7 @@ export default function Index({
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight bg-blue-">
+                <h2 className="font-semibold text-xl text-gray-600 leading-tight bg-blue-">
                     User
                 </h2>
             }
@@ -77,7 +77,7 @@ export default function Index({
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 md:px-8 space-y-6">
                     <div className="bg-white rounded-md shadow">
                         <div className="text-gray-900 relative overflow-x-auto">
-                            <div className="bg-white-400 text-gray-800 p-3 mt-0 mb-4 font-bold border-b border-zinc rounded-t-md text-lg">
+                            <div className="bg-white-400 text-gray-600 p-4 mt-0 mb-4 font-bold border-b border-zinc rounded-t-md text-xl">
                                 Data User
                             </div>
                             <div className="flex justify-end mr-8">
@@ -85,7 +85,7 @@ export default function Index({
                                     onClick={() => {
                                         createUser();
                                     }}
-                                    className="border py-2 px-3 bg-blue-500 hover:text-white hover:bg-blue-600 hover:border-blue-500 rounded-md text-white text-sm"
+                                    className="border py-2 px-3 bg-indigo-500 hover:text-white hover:bg-indigo-600 hover:border-blue-500 rounded-md text-white text-sm"
                                 >
                                     <span className="text-xs mr-2">
                                         <i className="bi bi-plus-square"></i>
