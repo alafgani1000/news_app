@@ -71,6 +71,17 @@ Route::middleware('auth')->group(function () {
 
     // setting
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
+    // category
+    Route::get('/category', [SettingController::class,  'dataCategory'])->name('category.data');
+    Route::post('/category', [SettingController::class, 'storeCategory'])->name('category.store');
+    Route::put('/category/{id}/update', [SettingController::class, 'updateCategory'])->name('category.update');
+    Route::delete('/category/{id}/delete', [SettingController::class, 'deleteCategory'])->name('category.delete');
+    // menu
+    Route::get('/menu', [SettingController::class, 'dataMenu'])->name('menu.data');
+    Route::post('/menu', [SettingController::class, 'storeMenu'])->name('menu.store');
+    Route::put('/menu/{id}/update', [SettingController::class, 'updateMenu'])->name('menu.update');
+    Route::delete('/menu/{id}/delete', [SettingController::class, 'deleteMenu'])->name('menu.delete');
+
 
 });
 

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menu_categories', function (Blueprint $table) {
+        Schema::create('menu_category', function (Blueprint $table) {
             $table->id();
             $table->integer('menu_id');
             $table->integer('category_id');
