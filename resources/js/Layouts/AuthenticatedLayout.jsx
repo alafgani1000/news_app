@@ -26,7 +26,7 @@ export default function Authenticated({ user, header, children }) {
                                     href={route("dashboard")}
                                     active={route().current("dashboard")}
                                 >
-                                    <i class="bi bi-graph-up-arrow me-2"></i>
+                                    <i className="bi bi-graph-up-arrow me-2"></i>
                                     Dashboard
                                 </NavLink>
 
@@ -34,7 +34,7 @@ export default function Authenticated({ user, header, children }) {
                                     href={route("news.index")}
                                     active={route().current("news.index")}
                                 >
-                                    <i class="bi bi-card-heading me-2"></i>
+                                    <i className="bi bi-card-heading me-2"></i>
                                     News
                                 </NavLink>
 
@@ -42,7 +42,7 @@ export default function Authenticated({ user, header, children }) {
                                     href={route("setting.index")}
                                     active={route().current("setting.index")}
                                 >
-                                    <i class="bi bi-gear-fill me-2"></i>
+                                    <i className="bi bi-gear-fill me-2"></i>
                                     Settings
                                 </NavLink>
 
@@ -50,7 +50,7 @@ export default function Authenticated({ user, header, children }) {
                                     href={route("media.index")}
                                     active={route().current("media.index")}
                                 >
-                                    <i class="bi bi-card-image me-2"></i>
+                                    <i className="bi bi-card-image me-2"></i>
                                     Media
                                 </NavLink>
 
@@ -58,7 +58,7 @@ export default function Authenticated({ user, header, children }) {
                                     href={route("user.index")}
                                     active={route().current("user.index")}
                                 >
-                                    <i class="bi bi-people-fill me-2"></i>
+                                    <i className="bi bi-people-fill me-2"></i>
                                     User
                                 </NavLink>
                                 <div className="hidden sm:flex sm:items-center sm:ms-6">
@@ -69,7 +69,7 @@ export default function Authenticated({ user, header, children }) {
                                                     type="button"
                                                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                                 >
-                                                    <i class="bi bi-lock-fill me-2"></i>
+                                                    <i className="bi bi-lock-fill me-2"></i>
                                                     Access
                                                     <svg
                                                         className="ms-2 -me-0.5 h-4 w-4"
