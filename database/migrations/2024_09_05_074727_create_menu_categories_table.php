@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('menu_category', function (Blueprint $table) {
-            $table->id();
-            $table->integer('menu_id');
-            $table->integer('category_id');
-            $table->integer('user_id');
+            $table->foreignId('menu_id');
+            $table->foreignId('category_id');
+            $table->foreignId('user_id');
+            $table->primary(['menu_id', 'category_id']);
             $table->timestamps();
         });
     }

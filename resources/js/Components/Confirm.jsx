@@ -21,8 +21,8 @@ export default function Confirm({
                         >
                             <span className="sr-only">Close modal</span>
                         </button>
-                        <div className="p-6 text-center">
-                            <div className="flex justify-center">
+                        <div className="px-6 py-10 text-center">
+                            <div className="flex justify-center mb-6">
                                 <i className="bi bi-exclamation-circle-fill text-white text-4xl me-4"></i>
                                 <h3 className="mb-5 text-xl font-normal text-white dark:text-gray-400">
                                     {question}

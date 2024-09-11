@@ -47,7 +47,7 @@ class SettingController extends Controller
         return 'Category Updated';
     }
 
-    public function delete($id)
+    public function deleteCategory($id)
     {
         $category = Category::where('id',$id)->first();
         $category->delete();
@@ -56,7 +56,12 @@ class SettingController extends Controller
 
     public function dataMenu()
     {
-        $menus = Menu::orderBy('name','asc')->get();
+        $menus = Menu::with('menuCategories')
+            ->with(['menuCategories.category'])
+            ->with(['menuCategories.user'])
+            ->orderBy('name', 'asc')
+            ->get();
+        return $menus;
         return $menus;
     }
 
@@ -65,10 +70,16 @@ class SettingController extends Controller
         $request->validate([
             'name' => 'required'
         ]);
+        $status = 0;
+        if ($request->status == true) {
+            $status = 1;
+        } else {
+            $status = 0;
+        }
         $menu = Menu::create([
             'name' => $request->name,
             'url' => $request->url,
-            'status' => 1,
+            'status' => $status,
             'user_id' => Auth::user()->id
         ]);
         return 'Menu Created';
@@ -76,7 +87,7 @@ class SettingController extends Controller
 
     public function updateMenu(Request $request, $id)
     {
-        $request->valdiate([
+        $request->validate([
             'name' => 'required'
         ]);
         $menu = Menu::where('id',$id)->update([
@@ -92,6 +103,26 @@ class SettingController extends Controller
         $menu = Menu::where('id',$id)->first();
         $menu->delete();
         return 'Menu Deleted';
+    }
+
+    public function assignCategory(Request $request)
+    {
+        $menu = Menu::find($request->menu);
+        $categories = $request['categories'];
+        foreach ($categories as $category) {
+            $menu->categories()->attach($category, ['user_id' => Auth::user()->id]);
+        }
+        return 'Assign Category Success';
+    }
+
+    public function removeCategory(Request $request)
+    {
+        $menu = Menu::find($request->menu);
+        $categories = $request['categories'];
+        foreach ($categories as $category) {
+            $menu->categories()->detach($category);
+        }
+        return 'Remove Category Success';
     }
 
 }
