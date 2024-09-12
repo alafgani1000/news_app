@@ -91,6 +91,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/menu-category/{id}/available', [SettingController::class, 'categoryAvailableInMenu'])->name('menu-category.available');
     Route::get('/menu-category/{id}/not-available', [SettingController::class, 'categoryNotAvailableInMenu'])->name('menu-category.notavailable');
 
+    // media
+    Route::post('/media-upload', [MediaController::class, 'uploadImage'])->name('media.upload');
+
+
 });
 
 require __DIR__.'/auth.php';
