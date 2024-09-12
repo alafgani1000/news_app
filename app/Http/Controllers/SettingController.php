@@ -10,6 +10,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Category;
 use App\Models\Menu;
+use App\Models\MenuCategory;
 
 class SettingController extends Controller
 {
@@ -108,21 +109,32 @@ class SettingController extends Controller
     public function assignCategory(Request $request)
     {
         $menu = Menu::find($request->menu);
-        $categories = $request['categories'];
-        foreach ($categories as $category) {
-            $menu->categories()->attach($category, ['user_id' => Auth::user()->id]);
-        }
+        $category = $request->category;
+        $menu->categories()->attach($category, ['user_id' => Auth::user()->id]);
         return 'Assign Category Success';
     }
 
     public function removeCategory(Request $request)
     {
         $menu = Menu::find($request->menu);
-        $categories = $request['categories'];
-        foreach ($categories as $category) {
-            $menu->categories()->detach($category);
-        }
+        $category = $request->category;
+        $menu->categories()->detach($category);
         return 'Remove Category Success';
+    }
+
+    public function categoryAvailableInMenu($id)
+    {
+        $categories = MenuCategory::with('category')
+            ->where('menu_id', $id)
+            ->get();
+        return $categories;
+    }
+
+    public function categoryNotAvailableInMenu($id)
+    {
+        $menuCategories = MenuCategory::where('menu_id', $id)->get();
+        $categories = Category::whereNotIn('id', $menuCategories->pluck('category_id'))->get();
+        return $categories;
     }
 
 }

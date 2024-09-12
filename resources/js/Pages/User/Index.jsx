@@ -338,9 +338,9 @@ export default function Index({
                             <label className="mb-2">Role:</label>
                             <select className="rounded-lg focus:ring-sky-500 focus:border-sky-500">
                                 <option>-- Please select role --</option>
-                                {roles.map((value, key) => {
+                                {roles.map((value, index) => {
                                     return (
-                                        <option value={value.name}>
+                                        <option value={value.name} key={index}>
                                             {value.name}
                                         </option>
                                     );

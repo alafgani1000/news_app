@@ -86,8 +86,10 @@ Route::middleware('auth')->group(function () {
 
     // menu category
     Route::get('/menu-category', [SettingController::class, 'menuCategory'])->name('menu-category.data');
-    Route::post('/menu-category-assign', [SettingController::class, 'assignCategory'])->name('menu-category-assign.id');
-    Route::post('/menu-category-remove', [SettingController::class, 'removeCategory'])->name('menu-category-remove.id');
+    Route::post('/menu-category-assign', [SettingController::class, 'assignCategory'])->name('menu-category.assign');
+    Route::post('/menu-category-remove', [SettingController::class, 'removeCategory'])->name('menu-category.remove');
+    Route::get('/menu-category/{id}/available', [SettingController::class, 'categoryAvailableInMenu'])->name('menu-category.available');
+    Route::get('/menu-category/{id}/not-available', [SettingController::class, 'categoryNotAvailableInMenu'])->name('menu-category.notavailable');
 
 });
 

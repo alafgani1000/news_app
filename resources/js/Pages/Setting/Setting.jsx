@@ -1,6 +1,7 @@
 import Badge from "@/Components/Badge";
 import Confirm from "@/Components/Confirm";
 import ErrorLabel from "@/Components/ErrorLabel";
+import Modal from "@/Components/Modal";
 import Toast from "@/Components/Toast";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
@@ -31,6 +32,11 @@ export default function Setting({ auth }) {
     const [menuError, setMenuError] = useState({
         name: "",
     });
+    const [modalSetting, setModalSetting] = useState(false);
+    const [menuIdSetting, setMenuIdSetting] = useState("");
+    const [categorySetting, setCategorySetting] = useState("");
+    const [categoryAvailable, setCategoryAvailable] = useState([]);
+    const [categoryNotAvailable, setCategoryNotAvailable] = useState([]);
 
     // function process
     const closeToast = () => {
@@ -282,7 +288,7 @@ export default function Setting({ auth }) {
     const editMenu = (menu) => {
         setMenuName(menu.name);
         setMenuId(menu.id);
-        setMenuUrl(menu.url);
+        setMenuUrl(menu.url || "");
         if (menu.status === 0) {
             setMenuStatus(false);
         } else {
@@ -312,6 +318,62 @@ export default function Setting({ auth }) {
         });
     };
 
+    const closeModalSetting = () => {
+        setModalSetting(false);
+        setMenuIdSetting("");
+        setCategorySetting("");
+    };
+
+    const showModalSetting = (data) => {
+        setModalSetting(true);
+        setMenuIdSetting(data.id);
+        getCategoryAvailable(data.id);
+        getCategoryNotAvailable(data.id);
+    };
+
+    const getCategoryAvailable = (id) => {
+        axios.get(`/menu-category/${id}/available`).then((res) => {
+            setCategoryAvailable(res.data);
+        });
+    };
+
+    const getCategoryNotAvailable = (id) => {
+        axios.get(`/menu-category/${id}/not-available`).then((res) => {
+            setCategoryNotAvailable(res.data);
+        });
+    };
+
+    const handleAssignCategory = (e) => {
+        e.preventDefault();
+        axios
+            .post("/menu-category-assign", {
+                menu: menuIdSetting,
+                category: categorySetting,
+            })
+            .then((res) => {
+                getCategoryAvailable(menuIdSetting);
+                getCategoryNotAvailable(menuIdSetting);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const handleRemoveCategory = (categoryId) => {
+        axios
+            .post("/menu-category-remove", {
+                menu: menuIdSetting,
+                category: categoryId,
+            })
+            .then((res) => {
+                getCategoryAvailable(menuIdSetting);
+                getCategoryNotAvailable(menuIdSetting);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -324,12 +386,12 @@ export default function Setting({ auth }) {
             <Head title="Setting" />
 
             <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 max-h- overflow-y-scroll mt-8">
-                    <div className="text-xl mb-4 font-semibold text-gray-600 grid justify-start">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 max-h- overflow-y-scroll">
+                    <div className="text-xl font-semibold text-gray-600 grid justify-start bg-gray-200 border-b border-gray-100 rounded-t-lg px-5 py-3">
                         Menu
                     </div>
-                    <div className="bg-white overflow-hidden sm:rounded-lg grid grid-cols-1">
-                        <div className="p-6 text-gray-700 bg-white rounded col-span-1">
+                    <div className="bg-white overflow-hidden rounded-b-lg grid grid-cols-1">
+                        <div className="px-5 py-3 text-gray-700 bg-gray-200 rounded-b-lg col-span-1">
                             <form onSubmit={handleSubmitMenu}>
                                 <span className="text-lg">Create Menu</span>
                                 <div className="grid grid-cols-3 gap-4">
@@ -422,7 +484,7 @@ export default function Setting({ auth }) {
                                 </div>
                             </form>
                         </div>
-                        <div className="p-6 text-gray-600 bg-gray-200 col-span-2">
+                        <div className="px-5 py-3 text-gray-600 bg-white col-span-2">
                             <span className="text-lg">List of Menu</span>
                             <div className="mt-4 grid">
                                 <table>
@@ -479,7 +541,7 @@ export default function Setting({ auth }) {
                                                                         key={
                                                                             index1
                                                                         }
-                                                                        className="bg-white px-2 py-1 me-2 rounded text-xs font-semibold"
+                                                                        className="bg-indigo-600 text-white px-2 py-1 me-2 rounded-full text-xs font-semibold"
                                                                     >
                                                                         {
                                                                             menu_category
@@ -501,7 +563,7 @@ export default function Setting({ auth }) {
                                                                 }}
                                                                 className="bg-yellow-500 px-2 py-1 rounded me-1"
                                                             >
-                                                                Edit
+                                                                <i className="bi bi-pencil-square"></i>
                                                             </button>
                                                             <button
                                                                 onClick={() => {
@@ -511,7 +573,17 @@ export default function Setting({ auth }) {
                                                                 }}
                                                                 className="bg-rose-500 px-2 py-1 rounded me-1"
                                                             >
-                                                                Delete
+                                                                <i className="bi bi-trash"></i>
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    showModalSetting(
+                                                                        menu
+                                                                    );
+                                                                }}
+                                                                className="bg-blue-500 px-2 py-1 rounded me-1"
+                                                            >
+                                                                <i className="bi bi-gear-fill"></i>
                                                             </button>
                                                         </div>
                                                     </td>
@@ -526,11 +598,11 @@ export default function Setting({ auth }) {
                 </div>
 
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 max-h-80 overflow-y-scroll mt-8">
-                    <div className="text-xl mb-4 font-semibold text-gray-600">
+                    <div className="text-xl font-semibold text-gray-600 bg-white border-b border-gray-100 p-4 rounded-t-lg">
                         Category
                     </div>
-                    <div className="bg-white overflow-hidden sm:rounded-lg grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2">
-                        <div className="p-6 text-gray-700 bg-gray-200 rounded">
+                    <div className="bg-white overflow-hidden rounded-b-lg grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2">
+                        <div className="px-5 py-3 text-gray-700 bg-white rounded-b-lg">
                             <form onSubmit={handleCategorySubmit}>
                                 <span className="text-lg">Create Category</span>
                                 <div className="mt-4 grid">
@@ -580,7 +652,7 @@ export default function Setting({ auth }) {
                                 </div>
                             </form>
                         </div>
-                        <div className="p-6 text-gray-600 ">
+                        <div className="px-5 py-3 text-gray-600 ">
                             <span className="text-lg">List of Category</span>
                             <div className="mt-4 grid">
                                 <table>
@@ -614,7 +686,7 @@ export default function Setting({ auth }) {
                                                                 }}
                                                                 className="bg-yellow-500 px-2 py-1 rounded me-1"
                                                             >
-                                                                Edit
+                                                                <i className="bi bi-pencil-square"></i>
                                                             </button>
                                                             <button
                                                                 onClick={() => {
@@ -624,7 +696,7 @@ export default function Setting({ auth }) {
                                                                 }}
                                                                 className="bg-rose-500 px-2 py-1 rounded me-1"
                                                             >
-                                                                Delete
+                                                                <i className="bi bi-trash"></i>
                                                             </button>
                                                         </div>
                                                     </td>
@@ -660,6 +732,102 @@ export default function Setting({ auth }) {
                 yes={deleteMenu}
                 no={cancelDeleteMenu}
             />
+
+            <Modal show={modalSetting}>
+                <div className="bg-white rounded max-w-3xl w-full mx-auto">
+                    <div className="flex flex-col items-end m-0 p-0">
+                        <button
+                            onClick={() => closeModalSetting()}
+                            className="bg-zinc-700 px-3 py-1 text-white hover:bg-rose-600 rounded-tr"
+                        >
+                            <i className="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <form onSubmit={handleAssignCategory} className="px-6 pb-6">
+                        <h2 className="text-lg font-medium text-gray-900">
+                            Setting Menu
+                        </h2>
+                        <div className="grid mt-4">
+                            <label className="mb-2">Name:</label>
+                            <select
+                                onChange={(e) => {
+                                    setCategorySetting(e.target.value);
+                                }}
+                                className="rounded-lg focus:ring-indigo-600 focus:border-indigo-600"
+                            >
+                                <option value="">
+                                    --- Select Category ---
+                                </option>
+                                {categoryNotAvailable.map(
+                                    (categoryData, index) => {
+                                        return (
+                                            <option
+                                                key={index}
+                                                value={categoryData.id}
+                                            >
+                                                {categoryData.name}
+                                            </option>
+                                        );
+                                    }
+                                )}
+                            </select>
+                        </div>
+                        <div className="grid justify-end mt-4">
+                            <button
+                                type="submit"
+                                className="border border-sky-500 py-2 px-4 rounded-md text-sm bg-sky-500 text-white hover:bg-sky-600"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                    <div className="mt-2 grid px-4 pb-4">
+                        <table>
+                            <thead className="bg-gray-100 rounded">
+                                <tr>
+                                    <th className="text-left p-3 w-2/3">
+                                        Name
+                                    </th>
+                                    <th className="text-left p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {categoryAvailable?.map(
+                                    (categoryMenu, index) => {
+                                        return (
+                                            <tr
+                                                key={index}
+                                                className="border-b border-dashed"
+                                            >
+                                                <td className="px-3 py-2">
+                                                    {
+                                                        categoryMenu.category
+                                                            ?.name
+                                                    }
+                                                </td>
+                                                <td className="px-3 py-3 text">
+                                                    <div className="text-sm text-white">
+                                                        <button
+                                                            onClick={() => {
+                                                                handleRemoveCategory(
+                                                                    categoryMenu.category_id
+                                                                );
+                                                            }}
+                                                            className="bg-rose-500 px-2 py-1 rounded me-1"
+                                                        >
+                                                            <i className="bi bi-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </Modal>
         </AuthenticatedLayout>
     );
 }
