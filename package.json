@@ -24,6 +24,12 @@
         "@coreui/react": "^5.3.0",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
-        "html-react-parser": "^5.1.10"
+        "draft-convert": "^2.1.13",
+        "draft-js": "^0.11.7",
+        "draft-js-export-html": "^1.4.1",
+        "draft-js-import-html": "^1.4.1",
+        "draftjs-to-html": "^0.9.1",
+        "html-react-parser": "^5.1.10",
+        "react-draft-wysiwyg": "^1.15.0"
     }
 }

@@ -17,10 +17,11 @@ return new class extends Migration
             $table->text('content');
             $table->integer('writer');
             $table->string('keywords');
+            $table->string('tag');
             $table->integer('editor')->nullable();
-            $table->string('reference')->nullable();
             $table->integer('like')->nullable();
             $table->integer('click')->nullable();
+            $table->integer('status')->nullable();
             $table->timestamps();
         });
     }

@@ -1,8 +1,103 @@
+import Confirm from "@/Components/Confirm";
+import ErrorLabel from "@/Components/ErrorLabel";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
+import axios from "axios";
+import { convertFromHTML } from "draft-convert";
+import { convertToRaw, EditorState } from "draft-js";
+import { stateFromHTML } from "draft-js-import-html";
+import draftToHtml from "draftjs-to-html";
+import { useEffect, useState } from "react";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export default function News({ auth }) {
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [dataCategories, setDataCategories] = useState([]);
+    const [title, setTitle] = useState("");
+    const [keyword, setKeyword] = useState("");
+    const [tag, setTag] = useState("");
+    const [category, setCategory] = useState("");
+    const [publishConfirm, setPublishConfirm] = useState(false);
+    const [toastData, setToastData] = useState({
+        message: "",
+        color: "",
+    });
+    const [errors, setErrors] = useState({
+        title: "",
+    });
+
+    const onEditorStateChange = (newState) => {
+        setEditorState(newState);
+    };
+
+    const toHtml = (data) => {
+        const rawContentState = convertToRaw(data);
+        const htmlContent = draftToHtml(rawContentState);
+        return htmlContent;
+    };
+
+    const fromHtml = (data) => {
+        const newState = convertFromHTML(data);
+        const newEditorState = EditorState.createWithContent(newState);
+        return newEditorState;
+    };
+
+    const store = () => {
+        const content = toHtml(editorState.getCurrentContent());
+        axios
+            .post("/news", {
+                title: title,
+                keywords: keyword,
+                tag: tag,
+                content: content,
+            })
+            .then((res) => {
+                console.log(res);
+            });
+    };
+
+    const publish = () => {
+        const content = toHtml(editorState.getCurrentContent());
+        axios
+            .post("/publish", {
+                title: title,
+                keywords: keyword,
+                tag: tag,
+                content: content,
+            })
+            .then((res) => {
+                console.log(res);
+            });
+    };
+
+    const edit = (htmlContent) => {
+        const newEditorState = fromHtml(htmlContent);
+        console.log(newEditorState);
+    };
+
+    const getDataCategory = () => {
+        axios.get("/category").then((res) => {
+            setDataCategories(res.data);
+        });
+    };
+
+    useEffect(() => {
+        getDataCategory();
+    }, []);
+
+    const showPublishConfirm = () => {
+        if (title === undefined || title === "") {
+            setErrors((prev) => ({ ...prev, title: "Please fill title" }));
+        } else {
+            setPublishConfirm(true);
+        }
+    };
+
+    const closeConfirmPublish = () => {
+        setPublishConfirm(false);
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -15,12 +110,135 @@ export default function News({ auth }) {
             <Head title="News" />
 
             <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-600">news</div>
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 overflow-x-scroll">
+                    <div className="mb-6 flex justify-end">
+                        <div className="bg-white rounded-md shadow">
+                            <button className="group py-2 px-4 text-base text-gray-600 border-r hover:bg-indigo-600 hover:text-white">
+                                <i className="bi bi-newspaper me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                                Review
+                            </button>
+                            <button className="group py-2 px-4 text-base ext-gray-600 border-r hover:bg-indigo-600 hover:text-white">
+                                <i className="bi bi-save text-xs me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                                Save
+                            </button>
+                            <button
+                                onClick={() => showPublishConfirm()}
+                                className="group py-2 px-4 text-base ext-gray-600 hover:bg-indigo-600 hover:text-white"
+                            >
+                                <i className="bi bi-cloud-arrow-up me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                                Publish
+                            </button>
+                        </div>
+                    </div>
+                    <div className="grid 2xl:grid-cols-5 xl:grid-cols-5 lg:grid-cols-5 lg:gap-4 xl:gap-4 2xl:gap-4 grid-cols-1">
+                        <div className="col-span-4 mb-4">
+                            <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                <div className="grid p-6 text-gray-600">
+                                    <label className="mb-2">News Title:</label>
+                                    <input
+                                        onChange={(e) =>
+                                            setTitle(e.target.value)
+                                        }
+                                        value={title}
+                                        type="text"
+                                        className="rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-400 ring-gray-400"
+                                    />
+                                    <ErrorLabel message={errors.title} />
+                                </div>
+                                <div className="grid grid-cols-2 px-6 pb-6 space-x-2">
+                                    <div className="grid text-gray-600">
+                                        <label className="mb-2">
+                                            News Keywords:
+                                        </label>
+                                        <input
+                                            onChange={(e) =>
+                                                setKeyword(e.target.value)
+                                            }
+                                            value={keyword}
+                                            type="text"
+                                            className="rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-400 ring-gray-400"
+                                        />
+                                    </div>
+                                    <div className="grid text-gray-600">
+                                        <label className="mb-2">
+                                            News Tags:
+                                        </label>
+                                        <input
+                                            onChange={(e) => {
+                                                setTag(e.target.value);
+                                            }}
+                                            value={tag}
+                                            type="text"
+                                            className="rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-400 ring-gray-400"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
+                                <div
+                                    className="p-6 text-gray-600"
+                                    style={{ height: "900px" }}
+                                >
+                                    <Editor
+                                        editorState={editorState}
+                                        onEditorStateChange={
+                                            onEditorStateChange
+                                        }
+                                        toolbar={{
+                                            options: [
+                                                "inline",
+                                                "blockType",
+                                                "fontSize",
+                                                "image",
+                                                "fontFamily",
+                                                "list",
+                                                "textAlign",
+                                                "colorPicker",
+                                                "link",
+                                                "embedded",
+                                                "emoji",
+                                                "remove",
+                                                "history",
+                                            ],
+                                        }}
+                                        toolbarClassName="toolbarClassName"
+                                        wrapperClassName="wrapperClassName"
+                                        editorClassName="editorClassName"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-span-1 overflow-auto mb-4">
+                            <div className="grid text-gray-600 px-4 py-6 bg-white rounded-lg shadow-sm">
+                                <label className="mb-2">Category:</label>
+                                <select
+                                    onChange={(e) =>
+                                        setCategory(e.target.value)
+                                    }
+                                    className="rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-400 ring-gray-400"
+                                >
+                                    <option value="">
+                                        -- Select Category --
+                                    </option>
+                                    {dataCategories?.map((data, index) => {
+                                        return (
+                                            <option key={index} value={data.id}>
+                                                {data.name}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <Confirm
+                show={publishConfirm}
+                question="Are you sure delete this category ?"
+                yes={publish}
+                no={closeConfirmPublish}
+            />
         </AuthenticatedLayout>
     );
 }

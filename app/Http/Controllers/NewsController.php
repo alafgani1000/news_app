@@ -34,7 +34,24 @@ class NewsController extends Controller
             'content' => $request->content,
             'writer' => Auth::user()->id,
             'keywords' => $request->keywords,
-            'reference' => $request->reference
+            'tag' => $request->tag,
+        ]);
+        return 'Create News Success';
+    }
+
+    public function publish(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+            'keywords' => 'required'
+        ]);
+        $news = News::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'writer' => Auth::user()->id,
+            'keywords' => $request->keywords,
+            'tag' => $request->tag,
         ]);
         return 'Create News Success';
     }
