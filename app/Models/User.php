@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\MenuCategory;
+use App\Models\News;
 
 
 class User extends Authenticatable
@@ -54,5 +55,10 @@ class User extends Authenticatable
     public function menuCategories(): HasMany
     {
         return $this->hasMany(MenuCategory::class, 'user_id');
+    }
+
+    public function news()
+    {
+        return $this->hasMany(News::class, 'writer');
     }
 }

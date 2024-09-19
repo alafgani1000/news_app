@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Menu;
 use App\Models\MenuCategory;
+use App\Models\NewsCategory;
 
 class Category extends Model
 {
@@ -25,4 +26,10 @@ class Category extends Model
     {
         return $this->belongsToMany(Menu::class, 'menu_category', 'menu_id', 'category_id')->using(MenuCategory::class);
     }
+
+    public function newsCategory()
+    {
+        return $this->hasOne(NewsCategory::class, 'category_id');
+    }
+
 }

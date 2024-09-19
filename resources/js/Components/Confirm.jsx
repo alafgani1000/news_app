@@ -13,7 +13,7 @@ export default function Confirm({
                 className="fixed flex flex-row justify-center top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(40%-1rem)] max-h-full"
             >
                 <div className="relative flex flex-col justify-center w-full max-w-md max-h-full">
-                    <div className="relative bg-sky-950 rounded-lg shadow-lg dark:bg-gray-700">
+                    <div className="relative bg-slate-100 rounded-lg shadow-lg dark:bg-gray-700">
                         <button
                             type="button"
                             className="absolute top-3 right-2.5 text-white-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -23,8 +23,8 @@ export default function Confirm({
                         </button>
                         <div className="px-6 py-10 text-center">
                             <div className="flex justify-center mb-6">
-                                <i className="bi bi-exclamation-circle-fill text-white text-4xl me-4"></i>
-                                <h3 className="mb-5 text-xl font-normal text-white dark:text-gray-400">
+                                <i className="bi bi-exclamation-circle-fill text-4xl me-4"></i>
+                                <h3 className="mb-5 text-xl font-normal dark:text-gray-400">
                                     {question}
                                 </h3>
                             </div>
@@ -34,7 +34,7 @@ export default function Confirm({
                                 type="button"
                                 className="text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
                             >
-                                Yes, I'm sure
+                                Yes, Publish
                             </button>
                             <button
                                 onClick={() => no()}
