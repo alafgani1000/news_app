@@ -11,13 +11,13 @@ export default function Authenticated({ user, header, children }) {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
+            <nav className="border-b border-gray-100 bg-indigo-500">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current font-bold text-indigo-700" />
+                                    <ApplicationLogo className="block h-9 w-auto fill-current font-bold text-white" />
                                 </Link>
                             </div>
 
@@ -67,7 +67,7 @@ export default function Authenticated({ user, header, children }) {
                                             <span className=" rounded-md">
                                                 <button
                                                     type="button"
-                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-white hover:border-b-gray-400 focus:outline-none transition ease-in-out duration-150 text-white"
                                                 >
                                                     <i className="bi bi-lock-fill me-2"></i>
                                                     Access

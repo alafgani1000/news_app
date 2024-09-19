@@ -13,10 +13,10 @@ import { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-export default function Creates({ auth }) {
+export default function Creates({ auth, code, news }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [dataCategories, setDataCategories] = useState([]);
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState(news?.title);
     const [keyword, setKeyword] = useState("");
     const [tag, setTag] = useState("");
     const [category, setCategory] = useState("");
@@ -49,7 +49,8 @@ export default function Creates({ auth }) {
     const store = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post("/news", {
+            .post("/admin/news", {
+                code: code,
                 title: title,
                 keywords: keyword,
                 tag: tag,
@@ -67,7 +68,8 @@ export default function Creates({ auth }) {
     const publish = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post("/news-publish", {
+            .post("/admin/news-publish", {
+                code: code,
                 title: title,
                 keywords: keyword,
                 tag: tag,
@@ -86,13 +88,8 @@ export default function Creates({ auth }) {
             });
     };
 
-    const edit = (htmlContent) => {
-        const newEditorState = fromHtml(htmlContent);
-        console.log(newEditorState);
-    };
-
     const getDataCategory = () => {
-        axios.get("/category").then((res) => {
+        axios.get("/admin/category").then((res) => {
             setDataCategories(res.data);
         });
     };
@@ -153,24 +150,24 @@ export default function Creates({ auth }) {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 overflow-x-scroll">
-                    <div className="mb-6 flex justify-end">
-                        <div className="bg-white rounded-md shadow">
-                            <button className="group py-2 px-4 text-base text-gray-600 border-r hover:bg-indigo-600 hover:text-white">
-                                <i className="bi bi-newspaper me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                    <div className="mb-6 flex justify-start">
+                        <div className="bg-white rounded shadow">
+                            <button className="group py-2 px-4 text-base text-gray-400 border-r hover:bg-indigo-700 hover:rounded hover:text-white">
+                                <i className="bi bi-newspaper me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Review
                             </button>
                             <button
                                 onClick={() => store()}
-                                className="group py-2 px-4 text-base ext-gray-600 border-r hover:bg-indigo-600 hover:text-white"
+                                className="group py-2 px-4 text-base text-gray-400 border-r hover:bg-indigo-700 hover:rounded hover:text-white"
                             >
-                                <i className="bi bi-save text-xs me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                                <i className="bi bi-save text-xs me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Save
                             </button>
                             <button
                                 onClick={() => showPublishConfirm()}
-                                className="group py-2 px-4 text-base ext-gray-600 hover:bg-indigo-600 hover:text-white"
+                                className="group py-2 px-4 text-base text-gray-400 hover:bg-indigo-700 hover:rounded hover:text-white"
                             >
-                                <i className="bi bi-cloud-arrow-up me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                                <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Publish
                             </button>
                         </div>

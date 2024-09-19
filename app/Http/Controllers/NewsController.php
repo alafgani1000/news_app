@@ -29,9 +29,13 @@ class NewsController extends Controller
         ]);
     }
 
-    public function create()
+    public function create($code)
     {
-        return Inertia::render('News/Creates', []);
+        $news = News::where('code', $code)->first();
+        return Inertia::render('News/Creates', [
+            'code' => $code,
+            'news' => $news
+        ]);
     }
 
     public function store(Request $request)

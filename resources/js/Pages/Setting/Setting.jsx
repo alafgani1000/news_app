@@ -60,7 +60,7 @@ export default function Setting({ auth }) {
         e.preventDefault();
         if (isCategoryEdit === true) {
             axios
-                .put(`/category/${categoryId}/update`, {
+                .put(`/admin/category/${categoryId}/update`, {
                     name: categoryName,
                 })
                 .then((res) => {
@@ -87,7 +87,7 @@ export default function Setting({ auth }) {
                 });
         } else {
             axios
-                .post("/category", {
+                .post("/admin/category", {
                     name: categoryName,
                 })
                 .then((res) => {
@@ -117,7 +117,7 @@ export default function Setting({ auth }) {
 
     const getDataCategory = () => {
         axios
-            .get(`/category`)
+            .get(`/admin/category`)
             .then((res) => {
                 setCategories(res.data);
             })
@@ -159,7 +159,7 @@ export default function Setting({ auth }) {
 
     const deleteCategory = () => {
         axios
-            .delete(`/category/${categoryId}/delete`)
+            .delete(`/admin/category/${categoryId}/delete`)
             .then((res) => {
                 setShowConfirm(false);
                 setCategoryId("");
@@ -184,7 +184,7 @@ export default function Setting({ auth }) {
         e.preventDefault();
         if (isMenuEdit === true) {
             axios
-                .put(`/menu/${menuId}/update`, {
+                .put(`/admin/menu/${menuId}/update`, {
                     name: menuName,
                     url: menuUrl,
                     status: menuStatus,
@@ -213,7 +213,7 @@ export default function Setting({ auth }) {
                 });
         } else {
             axios
-                .post("/menu", {
+                .post("/admin/menu", {
                     name: menuName,
                     url: menuUrl,
                     status: menuStatus,
@@ -245,7 +245,7 @@ export default function Setting({ auth }) {
 
     const deleteMenu = () => {
         axios
-            .delete(`/menu/${menuId}/delete`)
+            .delete(`/admin/menu/${menuId}/delete`)
             .then((res) => {
                 setShowConfirmDelMenu(false);
                 setMenuId("");
@@ -278,7 +278,7 @@ export default function Setting({ auth }) {
 
     const getDataMenu = () => {
         axios
-            .get(`/menu`)
+            .get(`/admin/menu`)
             .then((res) => {
                 setMenus(res.data);
             })
@@ -332,13 +332,13 @@ export default function Setting({ auth }) {
     };
 
     const getCategoryAvailable = (id) => {
-        axios.get(`/menu-category/${id}/available`).then((res) => {
+        axios.get(`/admin/menu-category/${id}/available`).then((res) => {
             setCategoryAvailable(res.data);
         });
     };
 
     const getCategoryNotAvailable = (id) => {
-        axios.get(`/menu-category/${id}/not-available`).then((res) => {
+        axios.get(`/admin/menu-category/${id}/not-available`).then((res) => {
             setCategoryNotAvailable(res.data);
         });
     };
@@ -346,7 +346,7 @@ export default function Setting({ auth }) {
     const handleAssignCategory = (e) => {
         e.preventDefault();
         axios
-            .post("/menu-category-assign", {
+            .post("/admin/menu-category-assign", {
                 menu: menuIdSetting,
                 category: categorySetting,
             })
@@ -361,7 +361,7 @@ export default function Setting({ auth }) {
 
     const handleRemoveCategory = (categoryId) => {
         axios
-            .post("/menu-category-remove", {
+            .post("/admin/menu-category-remove", {
                 menu: menuIdSetting,
                 category: categoryId,
             })

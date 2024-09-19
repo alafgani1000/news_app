@@ -3,6 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 import parse from "html-react-parser";
 import Modal from "@/Components/Modal";
+import axios from "axios";
 
 export default function Index({
     auth,
@@ -23,6 +24,19 @@ export default function Index({
     });
     const [modalCreate, setModalCreate] = useState(false);
     const [formData, setFormData] = useState({});
+    const [username, setUsername] = useState("");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [repassword, setRepassword] = useState("");
+    const [role, setRole] = useState("");
+    const [roleChange, setRoleChange] = useState(false);
+    const [userSelected, setUserSelected] = useState({});
+    const [roleSelected, setRoleSelected] = useState("");
+    const [isEdit, setIsEdit] = useState(false);
+    const [idEdit, setIdEdit] = useState("");
+    const [modalTitle, setModalTitle] = useState("");
+    const [status, setStatus] = useState(false);
 
     const handleSearch = () => {
         // handle search
@@ -50,12 +64,111 @@ export default function Index({
         );
     };
 
+    const handleCreateUser = (e) => {
+        e.preventDefault();
+        if (isEdit == false) {
+            axios
+                .post(`/user`, {
+                    username: username,
+                    email: email,
+                    name: name,
+                    password: password,
+                    repassword: repassword,
+                    role: role,
+                    status: status,
+                })
+                .then((res) => {
+                    handleRefresh();
+                    closeModalCreate();
+                })
+                .catch((res) => {
+                    console.log(res);
+                });
+        } else {
+            axios
+                .put(`/user/${idEdit}/update`, {
+                    username: username,
+                    email: email,
+                    name: name,
+                    password: password,
+                    repassword: repassword,
+                    role: role,
+                    status: status,
+                })
+                .then((res) => {
+                    handleRefresh();
+                    closeModalCreate();
+                })
+                .catch((res) => {
+                    console.log(res);
+                });
+        }
+    };
+
+    const setModalRole = (data) => {
+        setUserSelected(data);
+        setRoleSelected(data.roles?.[0]?.name);
+        setRoleChange(true);
+    };
+
+    const editUser = (data) => {
+        setIsEdit(true);
+        setIdEdit(data.id);
+        setName(data.name);
+        setUsername(data.username);
+        setEmail(data.email);
+        setRole(data?.roles[0]?.name);
+        if (data.active === 1) {
+            setStatus(true);
+        } else {
+            setStatus(false);
+        }
+        setModalTitle("Edit User");
+        setModalCreate(true);
+    };
+
+    const setUserRole = (e) => {
+        e.preventDefault();
+        axios
+            .put(`/user/${userSelected.id}/change-role`, {
+                role: roleSelected,
+            })
+            .then((res) => {
+                handleRefresh();
+                closeModalRole();
+            })
+            .catch((res) => {
+                console.log(res);
+            });
+    };
+
+    const closeModalRole = () => {
+        setRoleChange(false);
+        setUserSelected({});
+        setRoleSelected("");
+    };
+
     const closeModalCreate = () => {
         setModalCreate(false);
+        setIsEdit(false);
+        setIdEdit("");
+        setName("");
+        setUsername("");
+        setEmail("");
+        setRole("");
     };
 
     const createUser = () => {
+        setModalTitle("Create User");
         setModalCreate(true);
+    };
+
+    const checkStatus = () => {
+        if (status === false) {
+            setStatus(true);
+        } else {
+            setStatus(false);
+        }
     };
 
     useEffect(() => {
@@ -66,7 +179,7 @@ export default function Index({
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-600 leading-tight bg-blue-">
+                <h2 className="font-semibold text-xl text-gray-500 leading-tight bg-blue-">
                     User
                 </h2>
             }
@@ -74,10 +187,10 @@ export default function Index({
             <Head title="Profile" />
 
             <div className="py-4 lg:py-12 md:py-12">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8 md:px-8 space-y-6">
+                <div className="max-w-screen-2xl mx-auto px-6 lg:px-8 md:px-8 space-y-6">
                     <div className="bg-white rounded-md shadow">
                         <div className="text-gray-900 relative overflow-x-auto">
-                            <div className="bg-white-400 text-gray-600 p-4 mt-0 mb-4 font-bold border-b border-zinc rounded-t-md text-xl">
+                            <div className="bg-white-400 text-gray-800 p-3 mt-0 mb-4 font-bold border-b border-zinc rounded-t-md text-lg">
                                 Data User
                             </div>
                             <div className="flex justify-end mr-8">
@@ -85,12 +198,12 @@ export default function Index({
                                     onClick={() => {
                                         createUser();
                                     }}
-                                    className="border py-2 px-3 bg-indigo-500 hover:text-white hover:bg-indigo-600 hover:border-blue-500 rounded-md text-white text-sm"
+                                    className="border py-2 px-3 bg-indigo-600 hover:text-white hover:bg-indigo-700 hover:border-indigo-700 rounded-md text-white text-base"
                                 >
                                     <span className="text-xs mr-2">
                                         <i className="bi bi-plus-square"></i>
                                     </span>
-                                    New User
+                                    Buat User
                                 </button>
                             </div>
                             <div className="lg:mx-8 md:mx-8 mx-0 my-8 border border-zinc-100 md:rounded-lg lg:rounded-lg">
@@ -157,10 +270,19 @@ export default function Index({
                                         <tr className="p-8">
                                             <th className="py-4 px-2">ID</th>
                                             <th className="text-left py-4">
+                                                Username
+                                            </th>
+                                            <th className="text-left py-4">
                                                 Name
                                             </th>
-                                            <th className="py-4 text-left hidden mb:block lg:block sm:block align-middle">
+                                            <th className="py-4 text-left hidden md:block lg:block sm:block align-middle">
                                                 Email
+                                            </th>
+                                            <th className="text-left py-4">
+                                                Role
+                                            </th>
+                                            <th className="text-left py-4">
+                                                Status
                                             </th>
                                             <th className="text-left py-4">
                                                 Action
@@ -177,6 +299,9 @@ export default function Index({
                                                     <td className="text-center py-3">
                                                         {user.id}
                                                     </td>
+                                                    <td className="text-left py-3">
+                                                        {user.username}
+                                                    </td>
                                                     <td>
                                                         <span>{user.name}</span>
                                                         <br />
@@ -184,16 +309,64 @@ export default function Index({
                                                             {user.email}
                                                         </span>
                                                     </td>
-                                                    <td className="hidden mb:block lg:block sm:block">
+                                                    <td className="hidden lg:block md:block sm:block align-middle py-4">
                                                         {user.email}
+                                                    </td>
+                                                    <td className="text-center py-3">
+                                                        <div className="flex flex-wrap space-x-1">
+                                                            {user.roles?.map(
+                                                                (
+                                                                    role,
+                                                                    index
+                                                                ) => {
+                                                                    return (
+                                                                        <div
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                            className="bg-emerald-500 text-white px-2 py-1 rounded text-sm my-1"
+                                                                        >
+                                                                            {
+                                                                                role.name
+                                                                            }
+                                                                        </div>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td className="hidden lg:block md:block sm:block align-middle py-4 text-sm">
+                                                        {user.active === 0 ? (
+                                                            <span className="bg-slate-500 py-1 px-2 text-white rounded">
+                                                                Not Active
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-blue-500 py-1 px-2 text-white rounded">
+                                                                Active
+                                                            </span>
+                                                        )}
                                                     </td>
                                                     <td>
                                                         <div className="flex flex-wrap space-x-1">
-                                                            <button className="bg-yellow-500 py-1 px-2 rounded text-white font-bold">
+                                                            <button
+                                                                onClick={() => {
+                                                                    editUser(
+                                                                        user
+                                                                    );
+                                                                }}
+                                                                className="bg-blue-500 py-1 px-2 rounded text-white font-bold"
+                                                            >
                                                                 <i className="bi bi-pencil-fill"></i>
                                                             </button>
-                                                            <button className="bg-rose-500 py-1 px-2 rounded text-white font-bold">
-                                                                <i className="bi bi-x-lg"></i>
+                                                            <button
+                                                                onClick={() =>
+                                                                    setModalRole(
+                                                                        user
+                                                                    )
+                                                                }
+                                                                className="bg-rose-500 py-1 px-2 rounded text-white font-bold"
+                                                            >
+                                                                <i className="bi bi-wrench-adjustable-circle-fill"></i>
                                                             </button>
                                                         </div>
                                                     </td>
@@ -280,6 +453,55 @@ export default function Index({
                 </div>
             </div>
 
+            <Modal show={roleChange}>
+                <div className="bg-white rounded max-w-xl w-full mx-auto">
+                    <div className="flex flex-col items-end m-0 p-0">
+                        <button
+                            onClick={() => closeModalRole()}
+                            className="bg-zinc-700 px-3 py-1 text-white hover:bg-rose-600 rounded-tr"
+                        >
+                            <i className="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <form onSubmit={setUserRole} className="px-6 pb-6">
+                        <h2 className="text-lg font-medium text-gray-900">
+                            Role Setting
+                        </h2>
+
+                        <div className="grid mt-4">
+                            <label className="mb-2">Role:</label>
+                            <select
+                                value={roleSelected}
+                                onChange={(e) =>
+                                    setRoleSelected(e.target.value)
+                                }
+                                className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
+                            >
+                                <option value="">
+                                    -- Please select role --
+                                </option>
+                                {roles.map((value, index) => {
+                                    return (
+                                        <option value={value.name} key={index}>
+                                            {value.name}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+
+                        <div className="grid justify-end mt-4">
+                            <button
+                                type="submit"
+                                className="border border-sky-500 py-2 px-4 rounded-md text-sm bg-sky-500 text-white hover:bg-sky-600"
+                            >
+                                Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
+
             <Modal show={modalCreate}>
                 <div className="bg-white rounded max-w-3xl w-full mx-auto">
                     <div className="flex flex-col items-end m-0 p-0">
@@ -290,10 +512,21 @@ export default function Index({
                             <i className="bi bi-x-lg"></i>
                         </button>
                     </div>
-                    <form onSubmit={createUser} className="px-6 pb-6">
+                    <form onSubmit={handleCreateUser} className="px-6 pb-6">
                         <h2 className="text-lg font-medium text-gray-900">
-                            Create User
+                            {modalTitle}
                         </h2>
+                        <div className="grid mt-4">
+                            <label className="mb-2">Username:</label>
+                            <input
+                                type="text"
+                                className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
+                                onChange={(e) => {
+                                    setUsername(e.target.value);
+                                }}
+                                value={username}
+                            />
+                        </div>
                         <div className="grid mt-4">
                             <label className="mb-2">Name:</label>
                             <input
@@ -302,6 +535,7 @@ export default function Index({
                                 onChange={(e) => {
                                     setName(e.target.value);
                                 }}
+                                value={name}
                             />
                         </div>
                         <div className="grid mt-4">
@@ -310,8 +544,9 @@ export default function Index({
                                 type="email"
                                 className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
                                 onChange={(e) => {
-                                    setName(e.target.value);
+                                    setEmail(e.target.value);
                                 }}
+                                value={email}
                             />
                         </div>
                         <div className="grid mt-4">
@@ -320,8 +555,9 @@ export default function Index({
                                 type="password"
                                 className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
                                 onChange={(e) => {
-                                    setName(e.target.value);
+                                    setPassword(e.target.value);
                                 }}
+                                value={password}
                             />
                         </div>
                         <div className="grid mt-4">
@@ -330,14 +566,21 @@ export default function Index({
                                 type="password"
                                 className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
                                 onChange={(e) => {
-                                    setName(e.target.value);
+                                    setRepassword(e.target.value);
                                 }}
+                                value={repassword}
                             />
                         </div>
                         <div className="grid mt-4">
                             <label className="mb-2">Role:</label>
-                            <select className="rounded-lg focus:ring-sky-500 focus:border-sky-500">
-                                <option>-- Please select role --</option>
+                            <select
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                className="rounded-lg focus:ring-sky-500 focus:border-sky-500"
+                            >
+                                <option value="">
+                                    -- Please select role --
+                                </option>
                                 {roles.map((value, index) => {
                                     return (
                                         <option value={value.name} key={index}>
@@ -347,12 +590,28 @@ export default function Index({
                                 })}
                             </select>
                         </div>
+                        <div className="grid mt-4">
+                            <label className="mb-2">Status</label>
+                            <label class="inline-flex items-center mb-5 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    value=""
+                                    class="sr-only peer"
+                                    checked={status}
+                                    onChange={() => checkStatus()}
+                                />
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    {status === false ? "Disable" : "Enable"}
+                                </span>
+                            </label>
+                        </div>
                         <div className="grid justify-end mt-4">
                             <button
                                 type="submit"
                                 className="border border-sky-500 py-2 px-4 rounded-md text-sm bg-sky-500 text-white hover:bg-sky-600"
                             >
-                                Save
+                                {isEdit == false ? "Simpan" : "Update"}
                             </button>
                         </div>
                     </form>

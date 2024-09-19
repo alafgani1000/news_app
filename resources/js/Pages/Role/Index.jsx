@@ -141,7 +141,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                             <div className="flex justify-end mr-8">
                                 <button
                                     onClick={showModalCreate}
-                                    className="border border-blue-500 py-2 px-3 bg-blue-500 hover:text-white hover:bg-blue-600 hover:border-blue-600 rounded text-white text-sm"
+                                    className="border border-indigo-600 py-2 px-3 bg-indigo-600 hover:text-white hover:bg-indigo-700 hover:border-indigo-700 rounded text-white text-sm"
                                 >
                                     <span className="text-sm mr-2">
                                         <i className="bi bi-plus-square"></i>

@@ -49,7 +49,7 @@ export default function Creates({ auth, news }) {
     const store = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post("/news", {
+            .post("/admin/news", {
                 title: title,
                 keywords: keyword,
                 tag: tag,
@@ -67,7 +67,7 @@ export default function Creates({ auth, news }) {
     const publish = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post("/news-publish", {
+            .post("/admin/news-publish", {
                 title: title,
                 keywords: keyword,
                 tag: tag,
@@ -92,7 +92,7 @@ export default function Creates({ auth, news }) {
     };
 
     const getDataCategory = () => {
-        axios.get("/category").then((res) => {
+        axios.get("/admin/category").then((res) => {
             setDataCategories(res.data);
         });
     };

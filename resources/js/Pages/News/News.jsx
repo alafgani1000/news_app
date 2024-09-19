@@ -4,6 +4,7 @@ import { Head, Link, router } from "@inertiajs/react";
 import parse from "html-react-parser";
 import Modal from "@/Components/Modal";
 import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
     const [search, setSearch] = useState(pgSearch || "");
@@ -15,6 +16,7 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
         name: false,
         email: false,
     });
+    const [uuid] = useState(uuidv4());
 
     console.log(news);
 
@@ -69,7 +71,7 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
                             <div className="flex justify-end mr-8">
                                 <Link
                                     className="bg-indigo-600 py-2 p-3 text-white rounded"
-                                    href="/news-create"
+                                    href={`/admin/news/${uuid}/create`}
                                 >
                                     <i className="bi bi-newspaper me-1"></i>{" "}
                                     Create News
