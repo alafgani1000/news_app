@@ -1,6 +1,7 @@
 import Confirm from "@/Components/Confirm";
 import ErrorLabel from "@/Components/ErrorLabel";
 import Toast from "@/Components/Toast";
+// import Toast from "@/Components/Toast";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
@@ -18,8 +19,11 @@ export default function Creates({ auth, news }) {
     const [title, setTitle] = useState(news.title || "");
     const [keyword, setKeyword] = useState(news.keywords || "");
     const [tag, setTag] = useState(news.tag || "");
-    const [category, setCategory] = useState(news.news_category?.category_id);
     const [id, setId] = useState(news.id || "");
+    const [code, setCode] = useState(news.code || "");
+    const [category, setCategory] = useState(
+        news.news_category.category_id || ""
+    );
     const [publishConfirm, setPublishConfirm] = useState(false);
     const [toastData, setToastData] = useState({
         message: "",
@@ -49,7 +53,7 @@ export default function Creates({ auth, news }) {
     const update = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .put(`/admin/${id}/update`, {
+            .put(`/admin/news/${id}/update`, {
                 title: title,
                 keywords: keyword,
                 tag: tag,
@@ -76,6 +80,27 @@ export default function Creates({ auth, news }) {
         setEditorState(fromHtml(news.content));
     }, []);
 
+    const publish = () => {
+        const content = toHtml(editorState.getCurrentContent());
+        axios
+            .post(`/admin/news/${code}/publish`, {
+                code: code,
+                title: title,
+                keywords: keyword,
+                tag: tag,
+                content: content,
+                category: category,
+            })
+            .then((res) => {
+                setToastData({
+                    message: res.data,
+                    color: "success",
+                });
+                closeConfirmPublish();
+                setShowToast(true);
+            });
+    };
+
     const resetForm = () => {
         setEditorState(EditorState.createEmpty());
         setTitle("");
@@ -88,6 +113,23 @@ export default function Creates({ auth, news }) {
         setErrors({
             title: "",
         });
+    };
+
+    const showPublishConfirm = () => {
+        let errors = 0;
+        resetError();
+        if (title === undefined || title === "") {
+            setErrors((prev) => ({
+                ...prev,
+                title: "This field is required",
+            }));
+        } else {
+            setPublishConfirm(true);
+        }
+    };
+
+    const closeConfirmPublish = () => {
+        setPublishConfirm(false);
     };
 
     const closeToast = () => {
@@ -122,6 +164,13 @@ export default function Creates({ auth, news }) {
                             <button className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-600 hover:text-white">
                                 <i className="bi bi-save text-xs me-1 text-indigo-600 group-hover:text-white"></i>{" "}
                                 Update
+                            </button>
+                            <button
+                                onClick={() => showPublishConfirm()}
+                                className="group py-2 px-4 text-base ext-gray-600 hover:bg-indigo-600 hover:text-white"
+                            >
+                                <i className="bi bi-cloud-arrow-up me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                                Publish
                             </button>
                         </div>
                     </div>
@@ -207,7 +256,6 @@ export default function Creates({ auth, news }) {
                             <div className="grid text-gray-600 px-4 py-6 bg-white rounded-lg shadow-sm">
                                 <label className="mb-2">Category:</label>
                                 <select
-                                    value={category}
                                     onChange={(e) =>
                                         setCategory(e.target.value)
                                     }
@@ -229,6 +277,12 @@ export default function Creates({ auth, news }) {
                     </div>
                 </div>
             </div>
+            <Confirm
+                show={publishConfirm}
+                question="Are you sure publish this news ?"
+                yes={publish}
+                no={closeConfirmPublish}
+            />
             <Toast
                 show={showToast}
                 message={toastData.message}

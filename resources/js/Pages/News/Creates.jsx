@@ -155,13 +155,13 @@ export default function Creates({ auth, code, news }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 overflow-x-scroll">
                     <div className="mb-6 flex justify-start">
                         <div className="bg-white rounded shadow">
-                            <button className="group py-2 px-4 text-base text-gray-400 border-r hover:bg-indigo-700 hover:rounded hover:text-white">
+                            <button className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-700 hover:rounded hover:text-white">
                                 <i className="bi bi-newspaper me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Review
                             </button>
                             <button
                                 onClick={() => store()}
-                                className="group py-2 px-4 text-base text-gray-400 border-r hover:bg-indigo-700 hover:rounded hover:text-white"
+                                className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-700 hover:rounded hover:text-white"
                             >
                                 <i className="bi bi-save text-xs me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Save

@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
         // news
         Route::get('/news', [NewsController::class, 'index'])->name('news.index');
         Route::put('/news/{code}/store', [NewsController::class, 'store'])->name('news.store');
-        Route::post('/news-publish', [NewsController::class, 'publish'])->name('news.publish');
+        Route::post('/news/{code}/publish', [NewsController::class, 'publish'])->name('news.publish');
         Route::get('/news/{code}/create', [NewsController::class, 'create'])->name('news.create');
         Route::get('/news/{id}/edit', [NewsController::class, 'edit'])->name('news.edit');
         Route::put('/news/{id}/update', [NewsController::class, 'update'])->name('news.update');
