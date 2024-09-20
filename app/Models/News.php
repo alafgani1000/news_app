@@ -13,7 +13,7 @@ class News extends Model
 
     protected $table = 'news';
 
-    protected $fillable = ['title', 'content', 'writer', 'keywords', 'editor', 'like', 'click', 'tag', 'status'];
+    protected $fillable = ['title', 'content', 'writer', 'keywords', 'editor', 'like', 'click', 'tag', 'status', 'code'];
 
     public function writer()
     {

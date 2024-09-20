@@ -91,27 +91,52 @@ class UserController extends Controller
             }
         } else {
             // role beda
-            if (isset($request->password)) {
-                // password di ganti
-                $update = User::where('id',$id)->update([
-                    'name' => $request->name,
-                    'username' => $request->username,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'active' => $active,
-                ]);
-                $user->removeRole($user->roles[0]);
-                $user->assignRole($request->role);
+            if ($user->roles->count() > 0) {
+                if (isset($request->password)) {
+                    // password di ganti
+                    $update = User::where('id',$id)->update([
+                        'name' => $request->name,
+                        'username' => $request->username,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'active' => $active,
+                    ]);
+                    $user->removeRole($user->roles[0]);
+                    $user->assignRole($request->role);
+                } else {
+                    // password tidak diganti
+                    $update = User::where('id',$id)->update([
+                        'name' => $request->name,
+                        'username' => $request->username,
+                        'email' => $request->email,
+                        'active' => $active,
+                    ]);
+                    $user->removeRole($user->roles[0]);
+                    $user->assignRole($request->role);
+                }
             } else {
-                // password tidak diganti
-                $update = User::where('id',$id)->update([
-                    'name' => $request->name,
-                    'username' => $request->username,
-                    'email' => $request->email,
-                    'active' => $active,
-                ]);
-                $user->removeRole($user->roles[0]);
-                $user->assignRole($request->role);
+                if (isset($request->password)) {
+                    // password di ganti
+                    $update = User::where('id',$id)->update([
+                        'name' => $request->name,
+                        'username' => $request->username,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'active' => $active,
+                    ]);
+                    // insert role
+                    $user->assignRole($request->role);
+                } else {
+                    // password tidak diganti
+                    $update = User::where('id',$id)->update([
+                        'name' => $request->name,
+                        'username' => $request->username,
+                        'email' => $request->email,
+                        'active' => $active,
+                    ]);
+                    // insert role
+                    $user->assignRole($request->role);
+                }
             }
         }
 

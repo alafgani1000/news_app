@@ -16,7 +16,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 export default function Creates({ auth, code, news }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [dataCategories, setDataCategories] = useState([]);
-    const [title, setTitle] = useState(news?.title);
+    const [title, setTitle] = useState(news?.title || "");
     const [keyword, setKeyword] = useState("");
     const [tag, setTag] = useState("");
     const [category, setCategory] = useState("");
@@ -49,12 +49,13 @@ export default function Creates({ auth, code, news }) {
     const store = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post("/admin/news", {
+            .put(`/admin/news/${code}/store`, {
                 code: code,
                 title: title,
                 keywords: keyword,
                 tag: tag,
                 content: content,
+                category: category,
             })
             .then((res) => {
                 setToastData({
@@ -140,6 +141,8 @@ export default function Creates({ auth, code, news }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
+            permissions={auth.permissions}
             header={
                 <h2 className="font-semibold text-xl text-gray-600 leading-tight">
                     News

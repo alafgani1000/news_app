@@ -44,7 +44,9 @@ Route::middleware('auth')->group(function () {
 
         // user
         Route::get('/users', [UserController::class, 'index'])->name('user.index');
-        Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
+        Route::post('/user', [UserController::class, 'store'])->name('user.store');
+        Route::put('/user/{id}/update', [UserController::class, 'update'])->name('user.update');
+        Route::put('user/{id}/change-role', [UserController::class, 'changeRole'])->name('user.change-role');
 
         // role
         Route::get('/roles', [RoleController::class, 'index'])->name('role.index');
@@ -66,10 +68,11 @@ Route::middleware('auth')->group(function () {
 
         // news
         Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-        Route::post('/news', [NewsController::class, 'store'])->name('news.store');
+        Route::put('/news/{code}/store', [NewsController::class, 'store'])->name('news.store');
         Route::post('/news-publish', [NewsController::class, 'publish'])->name('news.publish');
         Route::get('/news/{code}/create', [NewsController::class, 'create'])->name('news.create');
         Route::get('/news/{id}/edit', [NewsController::class, 'edit'])->name('news.edit');
+        Route::put('/news/{id}/update', [NewsController::class, 'update'])->name('news.update');
         Route::put('/news/{id}/unpublish', [NewsController::class, 'unpublish'])->name('news.unpublish');
 
         // media

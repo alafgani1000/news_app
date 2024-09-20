@@ -377,6 +377,8 @@ export default function Setting({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
+            permissions={auth.permissions}
             header={
                 <h2 className="font-semibold text-xl text-gray-600 leading-tight">
                     Setting

@@ -5,10 +5,15 @@ import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link } from "@inertiajs/react";
 
-export default function Authenticated({ user, header, children }) {
+export default function Authenticated({
+    user,
+    roles,
+    permissions,
+    header,
+    children,
+}) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-
     return (
         <div className="min-h-screen bg-gray-100">
             <nav className="border-b border-gray-100 bg-indigo-500">
@@ -53,58 +58,71 @@ export default function Authenticated({ user, header, children }) {
                                     <i className="bi bi-card-image me-2"></i>
                                     Media
                                 </NavLink>
-
-                                <NavLink
-                                    href={route("user.index")}
-                                    active={route().current("user.index")}
-                                >
-                                    <i className="bi bi-people-fill me-2"></i>
-                                    User
-                                </NavLink>
-                                <div className="hidden sm:flex sm:items-center sm:ms-6">
-                                    <Dropdown>
-                                        <Dropdown.Trigger>
-                                            <span className=" rounded-md">
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-white hover:border-b-gray-400 focus:outline-none transition ease-in-out duration-150 text-white"
-                                                >
-                                                    <i className="bi bi-lock-fill me-2"></i>
-                                                    Access
-                                                    <svg
-                                                        className="ms-2 -me-0.5 h-4 w-4"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
+                                {roles.admin === true ? (
+                                    <>
+                                        <NavLink
+                                            href={route("user.index")}
+                                            active={route().current(
+                                                "user.index"
+                                            )}
+                                        >
+                                            <i className="bi bi-people-fill me-2"></i>
+                                            User
+                                        </NavLink>
+                                        <div className="hidden sm:flex sm:items-center sm:ms-6">
+                                            <Dropdown>
+                                                <Dropdown.Trigger>
+                                                    <span className=" rounded-md">
+                                                        <button
+                                                            type="button"
+                                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-white hover:border-b-gray-400 focus:outline-none transition ease-in-out duration-150 text-white"
+                                                        >
+                                                            <i className="bi bi-lock-fill me-2"></i>
+                                                            Access
+                                                            <svg
+                                                                className="ms-2 -me-0.5 h-4 w-4"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 20 20"
+                                                                fill="currentColor"
+                                                            >
+                                                                <path
+                                                                    fillRule="evenodd"
+                                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                                    clipRule="evenodd"
+                                                                />
+                                                            </svg>
+                                                        </button>
+                                                    </span>
+                                                </Dropdown.Trigger>
+                                                <Dropdown.Content>
+                                                    <Dropdown.Link
+                                                        href={route(
+                                                            "role.index"
+                                                        )}
                                                     >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        </Dropdown.Trigger>
-                                        <Dropdown.Content>
-                                            <Dropdown.Link
-                                                href={route("role.index")}
-                                            >
-                                                Role
-                                            </Dropdown.Link>
-                                            <Dropdown.Link
-                                                href={route("permission.index")}
-                                            >
-                                                Permission
-                                            </Dropdown.Link>
-                                            <Dropdown.Link
-                                                href={route("role-perms.index")}
-                                            >
-                                                Role Have Permission
-                                            </Dropdown.Link>
-                                        </Dropdown.Content>
-                                    </Dropdown>
-                                </div>
+                                                        Role
+                                                    </Dropdown.Link>
+                                                    <Dropdown.Link
+                                                        href={route(
+                                                            "permission.index"
+                                                        )}
+                                                    >
+                                                        Permission
+                                                    </Dropdown.Link>
+                                                    <Dropdown.Link
+                                                        href={route(
+                                                            "role-perms.index"
+                                                        )}
+                                                    >
+                                                        Role Have Permission
+                                                    </Dropdown.Link>
+                                                </Dropdown.Content>
+                                            </Dropdown>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
                             </div>
                         </div>
 
@@ -153,7 +171,7 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                         </div>
 
-                        <div className="-me-2 flex items-center sm:hidden">
+                        <div className="me-2 flex items-center sm:hidden">
                             <button
                                 onClick={() =>
                                     setShowingNavigationDropdown(
@@ -208,6 +226,27 @@ export default function Authenticated({ user, header, children }) {
                             active={route().current("dashboard")}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href={route("news.index")}
+                            active={route().current("news.index")}
+                        >
+                            News
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href={route("setting.index")}
+                            active={route().current("setting.index")}
+                        >
+                            Settings
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href={route("media.index")}
+                            active={route().current("media.index")}
+                        >
+                            Media
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink

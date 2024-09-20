@@ -81,7 +81,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
     const deleteRole = (e) => {
         e.preventDefault();
         axios
-            .delete(`/role/${idDelete}/delete`)
+            .delete(`/admin/role/${idDelete}/delete`)
             .then((res) => {
                 closeModalDelete();
                 handleRefresh();
@@ -95,7 +95,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
         e.preventDefault();
         if (isEdit === false) {
             axios
-                .post("/role", {
+                .post("/admin/role", {
                     name: name,
                 })
                 .then((res) => {
@@ -107,7 +107,7 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
                 });
         } else if (isEdit === true) {
             axios
-                .put(`/role/${id}/update`, {
+                .put(`/admin/role/${id}/update`, {
                     name: name,
                 })
                 .then((res) => {
@@ -123,6 +123,8 @@ export default function Index({ auth, roles, pgSearch, pgSort, pgPerPage }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
+            permissions={auth.permissions}
             header={
                 <h2 className="font-semibold text-xl text-gray-600 leading-tight">
                     Role

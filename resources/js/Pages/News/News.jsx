@@ -18,8 +18,6 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
     });
     const [uuid] = useState(uuidv4());
 
-    console.log(news);
-
     const handleSearch = () => {
         // handle search
         if (wasSearch) {
@@ -53,6 +51,8 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
+            permissions={auth.permissions}
             header={
                 <h2 className="font-semibold text-xl text-gray-600 leading-tight bg-blue-">
                     News
@@ -69,13 +69,17 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
                                 News List
                             </div>
                             <div className="flex justify-end mr-8">
-                                <Link
-                                    className="bg-indigo-600 py-2 p-3 text-white rounded"
-                                    href={`/admin/news/${uuid}/create`}
-                                >
-                                    <i className="bi bi-newspaper me-1"></i>{" "}
-                                    Create News
-                                </Link>
+                                {auth.permissions.create_news === true ? (
+                                    <Link
+                                        className="bg-indigo-600 py-2 p-3 text-white rounded"
+                                        href={`/admin/news/${uuid}/create`}
+                                    >
+                                        <i className="bi bi-newspaper me-1"></i>{" "}
+                                        Create News
+                                    </Link>
+                                ) : (
+                                    <></>
+                                )}
                             </div>
                             <div className="lg:mx-8 md:mx-8 mx-0 my-8 border border-zinc-100 md:rounded-lg lg:rounded-lg">
                                 <div className="grid bg-zinc-100 py-4 px-4 border-b border-zinc-200 items-center">
@@ -183,9 +187,12 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
                                                     </td>
                                                     <td>
                                                         <div className="flex flex-wrap space-x-1">
-                                                            <button className="bg-yellow-500 py-1 px-2 rounded text-white font-bold">
+                                                            <Link
+                                                                href={`/admin/news/${data.id}/edit`}
+                                                                className="bg-yellow-500 py-1 px-2 rounded text-white font-bold"
+                                                            >
                                                                 <i className="bi bi-pencil-fill"></i>
-                                                            </button>
+                                                            </Link>
                                                             <button className="bg-rose-500 py-1 px-2 rounded text-white font-bold">
                                                                 <i className="bi bi-x-lg"></i>
                                                             </button>

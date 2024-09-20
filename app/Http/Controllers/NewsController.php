@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\News;
+use App\Models\NewsCategory;
 
 class NewsController extends Controller
 {
@@ -38,22 +39,39 @@ class NewsController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $code)
     {
         $request->validate([
             'title' => 'required',
         ]);
-        $news = News::create([
-            'title' => $request->title,
-            'content' => $request->content,
-            'writer' => Auth::user()->id,
-            'keywords' => $request->keywords,
-            'tag' => $request->tag,
-        ]);
-        $news->newsCategory()->create([
-            'category_id' => $request->category,
-            'user_id' => Auth::user()->id
-        ]);
+        $news = News::where('code', $code)->first();
+        if (is_null($news)) {
+            $news = News::create([
+                'title' => $request->title,
+                'content' => $request->content,
+                'writer' => Auth::user()->id,
+                'keywords' => $request->keywords,
+                'tag' => $request->tag,
+                'code' => $request->code
+            ]);
+            $news->newsCategory()->create([
+                'category_id' => $request->category,
+                'user_id' => Auth::user()->id
+            ]);
+        } else {
+            $update = News::where('code',$code)->update([
+                'title' => $request->title,
+                'content' => $request->content,
+                'writer' => Auth::user()->id,
+                'keywords' => $request->keywords,
+                'tag' => $request->tag,
+            ]);
+            $newsCategory = NewsCategory::where('news_id',$news->id)->update([
+                'category_id' => $request->category,
+                'user_id' => Auth::user()->id
+            ]);
+        }
+
         return 'Create News Success';
     }
 
@@ -108,10 +126,12 @@ class NewsController extends Controller
             'keywords' => $request->keywords,
             'tag' => $request->tag,
         ]);
+        $newsCategory = NewsCategory::where('news_id',$news->id)->update([
+            'category_id' => $request->category,
+            'user_id' => Auth::user()->id
+        ]);
         return 'Update News Success';
     }
-
-
 
     public function delete($id)
     {

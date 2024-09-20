@@ -68,7 +68,7 @@ export default function Index({
         e.preventDefault();
         if (isEdit == false) {
             axios
-                .post(`/user`, {
+                .post(`/admin/user`, {
                     username: username,
                     email: email,
                     name: name,
@@ -86,7 +86,7 @@ export default function Index({
                 });
         } else {
             axios
-                .put(`/user/${idEdit}/update`, {
+                .put(`/admin/user/${idEdit}/update`, {
                     username: username,
                     email: email,
                     name: name,
@@ -130,7 +130,7 @@ export default function Index({
     const setUserRole = (e) => {
         e.preventDefault();
         axios
-            .put(`/user/${userSelected.id}/change-role`, {
+            .put(`/admin/user/${userSelected.id}/change-role`, {
                 role: roleSelected,
             })
             .then((res) => {
@@ -178,6 +178,8 @@ export default function Index({
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
+            permissions={auth.permissions}
             header={
                 <h2 className="font-semibold text-xl text-gray-500 leading-tight bg-blue-">
                     User
@@ -187,7 +189,7 @@ export default function Index({
             <Head title="Profile" />
 
             <div className="py-4 lg:py-12 md:py-12">
-                <div className="max-w-screen-2xl mx-auto px-6 lg:px-8 md:px-8 space-y-6">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 md:px-8 space-y-6">
                     <div className="bg-white rounded-md shadow">
                         <div className="text-gray-900 relative overflow-x-auto">
                             <div className="bg-white-400 text-gray-800 p-3 mt-0 mb-4 font-bold border-b border-zinc rounded-t-md text-lg">
@@ -336,13 +338,13 @@ export default function Index({
                                                         </div>
                                                     </td>
                                                     <td className="hidden lg:block md:block sm:block align-middle py-4 text-sm">
-                                                        {user.active === 0 ? (
-                                                            <span className="bg-slate-500 py-1 px-2 text-white rounded">
-                                                                Not Active
-                                                            </span>
-                                                        ) : (
+                                                        {user.active === 1 ? (
                                                             <span className="bg-blue-500 py-1 px-2 text-white rounded">
                                                                 Active
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-slae-500 py-1 px-2 text-white rounded">
+                                                                Not Active
                                                             </span>
                                                         )}
                                                     </td>
@@ -592,16 +594,16 @@ export default function Index({
                         </div>
                         <div className="grid mt-4">
                             <label className="mb-2">Status</label>
-                            <label class="inline-flex items-center mb-5 cursor-pointer">
+                            <label className="inline-flex items-center mb-5 cursor-pointer">
                                 <input
                                     type="checkbox"
                                     value=""
-                                    class="sr-only peer"
+                                    className="sr-only peer"
                                     checked={status}
                                     onChange={() => checkStatus()}
                                 />
-                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                                     {status === false ? "Disable" : "Enable"}
                                 </span>
                             </label>

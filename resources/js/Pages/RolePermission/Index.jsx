@@ -53,7 +53,7 @@ export default function Index({
 
     const dataPermisson = () => {
         axios
-            .get(`/role-permission/${roleSelected.id}/data`)
+            .get(`/admin/role-permission/${roleSelected.id}/data`)
             .then((res) => {
                 setRoleSelected(res.data);
             })
@@ -91,7 +91,7 @@ export default function Index({
 
     const detachPermission = () => {
         axios
-            .post(`/role-permission-revoke`, {
+            .post(`/admin/role-permission-revoke`, {
                 roleName: roleSelected.name,
                 permissionName: permissionSelected.name,
             })
@@ -107,7 +107,7 @@ export default function Index({
     const saveRole = (e) => {
         e.preventDefault();
         axios
-            .post("/role-permission", {
+            .post("/admin/role-permission", {
                 roleName: roleSelected.name,
                 permissionName: permissionName,
             })
@@ -122,6 +122,8 @@ export default function Index({
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
+            permissions={auth.permissions}
             header={
                 <h2 className="font-semibold text-xl text-gray-600 leading-tight">
                     Role Have Permission

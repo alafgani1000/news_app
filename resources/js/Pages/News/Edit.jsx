@@ -1,7 +1,6 @@
 import Confirm from "@/Components/Confirm";
 import ErrorLabel from "@/Components/ErrorLabel";
 import Toast from "@/Components/Toast";
-// import Toast from "@/Components/Toast";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
@@ -16,10 +15,11 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 export default function Creates({ auth, news }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [dataCategories, setDataCategories] = useState([]);
-    const [title, setTitle] = useState("");
-    const [keyword, setKeyword] = useState("");
-    const [tag, setTag] = useState("");
-    const [category, setCategory] = useState("");
+    const [title, setTitle] = useState(news.title || "");
+    const [keyword, setKeyword] = useState(news.keywords || "");
+    const [tag, setTag] = useState(news.tag || "");
+    const [category, setCategory] = useState(news.news_category?.category_id);
+    const [id, setId] = useState(news.id || "");
     const [publishConfirm, setPublishConfirm] = useState(false);
     const [toastData, setToastData] = useState({
         message: "",
@@ -46,28 +46,10 @@ export default function Creates({ auth, news }) {
         return newEditorState;
     };
 
-    const store = () => {
+    const update = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post("/admin/news", {
-                title: title,
-                keywords: keyword,
-                tag: tag,
-                content: content,
-            })
-            .then((res) => {
-                setToastData({
-                    message: res.data,
-                    color: "success",
-                });
-                setShowToast(true);
-            });
-    };
-
-    const publish = () => {
-        const content = toHtml(editorState.getCurrentContent());
-        axios
-            .post("/admin/news-publish", {
+            .put(`/admin/${id}/update`, {
                 title: title,
                 keywords: keyword,
                 tag: tag,
@@ -75,20 +57,12 @@ export default function Creates({ auth, news }) {
                 category: category,
             })
             .then((res) => {
-                resetForm();
-                resetError();
                 setToastData({
                     message: res.data,
                     color: "success",
                 });
-                closeConfirmPublish();
                 setShowToast(true);
             });
-    };
-
-    const edit = (htmlContent) => {
-        const newEditorState = fromHtml(htmlContent);
-        console.log(newEditorState);
     };
 
     const getDataCategory = () => {
@@ -99,6 +73,7 @@ export default function Creates({ auth, news }) {
 
     useEffect(() => {
         getDataCategory();
+        setEditorState(fromHtml(news.content));
     }, []);
 
     const resetForm = () => {
@@ -115,23 +90,6 @@ export default function Creates({ auth, news }) {
         });
     };
 
-    const showPublishConfirm = () => {
-        let errors = 0;
-        resetError();
-        if (title === undefined || title === "") {
-            setErrors((prev) => ({
-                ...prev,
-                title: "This field is required",
-            }));
-        } else {
-            setPublishConfirm(true);
-        }
-    };
-
-    const closeConfirmPublish = () => {
-        setPublishConfirm(false);
-    };
-
     const closeToast = () => {
         setToastData({
             message: "",
@@ -143,6 +101,8 @@ export default function Creates({ auth, news }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
+            permissions={auth.permissions}
             header={
                 <h2 className="font-semibold text-xl text-gray-600 leading-tight">
                     News
@@ -153,22 +113,15 @@ export default function Creates({ auth, news }) {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 overflow-x-scroll">
-                    <div className="mb-6 flex justify-end">
+                    <div className="mb-6 flex justify-start">
                         <div className="bg-white rounded-md shadow">
-                            <button className="group py-2 px-4 text-base text-gray-600 border-r hover:bg-indigo-600 hover:text-white">
+                            <button className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-600 hover:text-white">
                                 <i className="bi bi-newspaper me-1 text-indigo-600 group-hover:text-white"></i>{" "}
                                 Review
                             </button>
-                            <button className="group py-2 px-4 text-base ext-gray-600 border-r hover:bg-indigo-600 hover:text-white">
+                            <button className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-600 hover:text-white">
                                 <i className="bi bi-save text-xs me-1 text-indigo-600 group-hover:text-white"></i>{" "}
-                                Save
-                            </button>
-                            <button
-                                onClick={() => showPublishConfirm()}
-                                className="group py-2 px-4 text-base ext-gray-600 hover:bg-indigo-600 hover:text-white"
-                            >
-                                <i className="bi bi-cloud-arrow-up me-1 text-indigo-600 group-hover:text-white"></i>{" "}
-                                Publish
+                                Update
                             </button>
                         </div>
                     </div>
@@ -254,6 +207,7 @@ export default function Creates({ auth, news }) {
                             <div className="grid text-gray-600 px-4 py-6 bg-white rounded-lg shadow-sm">
                                 <label className="mb-2">Category:</label>
                                 <select
+                                    value={category}
                                     onChange={(e) =>
                                         setCategory(e.target.value)
                                     }
@@ -275,12 +229,6 @@ export default function Creates({ auth, news }) {
                     </div>
                 </div>
             </div>
-            <Confirm
-                show={publishConfirm}
-                question="Are you sure publish this news ?"
-                yes={publish}
-                no={closeConfirmPublish}
-            />
             <Toast
                 show={showToast}
                 message={toastData.message}
