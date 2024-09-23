@@ -161,17 +161,30 @@ export default function Creates({ auth, news }) {
                                 <i className="bi bi-newspaper me-1 text-indigo-600 group-hover:text-white"></i>{" "}
                                 Review
                             </button>
-                            <button className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-600 hover:text-white">
-                                <i className="bi bi-save text-xs me-1 text-indigo-600 group-hover:text-white"></i>{" "}
-                                Update
-                            </button>
-                            <button
-                                onClick={() => showPublishConfirm()}
-                                className="group py-2 px-4 text-base ext-gray-600 hover:bg-indigo-600 hover:text-white"
-                            >
-                                <i className="bi bi-cloud-arrow-up me-1 text-indigo-600 group-hover:text-white"></i>{" "}
-                                Publish
-                            </button>
+                            {auth.permissions.update_news === true ? (
+                                <button
+                                    onClick={() => {
+                                        update();
+                                    }}
+                                    className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-600 hover:text-white"
+                                >
+                                    <i className="bi bi-save text-xs me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                                    Update
+                                </button>
+                            ) : (
+                                <></>
+                            )}
+                            {auth.permissions.publish_news === true ? (
+                                <button
+                                    onClick={() => showPublishConfirm()}
+                                    className="group py-2 px-4 text-base ext-gray-600 hover:bg-indigo-600 hover:text-white"
+                                >
+                                    <i className="bi bi-cloud-arrow-up me-1 text-indigo-600 group-hover:text-white"></i>{" "}
+                                    Publish
+                                </button>
+                            ) : (
+                                <></>
+                            )}
                         </div>
                     </div>
                     <div className="grid 2xl:grid-cols-5 xl:grid-cols-5 lg:grid-cols-5 lg:gap-4 xl:gap-4 2xl:gap-4 grid-cols-1">
@@ -256,6 +269,7 @@ export default function Creates({ auth, news }) {
                             <div className="grid text-gray-600 px-4 py-6 bg-white rounded-lg shadow-sm">
                                 <label className="mb-2">Category:</label>
                                 <select
+                                    value={category}
                                     onChange={(e) =>
                                         setCategory(e.target.value)
                                     }

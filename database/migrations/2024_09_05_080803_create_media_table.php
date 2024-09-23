@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('media', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('file_name');
             $table->string('path');
             $table->integer('size');
-            $table->integer('caption')->nullable();
             $table->integer('user_id');
+            $table->string('extension')->nullable();
             $table->timestamps();
         });
     }

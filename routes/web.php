@@ -76,7 +76,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/news/{id}/unpublish', [NewsController::class, 'unpublish'])->name('news.unpublish');
 
         // media
-        Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+        Route::get('/galery', [MediaController::class, 'index'])->name('galery.index');
+        Route::post('/galery/upload', [MediaController::class, 'uploadImage'])->name('galery.upload');
 
         // setting
         Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');

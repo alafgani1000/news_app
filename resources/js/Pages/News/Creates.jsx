@@ -166,13 +166,17 @@ export default function Creates({ auth, code, news }) {
                                 <i className="bi bi-save text-xs me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Save
                             </button>
-                            <button
-                                onClick={() => showPublishConfirm()}
-                                className="group py-2 px-4 text-base text-gray-400 hover:bg-indigo-700 hover:rounded hover:text-white"
-                            >
-                                <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
-                                Publish
-                            </button>
+                            {auth.permissions.publish_news === true ? (
+                                <button
+                                    onClick={() => showPublishConfirm()}
+                                    className="group py-2 px-4 text-base text-gray-400 hover:bg-indigo-700 hover:rounded hover:text-white"
+                                >
+                                    <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
+                                    Publish
+                                </button>
+                            ) : (
+                                <></>
+                            )}
                         </div>
                     </div>
                     <div className="grid 2xl:grid-cols-5 xl:grid-cols-5 lg:grid-cols-5 lg:gap-4 xl:gap-4 2xl:gap-4 grid-cols-1">

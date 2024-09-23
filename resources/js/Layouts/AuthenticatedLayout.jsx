@@ -52,11 +52,11 @@ export default function Authenticated({
                                 </NavLink>
 
                                 <NavLink
-                                    href={route("media.index")}
-                                    active={route().current("media.index")}
+                                    href={route("galery.index")}
+                                    active={route().current("galery.index")}
                                 >
                                     <i className="bi bi-card-image me-2"></i>
-                                    Media
+                                    Galery
                                 </NavLink>
                                 {roles.admin === true ? (
                                     <>
@@ -243,10 +243,10 @@ export default function Authenticated({
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink
-                            href={route("media.index")}
-                            active={route().current("media.index")}
+                            href={route("galery.index")}
+                            active={route().current("galery.index")}
                         >
-                            Media
+                            Galery
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink
