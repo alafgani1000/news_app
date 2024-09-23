@@ -20,6 +20,9 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
         message: "",
         color: "",
     });
+    const [deleteConfirm, setDeleteConfirm] = useState(false);
+    const [mediaSelected, setMediaSelected] = useState({});
+    const [detailImage, setDetailImage] = useState(false);
 
     const closeModal = () => {
         setModalCreate(false);
@@ -103,6 +106,44 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
 
     const closeToast = () => {
         setShowToast(false);
+    };
+
+    const handleDeleteConfirm = (data) => {
+        setDeleteConfirm(true);
+        setMediaSelected(data);
+    };
+
+    const closeDeleteConfirm = () => {
+        setDeleteConfirm(false);
+    };
+
+    const handleDelete = (e) => {
+        e.preventDefault();
+        axios
+            .delete(`/admin/galery/${mediaSelected.id}/delete`)
+            .then((res) => {
+                setToastData({
+                    message: res.data,
+                    color: "success",
+                });
+                setShowToast(true);
+            })
+            .catch((err) => {
+                setToastData({
+                    message: "Delete Failed",
+                    color: "error",
+                });
+                setShowToast(true);
+            });
+    };
+
+    const showDetailImage = (data) => {
+        setDetailImage(true);
+        setMediaSelected(data);
+    };
+
+    const closeModalDetailImage = () => {
+        setDetailImage(false);
     };
 
     return (
@@ -195,7 +236,7 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
                                     <thead className="bg-zinc-100 p-2">
                                         <tr className="p-8">
                                             <th className="text-left py-4 px-4">
-                                                Name
+                                                Image
                                             </th>
                                             <th className="text-left py-4 px-4">
                                                 Action
@@ -210,14 +251,38 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
                                                     key={index}
                                                 >
                                                     <td className="text-left py-3 px-4">
-                                                        {data.name}
+                                                        <div className="flex ">
+                                                            <img
+                                                                src={`/storage/${data.path}`}
+                                                                width={"200px"}
+                                                                className="me-4"
+                                                            />
+                                                            <div className="place-content-center">
+                                                                {data.name}
+                                                            </div>
+                                                        </div>
                                                     </td>
+
                                                     <td className="content-center">
-                                                        <div className="flex flex-wrap space-x-1">
-                                                            <button className="bg-yellow-500 px-3 py-2 text-white text-sm rounded">
-                                                                <i className="bi bi-pencil-square"></i>
+                                                        <div className="flex flex-wrap">
+                                                            <button
+                                                                onClick={() =>
+                                                                    showDetailImage(
+                                                                        data
+                                                                    )
+                                                                }
+                                                                className="bg-slate-300 px-3 py-2 text-white text-sm rounded me-1 mb-1"
+                                                            >
+                                                                <i className="bi bi-three-dots-vertical"></i>
                                                             </button>
-                                                            <button className="bg-rose-600 px-3 py-2 text-white text-sm rounded">
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleDeleteConfirm(
+                                                                        data
+                                                                    )
+                                                                }
+                                                                className="bg-rose-500 px-3 py-2 text-white text-sm rounded mb-1"
+                                                            >
                                                                 <i className="bi bi-trash3-fill"></i>
                                                             </button>
                                                         </div>
@@ -342,6 +407,83 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
                                     className="border border-blue-500 py-2 px-4 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
                                 >
                                     Upload
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
+
+            <Modal show={detailImage}>
+                <div className="bg-white rounded max-w-4xl w-full mx-auto">
+                    <div className="flex flex-col items-end m-0 p-0">
+                        <button
+                            onClick={() => closeModalDetailImage()}
+                            className="bg-zinc-700 px-3 py-1 text-white hover:bg-rose-600 rounded-tr"
+                        >
+                            <i className="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <div className="px-6 pb-6">
+                        <h2 className="text-xl font-medium text-gray-900">
+                            Detail Image
+                        </h2>
+                        <div className="grid mt-4">
+                            <div className="grid">
+                                <img
+                                    src={`/storage/${mediaSelected.path}`}
+                                    width={""}
+                                    className="me-4 mb-2"
+                                />
+                                <p className="text-center mb-2">
+                                    {mediaSelected.name}
+                                </p>
+                                <input
+                                    className="p-3 rounded border-gray-300 text-lg"
+                                    type="text"
+                                    value={`/storage/${mediaSelected.path}`}
+                                />
+                            </div>
+                            <div className="grid justify-end mt-4">
+                                <button
+                                    type="button"
+                                    className="border border-blue-500 py-2 px-4 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal show={deleteConfirm}>
+                <div className="bg-white rounded max-w-2xl w-full mx-auto">
+                    <div className="flex flex-col items-end m-0 p-0">
+                        <button
+                            onClick={() => closeDeleteConfirm()}
+                            className="bg-zinc-700 px-3 py-1 text-white hover:bg-rose-600 rounded-tr"
+                        >
+                            <i className="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <form onSubmit={handleDelete} className="px-6 pb-6">
+                        <div className="grid mt-4">
+                            <div className="text-lg">Delete Image ?</div>
+                            <div className="flex justify-end mt-4 space-x-2">
+                                <button
+                                    onClick={() => closeDeleteConfirm()}
+                                    type="button"
+                                    className="border border-slate-400 py-2 px-4 rounded text-sm bg-slate-400 text-white hover:bg-slate-600"
+                                >
+                                    <i className="bi bi-x-circle me-1"></i>Close
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="border border-rose-500 py-2 px-4 rounded text-sm bg-rose-500 text-white hover:bg-rose-600"
+                                >
+                                    <i className="bi bi-trash-fill me-1"></i>{" "}
+                                    Delete
                                 </button>
                             </div>
                         </div>

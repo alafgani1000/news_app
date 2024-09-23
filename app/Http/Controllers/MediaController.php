@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Media;
@@ -67,5 +68,24 @@ class MediaController extends Controller
             'user_id' => Auth::user()->id
         ]);
         return 'File Uploaded';
+    }
+
+    public function deleteImage($id)
+    {
+        $file = Media::find($id);
+        if (!is_null($file)) {
+            if ((Storage::exists('public/'.$file->path))) {
+                $delete = Storage::delete('public/'.$file->path);
+                if ($delete) {
+                        $file->delete();
+                }
+                return 'File Deleted';
+            } else {
+                $file->delete();
+                return 'File Deleted';
+            }
+        } else {
+            return 'File Not Found';
+        }
     }
 }

@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
         // media
         Route::get('/galery', [MediaController::class, 'index'])->name('galery.index');
         Route::post('/galery/upload', [MediaController::class, 'uploadImage'])->name('galery.upload');
+        Route::delete('/galery/{id}/delete', [MediaController::class, 'deleteImage'])->name('galery.delete');
 
         // setting
         Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
