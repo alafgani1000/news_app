@@ -446,6 +446,7 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
                             </div>
                             <div className="grid justify-end mt-4">
                                 <button
+                                    onClick={() => closeModalDetailImage()}
                                     type="button"
                                     className="border border-blue-500 py-2 px-4 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
                                 >
