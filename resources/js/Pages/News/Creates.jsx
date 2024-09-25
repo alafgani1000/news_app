@@ -71,7 +71,7 @@ export default function Creates({ auth, code, news }) {
     const publish = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post("/admin/news-publish", {
+            .post("/admin/news/${code}/publish", {
                 code: code,
                 title: title,
                 keywords: keyword,
@@ -172,7 +172,7 @@ export default function Creates({ auth, code, news }) {
                             {auth.permissions.publish_news === true ? (
                                 <button
                                     onClick={() => showPublishConfirm()}
-                                    className="group py-2 px-4 text-base text-gray-400 hover:bg-indigo-700 hover:rounded hover:text-white"
+                                    className="group py-2 px-4 text-base text-gray-500 hover:bg-indigo-700 hover:rounded hover:text-white"
                                 >
                                     <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                     Publish

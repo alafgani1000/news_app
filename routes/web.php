@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/news/{id}/edit', [NewsController::class, 'edit'])->name('news.edit');
         Route::put('/news/{id}/update', [NewsController::class, 'update'])->name('news.update');
         Route::put('/news/{id}/unpublish', [NewsController::class, 'unpublish'])->name('news.unpublish');
+        Route::delete('/news/{id}/delete', [NewsController::class, 'delete'])->name('news.delete');
 
         // media
         Route::get('/galery', [MediaController::class, 'index'])->name('galery.index');

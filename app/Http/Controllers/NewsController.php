@@ -53,6 +53,7 @@ class NewsController extends Controller
                 'keywords' => $request->keywords,
                 'tag' => $request->tag,
                 'code' => $request->code,
+                'image' => $request->image,
                 'status' => 0
             ]);
             $news->newsCategory()->create([
@@ -66,6 +67,7 @@ class NewsController extends Controller
                 'writer' => Auth::user()->id,
                 'keywords' => $request->keywords,
                 'tag' => $request->tag,
+                'image' => $request->image
             ]);
             $newsCategory = NewsCategory::where('news_id',$news->id)->update([
                 'category_id' => $request->category,
@@ -91,6 +93,7 @@ class NewsController extends Controller
                 'keywords' => $request->keywords,
                 'tag' => $request->tag,
                 'code' => $request->code,
+                'image' => $request->image,
                 'status' => 1
             ]);
             $news->newsCategory()->create([
@@ -104,6 +107,7 @@ class NewsController extends Controller
                 'editor' => Auth::user()->id,
                 'keywords' => $request->keywords,
                 'tag' => $request->tag,
+                'image' => $request->image,
                 'status' => 1
             ]);
             $newsCategory = NewsCategory::where('news_id',$news->id)->update([
@@ -159,7 +163,11 @@ class NewsController extends Controller
 
     public function delete($id)
     {
-
+        $news = News::find($id);
+        $newsCategory = NewsCategory::where('news_id', $news->id)->first();
+        $newsCategory->delete();
+        $news->delete();
+        return 'News Deleted';
     }
 
 }

@@ -5,12 +5,22 @@ import parse from "html-react-parser";
 import Modal from "@/Components/Modal";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+import Confirm from "@/Components/Confirm";
+import Toast from "@/Components/Toast";
+import axios from "axios";
 
 export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
     const [search, setSearch] = useState(pgSearch || "");
     const [sort, setSort] = useState(pgSort || "");
     const [perPage, setPerPage] = useState(pgPerPage || 10);
     const [wasSearch, setWasSearch] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState(false);
+    const [newsSelected, setNewsSelected] = useState({});
+    const [showToast, setShowToast] = useState(false);
+    const [toastData, setToastData] = useState({
+        message: "",
+        color: "",
+    });
     const [sorts, setSorts] = useState({
         id: false,
         name: false,
@@ -42,6 +52,39 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
                 preserveState: true,
             }
         );
+    };
+
+    const handleDelete = () => {
+        axios
+            .delete(`/admin/news/${newsSelected.id}/delete`)
+            .then((res) => {
+                setToastData({
+                    message: res.data,
+                    color: "success",
+                });
+                setToastData(true);
+                setDeleteConfirm(false);
+                handleRefresh();
+            })
+            .catch((err) => {
+                setToastData({
+                    message: "Delete Failed",
+                    color: "error",
+                });
+            });
+    };
+
+    const showDeleteConfirm = (data) => {
+        setNewsSelected(data);
+        setDeleteConfirm(true);
+    };
+
+    const closeDeleteConfirm = () => {
+        setDeleteConfirm(false);
+    };
+
+    const closeToast = () => {
+        setShowToast(false);
     };
 
     useEffect(() => {
@@ -193,7 +236,14 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
                                                             >
                                                                 <i className="bi bi-pencil-fill"></i>
                                                             </Link>
-                                                            <button className="bg-rose-500 py-1 px-2 rounded text-white font-bold">
+                                                            <button
+                                                                onClick={() =>
+                                                                    showDeleteConfirm(
+                                                                        data
+                                                                    )
+                                                                }
+                                                                className="bg-rose-500 py-1 px-2 rounded text-white font-bold"
+                                                            >
                                                                 <i className="bi bi-x-lg"></i>
                                                             </button>
                                                         </div>
@@ -280,6 +330,19 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
                     </div>
                 </div>
             </div>
+            <Confirm
+                show={deleteConfirm}
+                question="Are you sure delete this news ?"
+                yes={handleDelete}
+                no={closeDeleteConfirm}
+            />
+            <Toast
+                show={showToast}
+                message={toastData.message}
+                time={20000}
+                falseShow={closeToast}
+                color={toastData.color}
+            />
         </AuthenticatedLayout>
     );
 }

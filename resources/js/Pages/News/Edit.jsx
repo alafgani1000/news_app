@@ -1,7 +1,6 @@
 import Confirm from "@/Components/Confirm";
 import ErrorLabel from "@/Components/ErrorLabel";
 import Toast from "@/Components/Toast";
-// import Toast from "@/Components/Toast";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
@@ -24,7 +23,7 @@ export default function Creates({ auth, news }) {
     const [category, setCategory] = useState(
         news.news_category.category_id || ""
     );
-    const [imageCover, setImageCover] = useState("");
+    const [imageCover, setImageCover] = useState(news.image || "");
     const [publishConfirm, setPublishConfirm] = useState(false);
     const [toastData, setToastData] = useState({
         message: "",
@@ -101,6 +100,9 @@ export default function Creates({ auth, news }) {
                 });
                 closeConfirmPublish();
                 setShowToast(true);
+            })
+            .catch((err) => {
+                console.log(err);
             });
     };
 
@@ -180,7 +182,7 @@ export default function Creates({ auth, news }) {
                             {auth.permissions.publish_news === true ? (
                                 <button
                                     onClick={() => showPublishConfirm()}
-                                    className="group py-2 px-4 text-base ext-gray-600 hover:bg-indigo-600 hover:text-white"
+                                    className="group py-2 px-4 text-base text-gray-500 hover:bg-indigo-600 hover:text-white"
                                 >
                                     <i className="bi bi-cloud-arrow-up me-1 text-indigo-600 group-hover:text-white"></i>{" "}
                                     Publish
@@ -315,7 +317,7 @@ export default function Creates({ auth, news }) {
             <Toast
                 show={showToast}
                 message={toastData.message}
-                time={30000}
+                time={20000}
                 falseShow={closeToast}
                 color={toastData.color}
             />
