@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('like')->nullable();
             $table->integer('click')->nullable();
             $table->integer('status')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

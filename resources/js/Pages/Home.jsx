@@ -17,7 +17,7 @@ export default function Welcome({ auth }) {
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">New Post</h1>
                 </div>
-                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-6 lg:gap-4 lg:h-[620px] overflow-y-hidden">
+                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-6 lg:gap-4 overflow-y-hidden">
                     <div className="col-span-4">
                         <div className="box-news relative">
                             <img
@@ -91,9 +91,9 @@ export default function Welcome({ auth }) {
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">Popular Post</h1>
                 </div>
-                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-4 lg:gap-4">
-                    <div className="box-news">
-                        <div className="h-56 border overflow-y-hidden">
+                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 md:gap-4 lg:gap-4">
+                    <div className="box-news max-h-[320px] overflow-hidden">
+                        <div className="border max-h-[160px] overflow-y-hidden">
                             <img
                                 src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
                             />
@@ -112,8 +112,8 @@ export default function Welcome({ auth }) {
                         </div>
                     </div>
 
-                    <div className="box-news">
-                        <div className="h-56 border overflow-y-hidden">
+                    <div className="box-news max-h-[320px] overflow-hidden">
+                        <div className="border max-h-[160px] overflow-y-hidden">
                             <img
                                 src={`/storage/images/7eevAMjGV5GYqP5zs3e21XEpOHjOWpmoLSJ45TIU.jpg`}
                             />
@@ -132,8 +132,8 @@ export default function Welcome({ auth }) {
                         </div>
                     </div>
 
-                    <div className="box-news">
-                        <div className="h-56 border overflow-y-hidden">
+                    <div className="box-news max-h-[320px] overflow-hidden">
+                        <div className="border max-h-[160px] overflow-y-hidden">
                             <img
                                 src={`/storage/images/wvBXOAe4n0DDUaE83gnleTFNJyYT1soF4tcFhTPu.jpg`}
                             />
@@ -152,8 +152,8 @@ export default function Welcome({ auth }) {
                         </div>
                     </div>
 
-                    <div className="box-news">
-                        <div className="h-56 border overflow-y-hidden">
+                    <div className="box-news max-h-[320px] overflow-hidden">
+                        <div className="border max-h-[160px] overflow-y-hidden">
                             <img
                                 src={`/storage/images/ziybasWr1tScGJPinSmwn7aVmw15y2RbitMPt4j0.png`}
                                 className=""
@@ -179,10 +179,10 @@ export default function Welcome({ auth }) {
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">Category Post</h1>
                 </div>
-                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 md:gap-4 lg:gap-4">
+                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 md:gap-4 lg:gap-4">
                     <div className="box-news-category bg-white p-4 space-y-4">
                         <div className="grid grid-cols-4">
-                            <div className="col-span-2 h-36 border overflow-y-hidden">
+                            <div className="col-span-2 h-32 border overflow-y-hidden">
                                 <img
                                     src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
                                 />

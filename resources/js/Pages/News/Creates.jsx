@@ -20,6 +20,7 @@ export default function Creates({ auth, code, news }) {
     const [keyword, setKeyword] = useState("");
     const [tag, setTag] = useState("");
     const [category, setCategory] = useState("");
+    const [imageCover, setImageCover] = useState("");
     const [publishConfirm, setPublishConfirm] = useState(false);
     const [toastData, setToastData] = useState({
         message: "",
@@ -56,6 +57,7 @@ export default function Creates({ auth, code, news }) {
                 tag: tag,
                 content: content,
                 category: category,
+                image: imageCover,
             })
             .then((res) => {
                 setToastData({
@@ -76,6 +78,7 @@ export default function Creates({ auth, code, news }) {
                 tag: tag,
                 content: content,
                 category: category,
+                image: imageCover,
             })
             .then((res) => {
                 resetForm();
@@ -277,6 +280,18 @@ export default function Creates({ auth, code, news }) {
                                         );
                                     })}
                                 </select>
+                            </div>
+
+                            <div className="grid text-gray-600 px-4 py-6 bg-white rounded-lg shadow-sm mt-4">
+                                <label className="mb-2">Image Cover:</label>
+                                <input
+                                    onChange={(e) =>
+                                        setImageCover(e.target.value)
+                                    }
+                                    value={imageCover}
+                                    type="text"
+                                    className="rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-400 ring-gray-400"
+                                />
                             </div>
                         </div>
                     </div>
