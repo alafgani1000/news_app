@@ -12,7 +12,7 @@ export default function Header({ user, children }) {
     return (
         <div className="min-h-screen bg-gray-100">
             <header className="bg-indigo-500">
-                <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-14 px-2 py-2">
                         {/* app logo */}
                         <div className="flex">
@@ -50,7 +50,7 @@ export default function Header({ user, children }) {
             </header>
             {/* fixed w-full z-50 top-0 sticky */}
             <nav className="border-b border-gray-100 bg-white">
-                <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
                             <div className="hidden space-x-1 sm:-my-px sm:flex">
@@ -247,7 +247,7 @@ export default function Header({ user, children }) {
             <main className="my-10">{children}</main>
 
             <div className="px-0 md:px-6 lg:px-12 bg-white py-12">
-                <div className="max-w-screen-2xl mx-auto sm:px-6 lg:px-8 space-y-12">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-12">
                     <div className="px-4 text-gray-600 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-4">
                         <div className="contact-us">
                             <h1 className="text-2xl font-bold">Contact Us</h1>

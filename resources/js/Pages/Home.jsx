@@ -13,7 +13,7 @@ export default function Welcome({ auth }) {
         >
             <Head title="Profile" />
 
-            <div className="max-w-screen-2xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">New Post</h1>
                 </div>
@@ -87,7 +87,7 @@ export default function Welcome({ auth }) {
                 </div>
             </div>
 
-            <div className="max-w-screen-2xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">Popular Post</h1>
                 </div>
@@ -214,7 +214,7 @@ export default function Welcome({ auth }) {
                 </div>
             </div>
 
-            <div className="max-w-screen-2xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">Sport</h1>
                 </div>
@@ -302,7 +302,7 @@ export default function Welcome({ auth }) {
                 </div>
             </div>
 
-            <div className="max-w-screen-2xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">Technology</h1>
                 </div>

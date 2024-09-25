@@ -170,4 +170,14 @@ class NewsController extends Controller
         return 'News Deleted';
     }
 
+    public function home()
+    {
+        return Inertia::render('Home');
+    }
+
+    public function single()
+    {
+        return Inertia::render('Single');
+    }
+
 }
