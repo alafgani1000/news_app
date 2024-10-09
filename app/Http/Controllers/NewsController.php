@@ -172,7 +172,25 @@ class NewsController extends Controller
 
     public function home()
     {
-        return Inertia::render('Home');
+        $search = $request->search;
+        $perPage = isset($request->perPage) ? $request->perPage : 10;
+        $sort = isset($request->sort) ? $request->sort : 'created_at';
+        $news = News::with(['writer','newsCategory', 'newsCategory.category'])->where(function (Builder $query) use($search) {
+            return $query->where('title', 'like', '%'.$search.'%')
+                        ->orWhere('content', 'like', '%'.$search.'%');
+        })->orderBy($sort)->paginate($perPage);
+        return Inertia::render('Home', [
+            'news' => $news,
+            'pgSearch' => $search,
+            'pgPerPage' => $perPage,
+            'pgSort' => $sort
+        ]);
+    }
+
+    public function newNews()
+    {
+        $news = News::take(4)->orderBy('created_at', 'asc')->get();
+        return $news;
     }
 
     public function single()
