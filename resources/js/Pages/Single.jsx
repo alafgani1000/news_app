@@ -1,7 +1,7 @@
 import { Head, Link } from "@inertiajs/react";
 import Header from "./Header";
 
-export default function Single({ auth }) {
+export default function Single({ auth, news }) {
     return (
         <Header
             user={auth.user}
@@ -17,7 +17,7 @@ export default function Single({ auth }) {
                 <div className="sm:px-4 title-segment font-bold bg-white m-4 px-4 py-4">
                     <h1 className="text-lg">
                         Home{" "}
-                        <i class="bi bi-chevron-right text-sm font-extrabold"></i>{" "}
+                        <i className="bi bi-chevron-right text-sm font-extrabold"></i>{" "}
                         Sport{" "}
                     </h1>
                 </div>

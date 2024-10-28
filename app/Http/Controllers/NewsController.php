@@ -213,9 +213,12 @@ class NewsController extends Controller
         return $news;
     }
 
-    public function single()
+    public function single($id)
     {
-        return Inertia::render('Single');
+        $news = News::with(['writer','newsCategory', 'newsCategory.category'])->where('id',$id)->first();
+        return Inertia::render('Single', [
+            'news' => $news
+        ]);
     }
 
 }
