@@ -1,7 +1,9 @@
 import { Head } from "@inertiajs/react";
 import Header from "./Header";
+import moment from "moment";
 
-export default function Welcome({ auth }) {
+export default function Welcome({ auth, latest1, latest2 }) {
+    console.log(latest2);
     return (
         <Header
             user={auth.user}
@@ -21,68 +23,53 @@ export default function Welcome({ auth }) {
                     <div className="col-span-4">
                         <div className="box-news relative">
                             <img
-                                src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
+                                src={`${latest1.image}`}
                                 className="w-full object-contain"
                             />
                             <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
                             <div className="absolute inset-0 flex items-end justify-start w-full">
                                 <div className="shadow p-4 mb-6 ms-2">
                                     <div className="text-white text-xl font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
-                                        Sport
+                                        {latest1.news_category?.category?.name}
                                     </div>
                                     <h2 className="text-white text-3xl font-bold">
-                                        Exercitation Ullamco Laboris Nisi Ut
-                                        Aliquip
+                                        {latest1.title}
                                     </h2>
                                     <div className="text-white mt-2 text-base font-medium">
-                                        By Admin, January 11, 2022
+                                        By {latest1?.writer.name},{" "}
+                                        {moment(latest1.created_at).format(
+                                            "DD MMM YYYY"
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="col-span-2">
-                        <div className="box-news relative">
-                            <img
-                                src={`/storage/images/ziybasWr1tScGJPinSmwn7aVmw15y2RbitMPt4j0.png`}
-                            />
-                            <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
-                            <div className="absolute inset-0 flex items-end justify-start w-full">
-                                <div className="shadow p-4 mb-6 ms-2">
-                                    <div className="text-white text-lg font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
-                                        Sport
-                                    </div>
-                                    <h2 className="text-white text-2xl font-bold">
-                                        Exercitation Ullamco Laboris Nisi Ut
-                                        Aliquip
-                                    </h2>
-                                    <div className="text-white mt-2 text-base font-medium">
-                                        By Admin, January 11, 2022
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="box-news relative">
-                            <img
-                                src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
-                            />
-                            <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
-                            <div className="absolute inset-0 flex items-end justify-start w-full">
-                                <div className="shadow p-4 mb-6 ms-2">
-                                    <div className="text-white text-lg font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
-                                        Sport
-                                    </div>
-                                    <h2 className="text-white text-2xl font-bold">
-                                        Exercitation Ullamco Laboris Nisi Ut
-                                        Aliquip
-                                    </h2>
-                                    <div className="text-white mt-2 text-base font-medium">
-                                        By Admin, January 11, 2022
+                        {latest2?.map((data, index) => {
+                            return (
+                                <div key={index} className="box-news relative">
+                                    <img src={`${data.image}`} />
+                                    <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
+                                    <div className="absolute inset-0 flex items-end justify-start w-full">
+                                        <div className="shadow p-4 mb-6 ms-2">
+                                            <div className="text-white text-lg font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
+                                                {
+                                                    data.news_category?.category
+                                                        ?.name
+                                                }
+                                            </div>
+                                            <h2 className="text-white text-2xl font-bold">
+                                                {data.title}
+                                            </h2>
+                                            <div className="text-white mt-2 text-base font-medium">
+                                                By Admin, January 11, 2022
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

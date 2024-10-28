@@ -49,14 +49,14 @@ export default function Header({ user, children }) {
                 </div>
             </header>
             {/* fixed w-full z-50 top-0 sticky */}
-            <nav className="border-b border-gray-100 bg-white">
+            <nav className="border-b border-gray-100 bg-white sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
                             <div className="hidden space-x-1 sm:-my-px sm:flex">
                                 <NavLinkFront
-                                    href={route("dashboard")}
-                                    active={route().current("dashboard")}
+                                    href={route("home")}
+                                    active={route().current("home")}
                                 >
                                     Home
                                 </NavLinkFront>

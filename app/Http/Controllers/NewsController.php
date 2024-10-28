@@ -170,20 +170,40 @@ class NewsController extends Controller
         return 'News Deleted';
     }
 
-    public function home()
+    public function latest_post()
+    {
+        $latests = News::with(['writer','newsCategory', 'newsCategory.category'])
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+        $latest1 = $latests->sortByDesc('created_at')->take(1)->first();
+        $latest2 = News::with(['writer','newsCategory', 'newsCategory.category'])
+            ->where('id','!=',$latest1->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(2)
+            ->get();
+        return [
+            'latest1' => $latest1,
+            'latest2' => $latest2
+        ];
+    }
+
+    public function group_by_categories()
+    {
+
+    }
+
+    public function home(Request $request)
     {
         $search = $request->search;
         $perPage = isset($request->perPage) ? $request->perPage : 10;
         $sort = isset($request->sort) ? $request->sort : 'created_at';
-        $news = News::with(['writer','newsCategory', 'newsCategory.category'])->where(function (Builder $query) use($search) {
-            return $query->where('title', 'like', '%'.$search.'%')
-                        ->orWhere('content', 'like', '%'.$search.'%');
-        })->orderBy($sort)->paginate($perPage);
+        $latests = $this->latest_post();
+        $latest1 = $latests['latest1'];
+        $latest2 = $latests['latest2'];
         return Inertia::render('Home', [
-            'news' => $news,
-            'pgSearch' => $search,
-            'pgPerPage' => $perPage,
-            'pgSort' => $sort
+            'latest1' => $latest1,
+            'latest2' => $latest2
         ]);
     }
 

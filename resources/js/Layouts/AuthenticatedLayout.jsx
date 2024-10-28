@@ -59,7 +59,7 @@ export default function Authenticated({
                                     <i className="bi bi-card-image me-2"></i>
                                     Galery
                                 </NavLink>
-                                {roles.admin === true ? (
+                                {roles.developer === true ? (
                                     <>
                                         <NavLink
                                             href={route("user.index")}
