@@ -45,7 +45,7 @@ export default function Welcome({ auth, latest1, latest2 }) {
                             </div>
                         </div>
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-2 space-y-2">
                         {latest2?.map((data, index) => {
                             return (
                                 <div key={index} className="box-news relative">

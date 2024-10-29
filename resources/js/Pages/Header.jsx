@@ -248,10 +248,10 @@ export default function Header({ user, children }) {
 
             <div className="px-0 md:px-6 lg:px-12 bg-white py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-12">
-                    <div className="px-4 text-gray-600 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-4">
+                    <div className="px-4 text-gray-600 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 lg:gap-4">
                         <div className="contact-us">
-                            <h1 className="text-2xl font-bold">Contact Us</h1>
-                            <ul className="space-y-4 mt-6 text-base font-medium">
+                            <h1 className="text-lg font-bold">Contact Us</h1>
+                            <ul className="space-y-4 mt-6 text-sm font-medium">
                                 <li>
                                     <i className="bi bi-map me-4"></i> Serang,
                                     Banten, Indonesia
@@ -266,8 +266,35 @@ export default function Header({ user, children }) {
                                 </li>
                             </ul>
                         </div>
+                        <div className="category-footer">
+                            <h1 className="text-lg font-bold">Category</h1>
+                            <ul className="space-y-4 mt-6 text-sm font-medium">
+                                <li>Ekonomi</li>
+                                <li>Politik</li>
+                                <li>Kesehatan</li>
+                            </ul>
+                        </div>
+                        <div className="category-footer text-end">
+                            <h1 className="text-lg font-bold">Follow US</h1>
+                            <ul className="mt-6 text-sm font-medium flex justify-end">
+                                <li className="bg-white py-0.5 px-3 rounded-md me-2 shadow">
+                                    <i className="bi bi-youtube text-base text-rose-600"></i>
+                                </li>
+                                <li className="bg-white py-0.5 px-3 rounded-md me-2 shadow">
+                                    <i className="bi bi-twitter-x text-base text-slate-800"></i>
+                                </li>
+                                <li className="bg-white py-0.5 px-3 rounded-md me-2 shadow">
+                                    <i className="bi bi-facebook text-base text-blue-500"></i>
+                                </li>
+                                <li className="bg-white py-0.5 px-3 rounded-md shadow">
+                                    <i className="bi bi-instagram text-base text-fuchsia-600"></i>
+                                </li>
+                            </ul>
+                            <div className="mt-8 text-slate-400 text-end">
+                                2024 Free Software
+                            </div>
+                        </div>
                     </div>
-                    <div className="px-4 text-gray-400">2024 Free Sorfware</div>
                 </div>
             </div>
         </div>

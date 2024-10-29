@@ -33,7 +33,7 @@ use Inertia\Inertia;
 // });
 
 Route::get('/', [NewsController::class, 'Home'])->name('home');
-Route::get('/{id}/{title}', [NewsController::class, 'single'])->name('single');
+Route::get('/news/{id}/{title}', [NewsController::class, 'single'])->name('single');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
