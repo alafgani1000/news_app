@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\News;
 use App\Models\NewsCategory;
+use App\Models\Category;
 
 class NewsController extends Controller
 {
@@ -188,9 +189,14 @@ class NewsController extends Controller
         ];
     }
 
-    public function group_by_categories()
+    public function byCategories()
     {
-
+        $categories = Category::with([
+            'newsCategory' => function (Builder $query) {
+                $query->limit(4);
+            }
+        ])->get();
+        return $categories;
     }
 
     public function home(Request $request)
@@ -207,10 +213,13 @@ class NewsController extends Controller
         ]);
     }
 
-    public function newNews()
+    public function popularNews()
     {
-        $news = News::take(4)->orderBy('created_at', 'asc')->get();
-        return $news;
+       $popularNews = News::with(['writer','newsCategory','newsCategory.category'])
+            ->orderBy('click', 'desc')
+            ->limit(6)
+            ->get();
+        return $popularNews;
     }
 
     public function single($id)

@@ -34,6 +34,8 @@ use Inertia\Inertia;
 
 Route::get('/', [NewsController::class, 'Home'])->name('home');
 Route::get('/news/{id}/{title}', [NewsController::class, 'single'])->name('single');
+Route::get('/news/popular-news', [NewsController::class, 'popularNews'])->name('popular-news');
+Route::get('/news/category-news', [NewsController::class, 'byCategories'])->name('category-news');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

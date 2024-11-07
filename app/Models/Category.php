@@ -29,7 +29,13 @@ class Category extends Model
 
     public function newsCategory()
     {
-        return $this->hasOne(NewsCategory::class, 'category_id');
+        return $this->hasMany(NewsCategory::class, 'category_id');
     }
+
+    public function newsCategory4()
+    {
+        return $this->hasMany(NewsCategory::class, 'category_id')->limit(4);
+    }
+
 
 }

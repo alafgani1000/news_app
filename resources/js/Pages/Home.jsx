@@ -1,9 +1,30 @@
 import { Head } from "@inertiajs/react";
 import Header from "./Header";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Welcome({ auth, latest1, latest2 }) {
-    console.log(latest2);
+    const [populars, setPopulars] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+    const getPopularNews = () => {
+        axios.get(`/news/popular-news`).then((res) => {
+            setPopulars(res.data);
+        });
+    };
+
+    const getCategoryNews = () => {
+        axios.get(`/news/category-news`).then((res) => {
+            setCategories(res.data);
+        });
+    };
+
+    useEffect(() => {
+        getPopularNews();
+        getCategoryNews();
+    }, []);
+
     return (
         <Header
             user={auth.user}
@@ -48,8 +69,14 @@ export default function Welcome({ auth, latest1, latest2 }) {
                     <div className="col-span-2 space-y-2">
                         {latest2?.map((data, index) => {
                             return (
-                                <div key={index} className="box-news relative">
-                                    <img src={`${data.image}`} />
+                                <div
+                                    key={index}
+                                    className="box-news relative w-fit h-1/2"
+                                >
+                                    <img
+                                        src={`${data.image}`}
+                                        className="h-full"
+                                    />
                                     <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
                                     <div className="absolute inset-0 flex items-end justify-start w-full">
                                         <div className="shadow p-4 mb-6 ms-2">
@@ -74,308 +101,144 @@ export default function Welcome({ auth, latest1, latest2 }) {
                 </div>
             </div>
 
+            {/* popular post */}
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">Popular Post</h1>
                 </div>
-                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 md:gap-4 lg:gap-4">
-                    <div className="box-news-category bg-white p-4 space-y-4">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-2 h-32 border overflow-y-hidden">
-                                <img
-                                    src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
-                                />
-                            </div>
-
-                            <div className="col-span-2 bg-white w-full p-4">
-                                <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                    Sport
+                <div className="sm:px-4 sm:rounded grid">
+                    <div className="box-news-category bg-white p-4 grid grid-cols-3">
+                        {populars?.map((popular, index) => {
+                            return (
+                                <div
+                                    className="grid grid-cols-4 my-2"
+                                    key={index}
+                                >
+                                    <div className="col-span-2 h-32 border overflow-y-hidden ">
+                                        <img
+                                            src={`${popular.image}`}
+                                            className="h-full w-full"
+                                        />
+                                    </div>
+                                    <div className="col-span-2 bg-white w-full p-4">
+                                        <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
+                                            {
+                                                popular.news_category.category
+                                                    .name
+                                            }
+                                        </div>
+                                        <h2 className="text-gray-700 text-sm font-bold">
+                                            {popular.title}
+                                        </h2>
+                                        <div className="text-gray-500 mt-2 text-xs font-bold">
+                                            By {popular?.writer.name},{" "}
+                                            {moment(popular.created_at).format(
+                                                "DD MMM YYYY"
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
-                                <h2 className="text-gray-700 text-sm font-bold">
-                                    Exercitation Ullamco Laboris Nisi Ut Aliquip
-                                </h2>
-                                <div className="text-gray-500 mt-2 text-xs font-bold">
-                                    By Admin, January 11, 2022
-                                </div>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-2 h-36 border overflow-y-hidden">
-                                <img
-                                    src={`/storage/images/wvBXOAe4n0DDUaE83gnleTFNJyYT1soF4tcFhTPu.jpg`}
-                                />
-                            </div>
-
-                            <div className="col-span-2 bg-white w-full p-4">
-                                <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                    Sport
-                                </div>
-                                <h2 className="text-gray-700 text-sm font-bold">
-                                    Exercitation Ullamco Laboris Nisi Ut Aliquip
-                                </h2>
-                                <div className="text-gray-500 mt-2 text-xs font-bold">
-                                    By Admin, January 11, 2022
-                                </div>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-2 h-36 border overflow-y-hidden">
-                                <img
-                                    src={`/storage/images/7eevAMjGV5GYqP5zs3e21XEpOHjOWpmoLSJ45TIU.jpg`}
-                                />
-                            </div>
-
-                            <div className="col-span-2 bg-white w-full p-4">
-                                <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                    Sport
-                                </div>
-                                <h2 className="text-gray-700 text-sm font-bold">
-                                    Exercitation Ullamco Laboris Nisi Ut Aliquip
-                                </h2>
-                                <div className="text-gray-500 mt-2 text-xs font-bold">
-                                    By Admin, January 11, 2022
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="box-news-category bg-white p-4 space-y-4">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-2 h-36 border overflow-y-hidden">
-                                <img
-                                    src={`/storage/images/ziybasWr1tScGJPinSmwn7aVmw15y2RbitMPt4j0.png`}
-                                />
-                            </div>
-
-                            <div className="col-span-2 bg-white w-full p-4">
-                                <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                    Sport
-                                </div>
-                                <h2 className="text-gray-700 text-sm font-bold">
-                                    Exercitation Ullamco Laboris Nisi Ut Aliquip
-                                </h2>
-                                <div className="text-gray-500 mt-2 text-xs font-bold">
-                                    By Admin, January 11, 2022
-                                </div>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-2 h-36 border overflow-y-hidden">
-                                <img
-                                    src={`/storage/images/xQfpTwxjWRgAY7Zwkvx3Ahgldb8qu001uifAnLLU.png`}
-                                />
-                            </div>
-
-                            <div className="col-span-2 bg-white w-full p-4">
-                                <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                    Sport
-                                </div>
-                                <h2 className="text-gray-700 text-sm font-bold">
-                                    Exercitation Ullamco Laboris Nisi Ut Aliquip
-                                </h2>
-                                <div className="text-gray-500 mt-2 text-xs font-bold">
-                                    By Admin, January 11, 2022
-                                </div>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-2 h-36 border overflow-y-hidden">
-                                <img
-                                    src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
-                                />
-                            </div>
-
-                            <div className="col-span-2 bg-white w-full p-4">
-                                <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                    Sport
-                                </div>
-                                <h2 className="text-gray-700 text-sm font-bold">
-                                    Exercitation Ullamco Laboris Nisi Ut Aliquip
-                                </h2>
-                                <div className="text-gray-500 mt-2 text-xs font-bold">
-                                    By Admin, January 11, 2022
-                                </div>
-                            </div>
-                        </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
-                <div className="sm:px-4 title-segment font-bold">
-                    <h1 className="text-2xl">Sport</h1>
-                </div>
-                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 md:gap-4 lg:gap-4">
-                    <div className="box-news max-h-[320px] overflow-hidden">
-                        <div className="border max-h-[160px] overflow-y-hidden">
-                            <img
-                                src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
-                            />
+            {/* news by category */}
+            {categories.map((category, index) => {
+                return (
+                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
+                        <div className="sm:px-4 title-segment font-bold">
+                            <h1 className="text-2xl">Sport</h1>
                         </div>
+                        <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 md:gap-4 lg:gap-4">
+                            <div className="box-news max-h-[320px] overflow-hidden">
+                                <div className="border max-h-[160px] overflow-y-hidden">
+                                    <img
+                                        src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
+                                    />
+                                </div>
 
-                        <div className="bg-white w-full p-4">
-                            <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                Sport
+                                <div className="bg-white w-full p-4">
+                                    <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
+                                        Sport
+                                    </div>
+                                    <h2 className="text-gray-700 text-base font-bold">
+                                        Exercitation Ullamco Laboris Nisi Ut
+                                        Aliquip
+                                    </h2>
+                                    <div className="text-gray-500 mt-2 text-sm font-bold">
+                                        By Admin, January 11, 2022
+                                    </div>
+                                </div>
                             </div>
-                            <h2 className="text-gray-700 text-base font-bold">
-                                Exercitation Ullamco Laboris Nisi Ut Aliquip
-                            </h2>
-                            <div className="text-gray-500 mt-2 text-sm font-bold">
-                                By Admin, January 11, 2022
+
+                            <div className="box-news max-h-[320px] overflow-hidden">
+                                <div className="border max-h-[160px] overflow-y-hidden">
+                                    <img
+                                        src={`/storage/images/7eevAMjGV5GYqP5zs3e21XEpOHjOWpmoLSJ45TIU.jpg`}
+                                    />
+                                </div>
+
+                                <div className="bg-white w-full p-4">
+                                    <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
+                                        Cullinary
+                                    </div>
+                                    <h2 className="text-gray-700 text-base font-bold">
+                                        Exercitation Ullamco Laboris Nisi Ut
+                                        Aliquip
+                                    </h2>
+                                    <div className="text-gray-500 mt-2 text-sm font-bold">
+                                        By Admin, January 11, 2022
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="box-news max-h-[320px] overflow-hidden">
+                                <div className="border max-h-[160px] overflow-y-hidden">
+                                    <img
+                                        src={`/storage/images/wvBXOAe4n0DDUaE83gnleTFNJyYT1soF4tcFhTPu.jpg`}
+                                    />
+                                </div>
+
+                                <div className="bg-white w-full p-4">
+                                    <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
+                                        Sport
+                                    </div>
+                                    <h2 className="text-gray-700 text-base font-bold">
+                                        Maecenas accumsan tortor ut velit...
+                                    </h2>
+                                    <div className="text-gray-500 mt-2 text-sm font-bold">
+                                        By Admin, January 11, 2022
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="box-news max-h-[320px] overflow-hidden">
+                                <div className="border max-h-[160px] overflow-y-hidden">
+                                    <img
+                                        src={`/storage/images/ziybasWr1tScGJPinSmwn7aVmw15y2RbitMPt4j0.png`}
+                                        className=""
+                                    />
+                                </div>
+
+                                <div className="bg-white w-full p-4">
+                                    <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
+                                        Politics
+                                    </div>
+                                    <h2 className="text-gray-700 text-base font-bold">
+                                        A classic and sturdy building with
+                                        history.
+                                    </h2>
+                                    <div className="text-gray-500 mt-2 text-sm font-bold">
+                                        By Admin, January 11, 2022
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className="box-news max-h-[320px] overflow-hidden">
-                        <div className="border max-h-[160px] overflow-y-hidden">
-                            <img
-                                src={`/storage/images/7eevAMjGV5GYqP5zs3e21XEpOHjOWpmoLSJ45TIU.jpg`}
-                            />
-                        </div>
-
-                        <div className="bg-white w-full p-4">
-                            <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                Cullinary
-                            </div>
-                            <h2 className="text-gray-700 text-base font-bold">
-                                Exercitation Ullamco Laboris Nisi Ut Aliquip
-                            </h2>
-                            <div className="text-gray-500 mt-2 text-sm font-bold">
-                                By Admin, January 11, 2022
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="box-news max-h-[320px] overflow-hidden">
-                        <div className="border max-h-[160px] overflow-y-hidden">
-                            <img
-                                src={`/storage/images/wvBXOAe4n0DDUaE83gnleTFNJyYT1soF4tcFhTPu.jpg`}
-                            />
-                        </div>
-
-                        <div className="bg-white w-full p-4">
-                            <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                Sport
-                            </div>
-                            <h2 className="text-gray-700 text-base font-bold">
-                                Maecenas accumsan tortor ut velit...
-                            </h2>
-                            <div className="text-gray-500 mt-2 text-sm font-bold">
-                                By Admin, January 11, 2022
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="box-news max-h-[320px] overflow-hidden">
-                        <div className="border max-h-[160px] overflow-y-hidden">
-                            <img
-                                src={`/storage/images/ziybasWr1tScGJPinSmwn7aVmw15y2RbitMPt4j0.png`}
-                                className=""
-                            />
-                        </div>
-
-                        <div className="bg-white w-full p-4">
-                            <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                Politics
-                            </div>
-                            <h2 className="text-gray-700 text-base font-bold">
-                                A classic and sturdy building with history.
-                            </h2>
-                            <div className="text-gray-500 mt-2 text-sm font-bold">
-                                By Admin, January 11, 2022
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 mt-12">
-                <div className="sm:px-4 title-segment font-bold">
-                    <h1 className="text-2xl">Technology</h1>
-                </div>
-                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 md:gap-4 lg:gap-4">
-                    <div className="box-news max-h-[320px] overflow-hidden">
-                        <div className="border max-h-[160px] overflow-y-hidden">
-                            <img
-                                src={`/storage/images/r1dVCF5iiwwze4b9EKPbGw4HIytkx4EpOn04TTjP.png`}
-                            />
-                        </div>
-
-                        <div className="bg-white w-full p-4">
-                            <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                Sport
-                            </div>
-                            <h2 className="text-gray-700 text-base font-bold">
-                                Exercitation Ullamco Laboris Nisi Ut Aliquip
-                            </h2>
-                            <div className="text-gray-500 mt-2 text-sm font-bold">
-                                By Admin, January 11, 2022
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="box-news max-h-[320px] overflow-hidden">
-                        <div className="border max-h-[160px] overflow-y-hidden">
-                            <img
-                                src={`/storage/images/7eevAMjGV5GYqP5zs3e21XEpOHjOWpmoLSJ45TIU.jpg`}
-                            />
-                        </div>
-
-                        <div className="bg-white w-full p-4">
-                            <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                Cullinary
-                            </div>
-                            <h2 className="text-gray-700 text-base font-bold">
-                                Exercitation Ullamco Laboris Nisi Ut Aliquip
-                            </h2>
-                            <div className="text-gray-500 mt-2 text-sm font-bold">
-                                By Admin, January 11, 2022
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="box-news max-h-[320px] overflow-hidden">
-                        <div className="border max-h-[160px] overflow-y-hidden">
-                            <img
-                                src={`/storage/images/wvBXOAe4n0DDUaE83gnleTFNJyYT1soF4tcFhTPu.jpg`}
-                            />
-                        </div>
-
-                        <div className="bg-white w-full p-4">
-                            <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                Sport
-                            </div>
-                            <h2 className="text-gray-700 text-base font-bold">
-                                Maecenas accumsan tortor ut velit...
-                            </h2>
-                            <div className="text-gray-500 mt-2 text-sm font-bold">
-                                By Admin, January 11, 2022
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="box-news max-h-[320px] overflow-hidden">
-                        <div className="border max-h-[160px] overflow-y-hidden">
-                            <img
-                                src={`/storage/images/ziybasWr1tScGJPinSmwn7aVmw15y2RbitMPt4j0.png`}
-                                className=""
-                            />
-                        </div>
-
-                        <div className="bg-white w-full p-4">
-                            <div className="text-white text-sm font-bold  bg-indigo-500 w-fit py-1 px-3 mb-2">
-                                Politics
-                            </div>
-                            <h2 className="text-gray-700 text-base font-bold">
-                                A classic and sturdy building with history.
-                            </h2>
-                            <div className="text-gray-500 mt-2 text-sm font-bold">
-                                By Admin, January 11, 2022
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                );
+            })}
         </Header>
     );
 }
