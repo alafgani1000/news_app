@@ -27,7 +27,7 @@ class NewsController extends Controller
             'news' => $news,
             'pgSearch' => $search,
             'pgPerPage' => $perPage,
-            'pgSort' => $sort
+            'pgSort' => $sort,
         ]);
     }
 
@@ -192,10 +192,21 @@ class NewsController extends Controller
     public function byCategories()
     {
         $categories = Category::with([
-            'newsCategory' => function (Builder $query) {
-                $query->limit(4);
-            }
-        ])->get();
+            'newsCategory',
+            'newsCategory.news',
+            'newsCategory.news.writer'
+        ])
+        ->get();
+        $categories = $categories->map(function($category, $key) {
+           return [
+                'id' => $category->id,
+                'name' => $category->name,
+                'created_at' => $category->created_at,
+                'updated_at' => $category->updated_at,
+                'news_categories' => $category->newsCategory->take(4)
+
+            ];
+        });
         return $categories;
     }
 
@@ -207,26 +218,71 @@ class NewsController extends Controller
         $latests = $this->latest_post();
         $latest1 = $latests['latest1'];
         $latest2 = $latests['latest2'];
+        $categories = Category::all();
         return Inertia::render('Home', [
             'latest1' => $latest1,
-            'latest2' => $latest2
+            'latest2' => $latest2,
+            'menuCategories' => $categories
         ]);
     }
 
     public function popularNews()
     {
-       $popularNews = News::with(['writer','newsCategory','newsCategory.category'])
-            ->orderBy('click', 'desc')
-            ->limit(6)
-            ->get();
+       $popularNews = News::with([
+             'writer'
+            ,'newsCategory'
+            ,'newsCategory.category'
+        ])
+        ->orderBy('click', 'desc')
+        ->limit(6)
+        ->get();
         return $popularNews;
+    }
+
+    public function newsByCategory(Request $request, $name)
+    {
+        $categories = Category::all();
+        $search = $request->search;
+        $perPage = isset($request->perPage) ? $request->perPage : 10;
+        $sort = isset($request->sort) ? $request->sort : 'created_at';
+        $news = News::whereHas('newsCategory.category',
+            function (Builder $query) use($name) {
+                $query->where('name', 'like', '%'.$name.'%');
+            })
+            ->with([
+                'writer',
+                'newsCategory',
+                'newsCategory.category'
+            ])
+            ->where(function (Builder $query) use($search) {
+                return $query->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('content', 'like', '%'.$search.'%');
+            })
+            ->orderBy($sort)
+            ->paginate($perPage);
+        return Inertia::render('Category', [
+            'news' => $news,
+            'pgSearch' => $search,
+            'pgPerPage' => $perPage,
+            'pgSort' => $sort,
+            'menuCategories' => $categories,
+            'category' => $name
+        ]);
     }
 
     public function single($id)
     {
-        $news = News::with(['writer','newsCategory', 'newsCategory.category'])->where('id',$id)->first();
+        $news = News::with([
+             'writer'
+            ,'newsCategory'
+            ,'newsCategory.category'
+        ])
+        ->where('id',$id)
+        ->first();
+        $categories = Category::all();
         return Inertia::render('Single', [
-            'news' => $news
+            'news' => $news,
+            'menuCategories' => $categories,
         ]);
     }
 
