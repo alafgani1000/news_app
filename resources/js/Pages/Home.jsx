@@ -43,7 +43,12 @@ export default function Welcome({ auth, latest1, latest2, menuCategories }) {
                 </div>
                 <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-6 lg:gap-4 overflow-y-hidden">
                     <div className="col-span-4">
-                        <Link>
+                        <Link
+                            href={route("single", {
+                                id: latest1.id,
+                                title: latest1.title,
+                            })}
+                        >
                             <div className="box-news relative">
                                 <img
                                     src={`${latest1.image}`}
@@ -79,7 +84,12 @@ export default function Welcome({ auth, latest1, latest2, menuCategories }) {
                                     key={index}
                                     className="box-news relative w-fit h-1/2"
                                 >
-                                    <Link>
+                                    <Link
+                                        href={route("single", {
+                                            id: data.id,
+                                            title: data.title,
+                                        })}
+                                    >
                                         <img
                                             src={`${data.image}`}
                                             className="h-full"
@@ -97,7 +107,10 @@ export default function Welcome({ auth, latest1, latest2, menuCategories }) {
                                                     {data.title}
                                                 </h2>
                                                 <div className="text-white mt-2 text-base font-medium">
-                                                    By Admin, January 11, 2022
+                                                    By {data?.writer.name},{" "}
+                                                    {moment(
+                                                        data.created_at
+                                                    ).format("DD MMM YYYY")}
                                                 </div>
                                             </div>
                                         </div>
@@ -118,7 +131,13 @@ export default function Welcome({ auth, latest1, latest2, menuCategories }) {
                     <div className="box-news-category bg-white p-4 grid grid-cols-3">
                         {populars?.map((popular, index) => {
                             return (
-                                <Link key={index}>
+                                <Link
+                                    key={index}
+                                    href={route("single", {
+                                        id: popular.id,
+                                        title: popular.title,
+                                    })}
+                                >
                                     <div className="grid grid-cols-4 my-2">
                                         <div className="col-span-2 h-32 border overflow-y-hidden ">
                                             <img
@@ -165,7 +184,13 @@ export default function Welcome({ auth, latest1, latest2, menuCategories }) {
                             {category.news_categories?.map(
                                 (news_category, index) => {
                                     return (
-                                        <Link key={index}>
+                                        <Link
+                                            key={index}
+                                            href={route("single", {
+                                                id: news_category.news.id,
+                                                title: news_category.news.title,
+                                            })}
+                                        >
                                             <div className="box-news max-h-[320px] overflow-hidden">
                                                 <div className="border max-h-[160px] overflow-y-hidden">
                                                     <img

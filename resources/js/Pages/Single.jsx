@@ -19,7 +19,6 @@ export default function Single({ auth, news, menuCategories }) {
     };
 
     const fromHtml = (data) => {
-        // const newState = convertFromHTML(data);
         const newState = JSON.parse(data);
         const newEditorState = EditorState.createWithContent(
             convertFromRaw(newState)
@@ -30,8 +29,6 @@ export default function Single({ auth, news, menuCategories }) {
     useEffect(() => {
         setEditorState(fromHtml(news.content));
     }, []);
-
-    console.log(fromHtml(news.content));
 
     return (
         <Header
@@ -46,8 +43,8 @@ export default function Single({ auth, news, menuCategories }) {
             <Head title="Profile" />
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div className="sm:px-4 title-segment font-bold bg-white m-4 px-4 py-4">
-                    <h1 className="text-lg">
+                <div className="sm:px-4 title-segment font-bold bg-white m-4 px-4 py-4 text-gray-600">
+                    <h1 className="text-base">
                         Home{" "}
                         <i className="bi bi-chevron-right text-sm font-extrabold"></i>{" "}
                         {news.news_category.category.name}
