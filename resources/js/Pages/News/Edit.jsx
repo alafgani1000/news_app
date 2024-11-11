@@ -5,7 +5,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
 import { convertFromHTML } from "draft-convert";
-import { convertToRaw, EditorState } from "draft-js";
+import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import { stateFromHTML } from "draft-js-import-html";
 import draftToHtml from "draftjs-to-html";
 import { useEffect, useState } from "react";
@@ -40,15 +40,21 @@ export default function Creates({ auth, news }) {
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
-        const htmlContent = draftToHtml(rawContentState);
+        // const htmlContent = draftToHtml(rawContentState);
+        const htmlContent = JSON.stringify(rawContentState);
         return htmlContent;
     };
 
     const fromHtml = (data) => {
-        const newState = convertFromHTML(data);
-        const newEditorState = EditorState.createWithContent(newState);
+        // const newState = convertFromHTML(data);
+        const newState = JSON.parse(data);
+        const newEditorState = EditorState.createWithContent(
+            convertFromRaw(newState)
+        );
         return newEditorState;
     };
+
+    console.log(news.content);
 
     const update = () => {
         const content = toHtml(editorState.getCurrentContent());
@@ -238,7 +244,7 @@ export default function Creates({ auth, news }) {
                             </div>
                             <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
                                 <div
-                                    className="p-6 text-gray-600"
+                                    className="p-6 text-gray-600 overflow-auto"
                                     style={{ height: "900px" }}
                                 >
                                     <Editor

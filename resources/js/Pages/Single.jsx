@@ -2,19 +2,15 @@ import { Head, Link } from "@inertiajs/react";
 import Header from "./Header";
 import moment from "moment";
 import { convertFromHTML } from "draft-convert";
-import { convertToRaw, EditorState } from "draft-js";
-import { useState } from "react";
+import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
+import { useEffect, useState } from "react";
 import draftToHtml from "draftjs-to-html";
 import parse from "html-react-parser";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export default function Single({ auth, news, menuCategories }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
-
-    const fromHtml = (data) => {
-        const newState = convertFromHTML(data);
-        const newEditorState = EditorState.createWithContent(newState);
-        return newEditorState;
-    };
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
@@ -22,7 +18,20 @@ export default function Single({ auth, news, menuCategories }) {
         return htmlContent;
     };
 
-    // console.log(toHtml(fromHtml(news.content)));
+    const fromHtml = (data) => {
+        // const newState = convertFromHTML(data);
+        const newState = JSON.parse(data);
+        const newEditorState = EditorState.createWithContent(
+            convertFromRaw(newState)
+        );
+        return newEditorState;
+    };
+
+    useEffect(() => {
+        setEditorState(fromHtml(news.content));
+    }, []);
+
+    console.log(fromHtml(news.content));
 
     return (
         <Header
@@ -76,7 +85,14 @@ export default function Single({ auth, news, menuCategories }) {
                             {news.title}
                         </h2>
                         <div className="main-article mt-6 text-lg">
-                            {news.content}
+                            <Editor
+                                toolbar={{
+                                    options: [],
+                                }}
+                                editorState={editorState}
+                                toolbarHidden={true}
+                                readOnly={true}
+                            />
                         </div>
                     </div>
                     <div className="col-span-2 grid grid-cols-1 gap-y-4">
