@@ -37,12 +37,14 @@ export default function Creates({ auth, code, news }) {
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
-        const htmlContent = draftToHtml(rawContentState);
+        // const htmlContent = draftToHtml(rawContentState);
+        const htmlContent = JSON.stringify(rawContentState)
         return htmlContent;
     };
 
     const fromHtml = (data) => {
-        const newState = convertFromHTML(data);
+        // const newState = convertFromHTML(data);
+        const newState = JSON.parse(data)
         const newEditorState = EditorState.createWithContent(newState);
         return newEditorState;
     };

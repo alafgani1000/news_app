@@ -41,85 +41,89 @@ export default function Welcome({ auth, latest1, latest2, menuCategories }) {
                 <div className="sm:px-4 title-segment font-bold">
                     <h1 className="text-2xl">New Post</h1>
                 </div>
-                <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-6 lg:gap-4 overflow-y-hidden">
-                    <div className="col-span-4">
-                        <Link
-                            href={route("single", {
-                                id: latest1.id,
-                                title: latest1.title,
-                            })}
-                        >
-                            <div className="box-news relative">
-                                <img
-                                    src={`${latest1.image}`}
-                                    className="w-full object-contain"
-                                />
-                                <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
-                                <div className="absolute inset-0 flex items-end justify-start w-full">
-                                    <div className="shadow p-4 mb-6 ms-2">
-                                        <div className="text-white text-xl font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
-                                            {
-                                                latest1.news_category?.category
-                                                    ?.name
-                                            }
-                                        </div>
-                                        <h2 className="text-white text-3xl font-bold">
-                                            {latest1.title}
-                                        </h2>
-                                        <div className="text-white mt-2 text-base font-medium">
-                                            By {latest1?.writer.name},{" "}
-                                            {moment(latest1.created_at).format(
-                                                "DD MMM YYYY"
-                                            )}
+                {latest1 !== null ?
+                    <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-6 lg:gap-4 overflow-y-hidden">
+
+                        <div className="col-span-4">
+                            <Link
+                                href={route("single", {
+                                    id: latest1.id,
+                                    title: latest1.title,
+                                })}
+                            >
+                                <div className="box-news relative">
+                                    <img
+                                        src={`${latest1.image}`}
+                                        className="w-full object-contain"
+                                    />
+                                    <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
+                                    <div className="absolute inset-0 flex items-end justify-start w-full">
+                                        <div className="shadow p-4 mb-6 ms-2">
+                                            <div className="text-white text-xl font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
+                                                {
+                                                    latest1.news_category?.category
+                                                        ?.name
+                                                }
+                                            </div>
+                                            <h2 className="text-white text-3xl font-bold">
+                                                {latest1.title}
+                                            </h2>
+                                            <div className="text-white mt-2 text-base font-medium">
+                                                By {latest1?.writer.name},{" "}
+                                                {moment(latest1.created_at).format(
+                                                    "DD MMM YYYY"
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </div>
-                    <div className="col-span-2 space-y-2">
-                        {latest2?.map((data, index) => {
-                            return (
-                                <div
-                                    key={index}
-                                    className="box-news relative w-fit h-1/2"
-                                >
-                                    <Link
-                                        href={route("single", {
-                                            id: data.id,
-                                            title: data.title,
-                                        })}
+                            </Link>
+                        </div>
+                        <div className="col-span-2 space-y-2">
+                            {latest2?.map((data, index) => {
+                                return (
+                                    <div
+                                        key={index}
+                                        className="box-news relative w-fit h-1/2"
                                     >
-                                        <img
-                                            src={`${data.image}`}
-                                            className="h-full"
-                                        />
-                                        <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
-                                        <div className="absolute inset-0 flex items-end justify-start w-full">
-                                            <div className="shadow p-4 mb-6 ms-2">
-                                                <div className="text-white text-lg font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
-                                                    {
-                                                        data.news_category
-                                                            ?.category?.name
-                                                    }
-                                                </div>
-                                                <h2 className="text-white text-2xl font-bold">
-                                                    {data.title}
-                                                </h2>
-                                                <div className="text-white mt-2 text-base font-medium">
-                                                    By {data?.writer.name},{" "}
-                                                    {moment(
-                                                        data.created_at
-                                                    ).format("DD MMM YYYY")}
+                                        <Link
+                                            href={route("single", {
+                                                id: data.id,
+                                                title: data.title,
+                                            })}
+                                        >
+                                            <img
+                                                src={`${data.image}`}
+                                                className="h-full"
+                                            />
+                                            <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
+                                            <div className="absolute inset-0 flex items-end justify-start w-full">
+                                                <div className="shadow p-4 mb-6 ms-2">
+                                                    <div className="text-white text-lg font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
+                                                        {
+                                                            data.news_category
+                                                                ?.category?.name
+                                                        }
+                                                    </div>
+                                                    <h2 className="text-white text-2xl font-bold">
+                                                        {data.title}
+                                                    </h2>
+                                                    <div className="text-white mt-2 text-base font-medium">
+                                                        By {data?.writer.name},{" "}
+                                                        {moment(
+                                                            data.created_at
+                                                        ).format("DD MMM YYYY")}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                </div>
-                            );
-                        })}
+                                        </Link>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
                     </div>
-                </div>
+                    : <></>}
             </div>
 
             {/* popular post */}

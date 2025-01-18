@@ -87,17 +87,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/galery/upload', [MediaController::class, 'uploadImage'])->name('galery.upload');
         Route::delete('/galery/{id}/delete', [MediaController::class, 'deleteImage'])->name('galery.delete');
 
-        // setting
-        Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
-
         // category
-        Route::get('/category', [SettingController::class,  'dataCategory'])->name('category.data');
+        Route::get('/category', [SettingController::class, 'indexCategory'])->name('category.index');
+        Route::get('/category-data', [SettingController::class,  'dataCategory'])->name('category.data');
         Route::post('/category', [SettingController::class, 'storeCategory'])->name('category.store');
         Route::put('/category/{id}/update', [SettingController::class, 'updateCategory'])->name('category.update');
         Route::delete('/category/{id}/delete', [SettingController::class, 'deleteCategory'])->name('category.delete');
 
         // menu
-        Route::get('/menu', [SettingController::class, 'dataMenu'])->name('menu.data');
+        Route::get('/menu', [SettingController::class, 'indexMenu'])->name('menu.index');
+        Route::get('/menu-data', [SettingController::class, 'dataMenu'])->name('menu.data');
         Route::post('/menu', [SettingController::class, 'storeMenu'])->name('menu.store');
         Route::put('/menu/{id}/update', [SettingController::class, 'updateMenu'])->name('menu.update');
         Route::delete('/menu/{id}/delete', [SettingController::class, 'deleteMenu'])->name('menu.delete');

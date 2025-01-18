@@ -173,19 +173,23 @@ class NewsController extends Controller
 
     public function latest_post()
     {
+        $latest1 = [];
+        $latest2 = [];
         $latests = News::with(['writer','newsCategory', 'newsCategory.category'])
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
         $latest1 = $latests->sortByDesc('created_at')->take(1)->first();
-        $latest2 = News::with(['writer','newsCategory', 'newsCategory.category'])
-            ->where('id','!=',$latest1->id)
-            ->orderBy('created_at', 'desc')
-            ->limit(2)
-            ->get();
+        if (isset($latest)) {
+            $latest2 = News::with(['writer','newsCategory', 'newsCategory.category'])
+                ->where('id','!=',$latest1->id)
+                ->orderBy('created_at', 'desc')
+                ->limit(2)
+                ->get();
+        }
         return [
             'latest1' => $latest1,
-            'latest2' => $latest2
+            'latest2' => $latest2 
         ];
     }
 

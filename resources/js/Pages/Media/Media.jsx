@@ -127,6 +127,7 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
                     color: "success",
                 });
                 setShowToast(true);
+                closeDeleteConfirm();
             })
             .catch((err) => {
                 setToastData({
@@ -415,7 +416,7 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
             </Modal>
 
             <Modal show={detailImage}>
-                <div className="bg-white rounded max-w-4xl w-full mx-auto">
+                <div className="bg-white rounded w-2/4 mx-auto">
                     <div className="flex flex-col items-end m-0 p-0">
                         <button
                             onClick={() => closeModalDetailImage()}

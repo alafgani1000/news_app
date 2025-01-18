@@ -14,9 +14,14 @@ use App\Models\MenuCategory;
 
 class SettingController extends Controller
 {
-    public function index(Request $request): Response
+    public function indexMenu(Request $request): Response
     {
-        return Inertia::render('Setting/Setting', []);
+        return Inertia::render('Menu/Menu', []);
+    }
+
+    public function indexCategory(Request $request): response
+    {
+        return Inertia::render('Category/Category', []);
     }
 
     public function dataCategory()
