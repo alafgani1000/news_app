@@ -45,6 +45,15 @@ export default function Authenticated({
                                 </NavLink>
 
                                 <NavLink
+                                    href={route("page.index")}
+                                    active={route().current("pages.index")}
+                                >
+                                    <i className="bi bi-journal-text me-2"></i>
+                                    Pages
+                                </NavLink>
+
+
+                                <NavLink
                                     href={route("galery.index")}
                                     active={route().current("galery.index")}
                                 >

@@ -54,7 +54,7 @@ export default function Creates({ auth, news }) {
         return newEditorState;
     };
 
-    console.log(news.content);
+    // console.log(news.content);
 
     const update = () => {
         const content = toHtml(editorState.getCurrentContent());

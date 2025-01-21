@@ -8,6 +8,7 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\PagesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -71,6 +72,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/role-permission', [RolePermissionController::class, 'store'])->name('role-perms.store');
         Route::post('/role-permission-revoke', [RolePermissionController::class, 'revoke'])->name('role-perms.revoke');
         Route::get('/role-permission/{id}/data', [RolePermissionCOntroller::class, 'dataPermission'])->name('role-perms.data');
+
+        // pages 
+        Route::get('/page', [PagesController::class, 'index'])->name('page.index');
+        Route::put('/page/{code}/store', [PagesController::class, 'store'])->name('page.store');
+        Route::get('/page/{code}/edit', [PagesController::class, 'edit'])->name('page.edit');
+        Route::put('/page/{code}/update', [PagesController::class, 'update'])->name('page.update');
+        Route::delete('page/{id}/delete', [PagesController::class, 'delete'])->name('page.delete');
+        Route::put('/page/{code}/publish', [PagesController::class, 'publish'])->name('page.publish');
+        Route::put('/page/{id}/unpublish', [PagesController::class, 'unpublish'])->name('page.unpublish');
+        Route::get('/page/{code}/create', [PagesController::class, 'create'])->name('page.create');
 
         // news
         Route::get('/news', [NewsController::class, 'index'])->name('news.index');

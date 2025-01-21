@@ -1,7 +1,6 @@
 import { Head, Link } from "@inertiajs/react";
 import Header from "./Header";
 import moment from "moment";
-import { convertFromHTML } from "draft-convert";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import { useEffect, useState } from "react";
 import draftToHtml from "draftjs-to-html";
