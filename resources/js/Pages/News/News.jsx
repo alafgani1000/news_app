@@ -194,6 +194,9 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
                                             <th className="text-left py-4 px-2">
                                                 Writer
                                             </th>
+                                            <th className="text-left py-4 px-2">
+                                                Status
+                                            </th>
                                             <th className="py-4 text-left px-2">
                                                 Created at
                                             </th>
@@ -220,6 +223,9 @@ export default function Index({ auth, news, pgSearch, pgSort, pgPerPage }) {
                                                     </td>
                                                     <td className="text-left py-3 px-2">
                                                         {data.writer.name}
+                                                    </td>
+                                                    <td className="text-left py-3 px-2">
+                                                        {data.status == 1 ? <span className="bg-green-600 py-1 px-2 rounded-full text-sm text-white">Published</span> : <span className="bg-rose-600 py-1 px-2 rounded-full text-sm text-white">Unpublished</span>}
                                                     </td>
                                                     <td className="text-left py-3 px-2">
                                                         {moment(

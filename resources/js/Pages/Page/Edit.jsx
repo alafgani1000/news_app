@@ -3,7 +3,7 @@ import ErrorLabel from "@/Components/ErrorLabel";
 import Toast from "@/Components/Toast";
 // import Toast from "@/Components/Toast";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import axios from "axios";
 import { convertFromHTML } from "draft-convert";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
@@ -18,14 +18,27 @@ export default function Edit({ auth, page }) {
     const [name, setName] = useState(page.name || "")
     const [statusPage, setStatusPage] = useState("")
     const [publishConfirm, setPublishConfirm] = useState(false);
+    const [unpublishConfirm, setUnpublishConfirm] = useState(false)
     const [toastData, setToastData] = useState({
         message: "",
         color: "",
     });
     const [errors, setErrors] = useState({
-        title: "",
+        name: "",
     });
     const [showToast, setShowToast] = useState(false);
+
+    const handleRefresh = () => {
+        // handle search
+        router.get(
+            route(route().current(), { code: page.code }),
+            {},
+            {
+                replace: true,
+                preserveState: true,
+            }
+        );
+    };
 
     const onEditorStateChange = (newState) => {
         setEditorState(newState);
@@ -61,28 +74,43 @@ export default function Edit({ auth, page }) {
                     color: "success",
                 });
                 setShowToast(true);
+                handleRefresh()
             });
     };
 
     const publish = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post(`/admin/page/${page.id}/publish`, {
+            .put(`/admin/page/${page.code}/publish`, {
                 name: name,
                 status: statusPage,
                 content: content,
             })
             .then((res) => {
-                resetForm();
                 resetError();
                 setToastData({
                     message: res.data,
                     color: "success",
                 });
-                closeConfirmPublish();
-                setShowToast(true);
+                closeConfirmPublish()
+                setShowToast(true)
+                handleRefresh()
             });
     };
+
+    const unPublish = () => {
+        axios.put(`/admin/page/${page.code}/unpublish`, {
+            code: page.code
+        }).then((res) => {
+            setToastData({
+                message: res.data,
+                color: "success"
+            });
+            setShowToast(true)
+            closeUnPublishConfirm()
+            handleRefresh()
+        })
+    }
 
     useEffect(() => {
         setEditorState(fromHtml(page.content))
@@ -90,25 +118,22 @@ export default function Edit({ auth, page }) {
 
     const resetForm = () => {
         setEditorState(EditorState.createEmpty());
-        setTitle("");
-        setKeyword("");
-        setTag("");
-        setCategory("");
+        setName("")
     };
 
     const resetError = () => {
         setErrors({
-            title: "",
+            name: "",
         });
     };
 
     const showPublishConfirm = () => {
         let errors = 0;
         resetError();
-        if (title === undefined || title === "") {
+        if (name === undefined || name === "") {
             setErrors((prev) => ({
                 ...prev,
-                title: "This field is required",
+                name: "This field is required",
             }));
         } else {
             setPublishConfirm(true);
@@ -118,6 +143,15 @@ export default function Edit({ auth, page }) {
     const closeConfirmPublish = () => {
         setPublishConfirm(false);
     };
+
+    const showUnPublishConfirm = () => {
+        setUnpublishConfirm(true);
+    }
+
+    const closeUnPublishConfirm = () => {
+        setUnpublishConfirm(false);
+    }
+
 
     const closeToast = () => {
         setToastData({
@@ -155,17 +189,25 @@ export default function Edit({ auth, page }) {
                                 <i className="bi bi-save text-xs me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Update
                             </button>
-                            {auth.permissions.publish_news === true ? (
-                                <button
-                                    onClick={() => showPublishConfirm()}
-                                    className="group py-2 px-4 text-base text-gray-500 hover:bg-indigo-700 hover:rounded hover:text-white"
-                                >
-                                    <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
-                                    Publish
-                                </button>
-                            ) : (
-                                <></>
-                            )}
+                            {auth.permissions.publish_news === true ?
+                                page.status === 1 ?
+                                    <button
+                                        onClick={() => showUnPublishConfirm()}
+                                        className="group py-2 px-4 text-base text-gray-500 hover:bg-indigo-700 hover:rounded hover:text-white"
+                                    >
+                                        <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
+                                        Un Publish
+                                    </button>
+                                    : <button
+                                        onClick={() => showPublishConfirm()}
+                                        className="group py-2 px-4 text-base text-gray-500 hover:bg-indigo-700 hover:rounded hover:text-white"
+                                    >
+                                        <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
+                                        Publish
+                                    </button>
+                                : (
+                                    <></>
+                                )}
                         </div>
                     </div>
                     <div className="grid grid-cols-1">
@@ -222,9 +264,15 @@ export default function Edit({ auth, page }) {
             </div>
             <Confirm
                 show={publishConfirm}
-                question="Are you sure publish this news ?"
+                question="Are you sure publish this page ?"
                 yes={publish}
                 no={closeConfirmPublish}
+            />
+            <Confirm
+                show={unpublishConfirm}
+                question="Are you sure unpublish this page ?"
+                yes={unPublish}
+                no={closeUnPublishConfirm}
             />
             <Toast
                 show={showToast}

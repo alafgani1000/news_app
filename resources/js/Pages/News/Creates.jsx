@@ -6,21 +6,22 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
 import { convertFromHTML } from "draft-convert";
-import { convertToRaw, EditorState } from "draft-js";
+import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import { stateFromHTML } from "draft-js-import-html";
 import draftToHtml from "draftjs-to-html";
 import { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import Swal from "sweetalert2";
 
 export default function Creates({ auth, code, news }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [dataCategories, setDataCategories] = useState([]);
     const [title, setTitle] = useState(news?.title || "");
-    const [keyword, setKeyword] = useState("");
-    const [tag, setTag] = useState("");
-    const [category, setCategory] = useState("");
-    const [imageCover, setImageCover] = useState("");
+    const [keyword, setKeyword] = useState(news?.keywords || "");
+    const [tag, setTag] = useState(news?.tag || "");
+    const [category, setCategory] = useState(news?.news_category?.category_id || "");
+    const [imageCover, setImageCover] = useState(news?.image || "");
     const [publishConfirm, setPublishConfirm] = useState(false);
     const [toastData, setToastData] = useState({
         message: "",
@@ -28,6 +29,7 @@ export default function Creates({ auth, code, news }) {
     });
     const [errors, setErrors] = useState({
         title: "",
+        category: ""
     });
     const [showToast, setShowToast] = useState(false);
 
@@ -45,7 +47,7 @@ export default function Creates({ auth, code, news }) {
     const fromHtml = (data) => {
         // const newState = convertFromHTML(data);
         const newState = JSON.parse(data)
-        const newEditorState = EditorState.createWithContent(newState);
+        const newEditorState = EditorState.createWithContent(convertFromRaw(newState));
         return newEditorState;
     };
 
@@ -67,13 +69,21 @@ export default function Creates({ auth, code, news }) {
                     color: "success",
                 });
                 setShowToast(true);
+            }).catch((err) => {
+                let errors = err.response.data.errors;
+                let messageError = err.response.data.message
+                let text = ""
+                Swal.fire({
+                    title: 'Message',
+                    text: messageError
+                })
             });
     };
 
     const publish = () => {
         const content = toHtml(editorState.getCurrentContent());
         axios
-            .post("/admin/news/${code}/publish", {
+            .post(`/admin/news/${code}/publish`, {
                 code: code,
                 title: title,
                 keywords: keyword,
@@ -95,13 +105,16 @@ export default function Creates({ auth, code, news }) {
     };
 
     const getDataCategory = () => {
-        axios.get("/admin/category").then((res) => {
+        axios.get("/admin/category-data").then((res) => {
             setDataCategories(res.data);
         });
     };
 
     useEffect(() => {
         getDataCategory();
+        if (news?.content !== undefined) {
+            setEditorState(fromHtml(news.content))
+        }
     }, []);
 
     const resetForm = () => {
@@ -231,7 +244,6 @@ export default function Creates({ auth, code, news }) {
                             <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
                                 <div
                                     className="p-6 text-gray-600"
-                                    style={{ height: "900px" }}
                                 >
                                     <Editor
                                         editorState={editorState}
@@ -269,6 +281,7 @@ export default function Creates({ auth, code, news }) {
                                     onChange={(e) =>
                                         setCategory(e.target.value)
                                     }
+                                    value={category}
                                     className="rounded-lg focus:ring-indigo-500 focus:border-indigo-500 border-gray-400 ring-gray-400"
                                 >
                                     <option value="">

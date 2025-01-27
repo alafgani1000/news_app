@@ -3,21 +3,22 @@ import ErrorLabel from "@/Components/ErrorLabel";
 import Toast from "@/Components/Toast";
 // import Toast from "@/Components/Toast";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import axios from "axios";
 import { convertFromHTML } from "draft-convert";
-import { convertToRaw, EditorState } from "draft-js";
+import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import { stateFromHTML } from "draft-js-import-html";
 import draftToHtml from "draftjs-to-html";
 import { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-export default function Create({ auth, code, news }) {
+export default function Create({ auth, code, page }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
-    const [name, setName] = useState("")
+    const [name, setName] = useState(page?.name || "")
     const [statusPage, setStatusPage] = useState("")
     const [publishConfirm, setPublishConfirm] = useState(false);
+    const [unpublishConfirm, setUnpublishConfirm] = useState(false);
     const [toastData, setToastData] = useState({
         message: "",
         color: "",
@@ -26,6 +27,18 @@ export default function Create({ auth, code, news }) {
         name: "",
     });
     const [showToast, setShowToast] = useState(false);
+
+    const handleRefresh = () => {
+        // handle search
+        router.get(
+            route(route().current(), { code: code }),
+            {},
+            {
+                replace: true,
+                preserveState: true,
+            }
+        );
+    };
 
     const onEditorStateChange = (newState) => {
         setEditorState(newState);
@@ -41,7 +54,7 @@ export default function Create({ auth, code, news }) {
     const fromHtml = (data) => {
         // const newState = convertFromHTML(data);
         const newState = JSON.parse(data)
-        const newEditorState = EditorState.createWithContent(newState);
+        const newEditorState = EditorState.createWithContent(convertFromRaw(newState));
         return newEditorState;
     };
 
@@ -54,11 +67,13 @@ export default function Create({ auth, code, news }) {
                 status: statusPage
             })
             .then((res) => {
+                handleRefresh();
                 setToastData({
                     message: res.data,
                     color: "success",
                 });
                 setShowToast(true);
+
             });
     };
 
@@ -77,10 +92,28 @@ export default function Create({ auth, code, news }) {
                 });
                 closeConfirmPublish();
                 setShowToast(true);
+                handleRefresh();
             });
     };
 
+    const unPublish = () => {
+        axios.put(`/admin/page/${code}/unpublish`, {
+            code: page.code
+        }).then((res) => {
+            setToastData({
+                message: res.data,
+                color: "success"
+            });
+            setShowToast(true)
+            closeConfirmuUnpublish()
+            handleRefresh()
+        })
+    }
+
     useEffect(() => {
+        if (page?.content !== undefined) {
+            setEditorState(fromHtml(page.content))
+        }
     }, []);
 
     const resetError = () => {
@@ -100,6 +133,23 @@ export default function Create({ auth, code, news }) {
         } else {
             setPublishConfirm(true);
         }
+    };
+
+    const showUnpublishConfirm = () => {
+        let errors = 0;
+        resetError();
+        if (name === undefined || name === "") {
+            setErrors((prev) => ({
+                ...prev,
+                title: "This field is required",
+            }));
+        } else {
+            setPublishConfirm(true);
+        }
+    };
+
+    const closeConfirmuUnpublish = () => {
+        setPublishConfirm(false);
     };
 
     const closeConfirmPublish = () => {
@@ -131,25 +181,33 @@ export default function Create({ auth, code, news }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 overflow-x-scroll">
                     <div className="mb-4 flex justify-end">
                         <div className="bg-white rounded shadow">
-                            <button className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-700 hover:rounded hover:text-white">
+                            <button className="group py-2 px-4 text-base text-gray-500 border-r hover:rounded-l hover:bg-indigo-700 hover:text-white">
                                 <i className="bi bi-newspaper me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Review
                             </button>
                             <button
                                 onClick={() => store()}
-                                className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-700 hover:rounded hover:text-white"
+                                className="group py-2 px-4 text-base text-gray-500 border-r hover:bg-indigo-700 hover:text-white"
                             >
                                 <i className="bi bi-save text-xs me-1 text-indigo-500 group-hover:text-white"></i>{" "}
                                 Save
                             </button>
                             {auth.permissions.publish_news === true ? (
-                                <button
-                                    onClick={() => showPublishConfirm()}
-                                    className="group py-2 px-4 text-base text-gray-500 hover:bg-indigo-700 hover:rounded hover:text-white"
-                                >
-                                    <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
-                                    Publish
-                                </button>
+                                page?.status === 1 ?
+                                    <button
+                                        onClick={() => showUnpublishConfirm()}
+                                        className="group py-2 px-4 text-base text-gray-500 hover:rounded-r hover:bg-indigo-700 hover:text-white"
+                                    >
+                                        <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
+                                        Un Publish
+                                    </button>
+                                    : <button
+                                        onClick={() => showPublishConfirm()}
+                                        className="group py-2 px-4 text-base text-gray-500 hover:rounded-r hover:bg-indigo-700 hover:text-white"
+                                    >
+                                        <i className="bi bi-cloud-arrow-up me-1 text-indigo-500 group-hover:text-white"></i>{" "}
+                                        Publish
+                                    </button>
                             ) : (
                                 <></>
                             )}
@@ -207,6 +265,13 @@ export default function Create({ auth, code, news }) {
                     </div>
                 </div>
             </div>
+
+            <Confirm
+                show={publishConfirm}
+                question="Are you sure un publish this page ?"
+                yes={unPublish}
+                no={closeConfirmuUnpublish}
+            />
             <Confirm
                 show={publishConfirm}
                 question="Are you sure publish this page ?"

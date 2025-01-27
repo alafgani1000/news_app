@@ -33,7 +33,14 @@ class PagesController extends Controller
 
     public function create($code)
     {
-        return Inertia::render('Page/Create', ['code' => $code]);
+        $page = Page::where('code',$code)->first();
+        if (!is_null($page)) {
+            $code = $page->code;
+        }
+        return Inertia::render('Page/Create', [
+            'code' => $code, 
+            'page' => $page
+        ]);
     }
 
     public function store(Request $request, $code)
@@ -41,12 +48,21 @@ class PagesController extends Controller
         $request->validate([
             'name' => 'required',
         ]);
-        Page::create([
-            'code' => $code,
-            'name' => $request->name,
-            'content' => $request->content,
-            'status' => 0
-        ]);
+        $checkPage = Page::where('code',$code)->first();
+        if (is_null($checkPage)) {
+            Page::create([
+                'code' => $code,
+                'name' => $request->name,
+                'content' => $request->content,
+                'status' => 0
+            ]);
+        } else {
+            Page::where('code', $code)->update([
+                'name' => $request->name,
+                'content' => $request->content,
+                'status' => 0
+            ]);
+        }
         return 'Page Created';
     }
 
@@ -90,9 +106,9 @@ class PagesController extends Controller
         return 'Page Published';
     }
 
-    public function unpublish($id)
+    public function unpublish($code)
     {
-        $page = Page::where('id',$id)->update([
+        $page = Page::where('code',$code)->update([
             'status' => '0'
         ]);
         return 'Page Unpublished';

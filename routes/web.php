@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/page/{code}/update', [PagesController::class, 'update'])->name('page.update');
         Route::delete('page/{id}/delete', [PagesController::class, 'delete'])->name('page.delete');
         Route::put('/page/{code}/publish', [PagesController::class, 'publish'])->name('page.publish');
-        Route::put('/page/{id}/unpublish', [PagesController::class, 'unpublish'])->name('page.unpublish');
+        Route::put('/page/{code}/unpublish', [PagesController::class, 'unpublish'])->name('page.unpublish');
         Route::get('/page/{code}/create', [PagesController::class, 'create'])->name('page.create');
 
         // news

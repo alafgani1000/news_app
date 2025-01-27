@@ -31,6 +31,7 @@ export default function Creates({ auth, news }) {
     });
     const [errors, setErrors] = useState({
         title: "",
+        category: "",
     });
     const [showToast, setShowToast] = useState(false);
 
@@ -77,7 +78,7 @@ export default function Creates({ auth, news }) {
     };
 
     const getDataCategory = () => {
-        axios.get("/admin/category").then((res) => {
+        axios.get("/admin/category-data").then((res) => {
             setDataCategories(res.data);
         });
     };

@@ -33,7 +33,7 @@ class NewsController extends Controller
 
     public function create($code)
     {
-        $news = News::where('code', $code)->first();
+        $news = News::with(['writer','newsCategory', 'newsCategory.category'])->where('code', $code)->first();
         return Inertia::render('News/Creates', [
             'code' => $code,
             'news' => $news
@@ -44,6 +44,7 @@ class NewsController extends Controller
     {
         $request->validate([
             'title' => 'required',
+            'category' => 'required'
         ]);
         $news = News::where('code', $code)->first();
         if (is_null($news)) {
