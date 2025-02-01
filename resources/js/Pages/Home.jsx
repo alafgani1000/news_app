@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Welcome({ auth, latest1, latest2, menuCategories }) {
+export default function Welcome({ auth, latest1, latest2, menus }) {
     const [populars, setPopulars] = useState([]);
     const [categories, setCategories] = useState([]);
 
@@ -33,7 +33,7 @@ export default function Welcome({ auth, latest1, latest2, menuCategories }) {
                     Profile
                 </h2>
             }
-            categories={menuCategories}
+            menus={menus}
         >
             <Head title="Profile" />
 

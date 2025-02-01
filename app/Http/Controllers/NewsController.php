@@ -11,6 +11,7 @@ use Inertia\Response;
 use App\Models\News;
 use App\Models\NewsCategory;
 use App\Models\Category;
+use App\Models\Menu;
 
 class NewsController extends Controller
 {
@@ -223,11 +224,11 @@ class NewsController extends Controller
         $latests = $this->latest_post();
         $latest1 = $latests['latest1'];
         $latest2 = $latests['latest2'];
-        $categories = Category::all();
+        $menus = Menu::all();
         return Inertia::render('Home', [
             'latest1' => $latest1,
             'latest2' => $latest2,
-            'menuCategories' => $categories
+            'menus' => $menus
         ]);
     }
 
@@ -246,7 +247,7 @@ class NewsController extends Controller
 
     public function newsByCategory(Request $request, $name)
     {
-        $categories = Category::all();
+        $menus = Menu::all();
         $search = $request->search;
         $perPage = isset($request->perPage) ? $request->perPage : 10;
         $sort = isset($request->sort) ? $request->sort : 'created_at';
@@ -270,7 +271,7 @@ class NewsController extends Controller
             'pgSearch' => $search,
             'pgPerPage' => $perPage,
             'pgSort' => $sort,
-            'menuCategories' => $categories,
+            'menus' => $menus,
             'category' => $name
         ]);
     }
@@ -284,10 +285,10 @@ class NewsController extends Controller
         ])
         ->where('id',$id)
         ->first();
-        $categories = Category::all();
+        $menus = Menu::all();
         return Inertia::render('Single', [
             'news' => $news,
-            'menuCategories' => $categories,
+            'menus' => $menus,
         ]);
     }
 

@@ -7,7 +7,7 @@ import parse from "html-react-parser";
 
 export default function Category({
     auth,
-    menuCategories,
+    menus,
     news,
     category,
     pgSearch,
@@ -57,7 +57,7 @@ export default function Category({
                     Profile
                 </h2>
             }
-            categories={menuCategories}
+            menus={menus}
         >
             <Head title="Profile" />
 

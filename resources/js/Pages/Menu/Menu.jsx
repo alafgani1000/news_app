@@ -275,6 +275,14 @@ export default function Setting({ auth }) {
         closeChooseMenu();
     }
 
+    const choosePage = (data) => {
+        const name = data.name;
+        const url = '/page/' + name;
+        setMenuName(name)
+        setMenuUrl(url)
+        closeChooseMenu();
+    }
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -665,7 +673,7 @@ export default function Setting({ auth }) {
                                         (page, index) => {
                                             return (
                                                 <tr
-                                                    onClick={() => chooseCategory(page)}
+                                                    onClick={() => choosePage(page)}
                                                     key={index}
                                                     className="border-b border-dashed hover:bg-blue-500 hover:text-white cursor-pointer"
                                                 >

@@ -6,9 +6,10 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link } from "@inertiajs/react";
 import NavLinkFront from "@/Components/NavLinkFront";
 
-export default function Header({ user, categories, children }) {
+export default function Header({ user, menus, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
     return (
         <div className="min-h-screen bg-gray-100">
             <header className="bg-indigo-500">
@@ -61,19 +62,16 @@ export default function Header({ user, categories, children }) {
                                     Home
                                 </NavLinkFront>
 
-                                {categories.map((category, index) => {
+                                {menus.map((menu, index) => {
                                     return (
                                         <NavLinkFront
                                             key={index}
-                                            href={route("news-menu", {
-                                                name: category.name,
-                                            })}
+                                            href={menu.url}
                                             active={route().current(
-                                                "news-menu",
-                                                { name: category.name }
+                                                menu.url
                                             )}
                                         >
-                                            {category.name}
+                                            {menu?.name}
                                         </NavLinkFront>
                                     );
                                 })}
@@ -232,7 +230,7 @@ export default function Header({ user, categories, children }) {
                         </ResponsiveNavLink>
                     )}
                 </div>
-            </nav>
+            </nav >
 
             <main className="my-10">{children}</main>
 
@@ -287,6 +285,6 @@ export default function Header({ user, categories, children }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
