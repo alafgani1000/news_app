@@ -31,6 +31,12 @@ class PagesController extends Controller
         ]);
     }
 
+    public function data()
+    {
+        $pages = Page::all();
+        return $pages;
+    }
+
     public function create($code)
     {
         $page = Page::where('code',$code)->first();

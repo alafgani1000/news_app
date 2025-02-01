@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
 
         // pages 
         Route::get('/page', [PagesController::class, 'index'])->name('page.index');
+        Route::get('/page-data', [PagesController::class, 'data'])->name('page.data');
         Route::put('/page/{code}/store', [PagesController::class, 'store'])->name('page.store');
         Route::get('/page/{code}/edit', [PagesController::class, 'edit'])->name('page.edit');
         Route::put('/page/{code}/update', [PagesController::class, 'update'])->name('page.update');

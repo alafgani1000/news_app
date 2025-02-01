@@ -26,10 +26,13 @@ export default function Setting({ auth }) {
         name: "",
     });
     const [modalSetting, setModalSetting] = useState(false);
+    const [modalChoose, setModalChoose] = useState(false)
     const [menuIdSetting, setMenuIdSetting] = useState("");
     const [categorySetting, setCategorySetting] = useState("");
     const [categoryAvailable, setCategoryAvailable] = useState([]);
     const [categoryNotAvailable, setCategoryNotAvailable] = useState([]);
+    const [categories, setCategories] = useState([])
+    const [pages, setPages] = useState([])
 
     // function process
     const closeToast = () => {
@@ -211,6 +214,18 @@ export default function Setting({ auth }) {
         });
     };
 
+    const getCategories = () => {
+        axios.get('/admin/category-data').then((res) => {
+            setCategories(res.data);
+        })
+    }
+
+    const getPages = () => {
+        axios.get('/admin/page-data').then((res) => {
+            setPages(res.data);
+        })
+    }
+
     const handleAssignCategory = (e) => {
         e.preventDefault();
         axios
@@ -242,6 +257,24 @@ export default function Setting({ auth }) {
             });
     };
 
+    const showChooseMenu = () => {
+        setModalChoose(true)
+        getCategories()
+        getPages()
+    }
+
+    const closeChooseMenu = () => {
+        setModalChoose(false)
+    }
+
+    const chooseCategory = (data) => {
+        const name = data.name;
+        const url = '/news/' + name;
+        setMenuName(name)
+        setMenuUrl(url)
+        closeChooseMenu();
+    }
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -249,7 +282,7 @@ export default function Setting({ auth }) {
             permissions={auth.permissions}
             header={
                 <h2 className="font-semibold text-xl text-gray-600 leading-tight">
-                    Setting
+                    Menu
                 </h2>
             }
         >
@@ -257,13 +290,15 @@ export default function Setting({ auth }) {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="text-xl font-semibold text-gray-600 grid justify-start bg-white border-b border-gray-100 rounded-t-lg px-5 py-3">
+                    <div className="text-lg font-semibold text-gray-600 grid justify-start bg-white border-b border-gray-100 rounded-t-lg px-5 py-3">
                         Menu
                     </div>
                     <div className="overflow-hidden grid grid-cols-1">
                         <div className="px-5 py-3 text-gray-700 bg-white border-gray-100 col-span-1">
                             <form onSubmit={handleSubmitMenu}>
-                                <span className="text-lg">Create Menu</span>
+                                <div className="mb-2">
+                                    <button type="button" onClick={() => showChooseMenu()} className="bg-blue-500 rounded-full px-3 py-2 text-sm text-white">Chose Category / Page</button>
+                                </div>
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="mt-4 grid">
                                         <label className="mb-2 font-normal">
@@ -355,7 +390,7 @@ export default function Setting({ auth }) {
                             </form>
                         </div>
                         <div className="px-5 py-3 text-gray-600 bg-white mt-1 col-span-2 rounded-b-lg">
-                            <span className="text-lg">List of Menu</span>
+                            <span className="text-lg font-semibold">List of Menu</span>
                             <div className="mt-4 grid">
                                 <table>
                                     <thead className="bg-gray-100">
@@ -575,6 +610,78 @@ export default function Setting({ auth }) {
                                 )}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal show={modalChoose}>
+                <div className="bg-white rounded max-w-3xl w-full mx-auto">
+                    <div className="flex flex-col items-end m-0 p-0">
+                        <button
+                            onClick={() => closeChooseMenu()}
+                            className="bg-zinc-700 px-3 py-1 text-white hover:bg-rose-600 rounded-tr"
+                        >
+                            <i className="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <div className="px-6 pb-6">
+                        <h2 className="text-lg font-medium text-gray-900">
+                            Choose Category or Page
+                        </h2>
+                        <div className="mt-2 grid pb-4">
+                            <div className="rounded-t bg-blue-400 text-white px-2 py-2">
+                                Categories
+                            </div>
+                            <table>
+                                <tbody>
+                                    {categories?.map(
+                                        (category, index) => {
+                                            return (
+                                                <tr
+                                                    onClick={() => chooseCategory(category)}
+                                                    key={index}
+                                                    className="border-b border-dashed hover:bg-blue-500 hover:text-white cursor-pointer"
+                                                >
+                                                    <td className="px-3 py-2">
+                                                        {
+                                                            category
+                                                                ?.name
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="mt-2 grid pb-4">
+                            <div className="rounded-t bg-blue-400 text-white px-2 py-2">
+                                Pages
+                            </div>
+                            <table>
+                                <tbody>
+                                    {pages?.map(
+                                        (page, index) => {
+                                            return (
+                                                <tr
+                                                    onClick={() => chooseCategory(page)}
+                                                    key={index}
+                                                    className="border-b border-dashed hover:bg-blue-500 hover:text-white cursor-pointer"
+                                                >
+                                                    <td className="px-3 py-2">
+                                                        {
+                                                            page
+                                                                ?.name
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </Modal>
