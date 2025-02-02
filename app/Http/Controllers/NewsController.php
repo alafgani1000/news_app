@@ -308,4 +308,17 @@ class NewsController extends Controller
         ]);
     }
 
+    public function latestNews()
+    {
+        $news = News::with([
+            'writer',
+            'newsCategory',
+            'newsCategory.category'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->take(4)
+        ->get();
+        return $news;
+    }
+
 }

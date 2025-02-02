@@ -442,7 +442,7 @@ export default function Media({ auth, media, pgSearch, pgSort, pgPerPage }) {
                                 <input
                                     className="p-3 rounded border-gray-300 text-lg"
                                     type="text"
-                                    value={`/storage/${mediaSelected.path}`}
+                                    defaultValue={`/storage/${mediaSelected.path}`}
                                 />
                             </div>
                             <div className="grid justify-end mt-4">

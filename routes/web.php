@@ -39,6 +39,7 @@ Route::get('/news/popular-news', [NewsController::class, 'popularNews'])->name('
 Route::get('/news/category-news', [NewsController::class, 'byCategories'])->name('category-news');
 Route::get('/category/{name}', [NewsController::class, 'newsByCategory'])->name('news-category');
 Route::get('/page/{name}', [NewsController::class, 'page'])->name('news.page');
+Route::get('/news/latest-news', [NewsController::class, 'latestNews'])->name('news.latest-news');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
