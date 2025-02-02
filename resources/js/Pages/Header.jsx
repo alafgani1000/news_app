@@ -6,10 +6,9 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link } from "@inertiajs/react";
 import NavLinkFront from "@/Components/NavLinkFront";
 
-export default function Header({ user, menus, children }) {
+export default function Header({ user, menus, children, path }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-
     return (
         <div className="min-h-screen bg-gray-100">
             <header className="bg-indigo-500">
@@ -67,9 +66,7 @@ export default function Header({ user, menus, children }) {
                                         <NavLinkFront
                                             key={index}
                                             href={menu.url}
-                                            active={route().current(
-                                                menu.url
-                                            )}
+                                            active={menu.url == path ? true : false}
                                         >
                                             {menu?.name}
                                         </NavLinkFront>

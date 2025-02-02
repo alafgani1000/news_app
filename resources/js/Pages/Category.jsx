@@ -13,6 +13,7 @@ export default function Category({
     pgSearch,
     pgPerPage,
     pgSort,
+    path,
 }) {
     const [search, setSearch] = useState(pgSearch || "");
     const [sort, setSort] = useState(pgSort || "");
@@ -58,6 +59,7 @@ export default function Category({
                 </h2>
             }
             menus={menus}
+            path={path}
         >
             <Head title="Profile" />
 

@@ -8,7 +8,7 @@ import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-export default function Single({ auth, news, menuCategories }) {
+export default function Single({ auth, news, menus }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
     const toHtml = (data) => {
@@ -32,10 +32,10 @@ export default function Single({ auth, news, menuCategories }) {
     return (
         <Header
             user={auth.user}
-            categories={menuCategories}
+            menus={menus}
             header={
                 <h2 className="font-semibold text-xl text-gray-600 leading-tight">
-                    Profile
+                    {news.news_category.category.name}
                 </h2>
             }
         >

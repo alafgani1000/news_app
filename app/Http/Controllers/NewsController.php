@@ -12,6 +12,7 @@ use App\Models\News;
 use App\Models\NewsCategory;
 use App\Models\Category;
 use App\Models\Menu;
+use App\Models\Page;
 
 class NewsController extends Controller
 {
@@ -245,35 +246,47 @@ class NewsController extends Controller
         return $popularNews;
     }
 
-    public function newsByCategory(Request $request, $name)
+    public function newsByCategory(Request $request, $cat, $name)
     {
-        $menus = Menu::all();
-        $search = $request->search;
-        $perPage = isset($request->perPage) ? $request->perPage : 10;
-        $sort = isset($request->sort) ? $request->sort : 'created_at';
-        $news = News::whereHas('newsCategory.category',
-            function (Builder $query) use($name) {
-                $query->where('name', 'like', '%'.$name.'%');
-            })
-            ->with([
-                'writer',
-                'newsCategory',
-                'newsCategory.category'
-            ])
-            ->where(function (Builder $query) use($search) {
-                return $query->where('title', 'like', '%'.$search.'%')
-                    ->orWhere('content', 'like', '%'.$search.'%');
-            })
-            ->orderBy($sort)
-            ->paginate($perPage);
-        return Inertia::render('Category', [
-            'news' => $news,
-            'pgSearch' => $search,
-            'pgPerPage' => $perPage,
-            'pgSort' => $sort,
-            'menus' => $menus,
-            'category' => $name
-        ]);
+        $path = '/'.$request->path();
+        if ($cat === 'news') {
+            $menus = Menu::all();
+            $search = $request->search;
+            $perPage = isset($request->perPage) ? $request->perPage : 10;
+            $sort = isset($request->sort) ? $request->sort : 'created_at';
+            $news = News::whereHas('newsCategory.category',
+                function (Builder $query) use($name) {
+                    $query->where('name', 'like', '%'.$name.'%');
+                })
+                ->with([
+                    'writer',
+                    'newsCategory',
+                    'newsCategory.category'
+                ])
+                ->where(function (Builder $query) use($search) {
+                    return $query->where('title', 'like', '%'.$search.'%')
+                        ->orWhere('content', 'like', '%'.$search.'%');
+                })
+                ->orderBy($sort)
+                ->paginate($perPage);
+            return Inertia::render('Category', [
+                'news' => $news,
+                'pgSearch' => $search,
+                'pgPerPage' => $perPage,
+                'pgSort' => $sort,
+                'menus' => $menus,
+                'category' => $name,
+                'path' => $path
+            ]);
+        } elseif ($cat === 'page') {
+            $menus = Menu::all();
+            $page = Page::where('name',$name)->first();
+            return Inertia::render('Page', [
+                'page' => $page,
+                'menus' => $menus,
+                'path' => $path
+            ]);
+        }
     }
 
     public function single($id)
