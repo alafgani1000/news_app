@@ -65,30 +65,32 @@ export default function Single({ auth, news, menus }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="text-gray-500 mt-4 text-sm font-bold">
-                            <ul className="flex gap-4">
-                                <li className="py-2 px-3 bg-white">
-                                    By {news.writer.name}
-                                </li>
-                                <li className="py-2 px-3 bg-white">
-                                    {moment(news.created_at).format(
-                                        "DD MMM YYYY"
-                                    )}
-                                </li>
-                            </ul>
-                        </div>
-                        <h2 className="text-gray-700 text-xl lg:text-3xl md:text-2xl font-bold mt-4">
-                            {news.title}
-                        </h2>
-                        <div className="main-article mt-6 text-lg">
-                            <Editor
-                                toolbar={{
-                                    options: [],
-                                }}
-                                editorState={editorState}
-                                toolbarHidden={true}
-                                readOnly={true}
-                            />
+                        <div className="bg-white px-4 py-4">
+                            <div className="text-white mt-4 text-sm font-bold ">
+                                <ul className="flex gap-4">
+                                    <li className="py-2 px-3 bg-slate-600 rounded">
+                                        By {news.writer.name}
+                                    </li>
+                                    <li className="py-2 px-3 bg-slate-600 rounded">
+                                        {moment(news.created_at).format(
+                                            "DD MMM YYYY"
+                                        )}
+                                    </li>
+                                </ul>
+                            </div>
+                            <h2 className="text-gray-700 text-xl lg:text-3xl md:text-2xl font-bold mt-8">
+                                {news.title}
+                            </h2>
+                            <div className="main-article mt-6 text-lg">
+                                <Editor
+                                    toolbar={{
+                                        options: [],
+                                    }}
+                                    editorState={editorState}
+                                    toolbarHidden={true}
+                                    readOnly={true}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="col-span-2 grid grid-cols-1 gap-y-4">

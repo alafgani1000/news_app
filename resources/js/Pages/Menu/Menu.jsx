@@ -269,7 +269,7 @@ export default function Setting({ auth }) {
 
     const chooseCategory = (data) => {
         const name = data.name;
-        const url = '/news/' + name;
+        const url = '/category/' + name;
         setMenuName(name)
         setMenuUrl(url)
         closeChooseMenu();
