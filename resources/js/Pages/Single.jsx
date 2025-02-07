@@ -10,7 +10,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export default function Single({ auth, news, menus }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
-    const [latestNews, setLatestNews] = useState([])
+    const [latestNews, setLatestNews] = useState([]);
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
@@ -27,10 +27,10 @@ export default function Single({ auth, news, menus }) {
     };
 
     const getLatestNews = () => {
-        axios.get('/news/latest-news').then((res) => {
-            setLatestNews(res.data)
-        })
-    }
+        axios.get("/news/latest-news").then((res) => {
+            setLatestNews(res.data);
+        });
+    };
 
     useEffect(() => {
         setEditorState(fromHtml(news.content));
@@ -59,6 +59,7 @@ export default function Single({ auth, news, menus }) {
                 </div>
                 <div className="sm:px-4 sm:rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 lg:gap-8 md:gap-4 overflow-y-hidden">
                     <div className="col-span-4">
+                        {/* image news  */}
                         <div className="box-images relative">
                             <img
                                 src={news.image}
@@ -73,6 +74,7 @@ export default function Single({ auth, news, menus }) {
                                 </div>
                             </div>
                         </div>
+                        {/* content news */}
                         <div className="bg-white px-4 py-4">
                             <div className="text-white mt-4 text-sm font-bold ">
                                 <ul className="flex gap-4">
@@ -100,6 +102,21 @@ export default function Single({ auth, news, menus }) {
                                 />
                             </div>
                         </div>
+                        {/* comment news */}
+                        <div className="news-comment">
+                            {/* menampilkan news */}
+                            <div className="bg-white py-2 px-4 mb-2">
+                                <h2>Comments</h2>
+                                <div>
+                                    <textarea></textarea>
+                                </div>
+                                <div>
+                                    <button className="bg-blue-500 text-white px-4 py-2">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="w-full col-span-2">
                         <div className="bg-white py-2 px-4 mb-2">
@@ -107,31 +124,36 @@ export default function Single({ auth, news, menus }) {
                         </div>
                         <div>
                             {latestNews?.map((newNews, index) => {
-                                return <div className="box-news" key={index}>
-                                    <img
-                                        src={newNews.image}
-                                    />
+                                return (
+                                    <div className="box-news" key={index}>
+                                        <img src={newNews.image} />
 
-                                    <div className="px-6 py-4 mb-6 bg-white">
-                                        <div className="text-white text-base lg:text-lg md:text-bae font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
-                                            {newNews.news_category.category.name}
+                                        <div className="px-6 py-4 mb-6 bg-white">
+                                            <div className="text-white text-base lg:text-lg md:text-bae font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
+                                                {
+                                                    newNews.news_category
+                                                        .category.name
+                                                }
+                                            </div>
+                                            <div className="text-gray-500 mt-1 text-sm font-bold">
+                                                By {newNews.writer.name},{" "}
+                                                {moment(
+                                                    newNews.created_at
+                                                ).format("DD MMM YYYY")}
+                                            </div>
+                                            <h2 className="text-gray-700 mt-1 text-lg lg:text-xl font-bold">
+                                                Exercitation Ullamco Laboris
+                                                Nisi Ut Aliquip
+                                            </h2>
+                                            <Link
+                                                href="/"
+                                                className="block mt-2 p-2 bg-blue-500 w-fit text-white"
+                                            >
+                                                read more..
+                                            </Link>
                                         </div>
-                                        <div className="text-gray-500 mt-1 text-sm font-bold">
-                                            By {newNews.writer.name}, {moment(newNews.created_at).format(
-                                                "DD MMM YYYY"
-                                            )}
-                                        </div>
-                                        <h2 className="text-gray-700 mt-1 text-lg lg:text-xl font-bold">
-                                            Exercitation Ullamco Laboris Nisi Ut Aliquip
-                                        </h2>
-                                        <Link
-                                            href="/"
-                                            className="block mt-2 p-2 bg-blue-500 w-fit text-white"
-                                        >
-                                            read more..
-                                        </Link>
                                     </div>
-                                </div>
+                                );
                             })}
                         </div>
                     </div>
