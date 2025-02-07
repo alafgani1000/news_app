@@ -14,14 +14,10 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $tambahPengguna = Permission::create(['name' => 'tambah-pengguna']);
-        $ubahPengguna = Permission::create(['name' => 'ubah-pengguna']);
-        $tambahPengguna = Permission::create(['name' => 'non-aktifkan-pengguna']);
-        $tambahPengguna = Permission::create(['name' => 'aktifkan-pengguna']);
-
-        $membuatRole = Permission::create(['name' => 'buat-role']);
-        $ubahRole = Permission::create(['name' => 'ubah-role']);
-        $hapusRole = Permission::create(['name' => 'hapus-role']);
+        $create = Permission::create(['name' => 'create_news']);
+        $update = Permission::create(['name' => 'update_news']);
+        $publish = Permission::create(['name' => 'publish_news']);
+        $delete = Permission::create(['name' => 'delete_news']);
 
     }
 }
