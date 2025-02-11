@@ -136,7 +136,7 @@ export default function Single({ auth, news, menus }) {
                         <div className="news-comment bg-white px-4 py-2">
                             {/* menampilkan news */}
                             <div className="bg-gray-100 mb-2 max-w-full text-base px-4 py-2">
-                                <div className="max-w-full sm:max-w-full md:max-w-96 lg:max-w-96 xl:max-w-96">
+                                <div className="max-w-full sm:max-w-full">
                                     {message != "" && message != undefined ? (
                                         <div className="py-2 px-2 bg-gray-200 my-2 text-sm">
                                             <p>{message}</p>
@@ -149,9 +149,9 @@ export default function Single({ auth, news, menus }) {
                                         onSubmit={submitComment}
                                         className="mt-2"
                                     >
-                                        <div className="bg-white py-2 px-3 rounded">
+                                        <div className="bg-white py-2 px-3 rounded-lg">
                                             <textarea
-                                                className="w-full border-none rounded bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
+                                                className="w-full border-none bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
                                                 onChange={(e) =>
                                                     setContent(e.target.value)
                                                 }
