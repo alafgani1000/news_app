@@ -21,7 +21,7 @@ class CommentController extends Controller
         $comment->parent_id = $request->parent_id;
         $comment->save();
 
-        return response()->json($comment);
+        return response('Thanks for your comment');
     }
 
     public function update(Request $request, $id)

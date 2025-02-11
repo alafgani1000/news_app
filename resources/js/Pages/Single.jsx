@@ -7,10 +7,16 @@ import draftToHtml from "draftjs-to-html";
 import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import axios from "axios";
 
 export default function Single({ auth, news, menus }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [latestNews, setLatestNews] = useState([]);
+    const [newsId, setNewsId] = useState(news.id);
+    const [content, setContent] = useState("");
+    const [parentId, setParentId] = useState("");
+    const [message, setMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
@@ -30,6 +36,30 @@ export default function Single({ auth, news, menus }) {
         axios.get("/news/latest-news").then((res) => {
             setLatestNews(res.data);
         });
+    };
+
+    const resetCommentForm = () => {
+        setContent("");
+    };
+
+    const submitComment = (e) => {
+        e.preventDefault();
+        const data = {
+            news_id: newsId,
+            content: content,
+            parent_id: parentId,
+        };
+        axios
+            .post("/comment", data)
+            .then((res) => {
+                setMessage(res.data);
+                resetCommentForm();
+            })
+            .catch((err) => {
+                if (err.status == 401) {
+                    alert("Login hela");
+                }
+            });
     };
 
     useEffect(() => {
@@ -78,10 +108,10 @@ export default function Single({ auth, news, menus }) {
                         <div className="bg-white px-4 py-4">
                             <div className="text-white mt-4 text-sm font-bold ">
                                 <ul className="flex gap-4">
-                                    <li className="py-2 px-3 bg-slate-600 rounded">
+                                    <li className="py-2 px-3 bg-slate-600">
                                         By {news.writer.name}
                                     </li>
-                                    <li className="py-2 px-3 bg-slate-600 rounded">
+                                    <li className="py-2 px-3 bg-slate-600">
                                         {moment(news.created_at).format(
                                             "DD MMM YYYY"
                                         )}
@@ -103,51 +133,70 @@ export default function Single({ auth, news, menus }) {
                             </div>
                         </div>
                         {/* comment news */}
-                        <div className="news-comment">
+                        <div className="news-comment bg-white px-4 py-2">
                             {/* menampilkan news */}
-                            <div className="bg-white py-2 px-4 mb-2">
-                                <h2>Comments</h2>
-                                <div>
-                                    <textarea></textarea>
-                                </div>
-                                <div>
-                                    <button className="bg-blue-500 text-white px-4 py-2">
-                                        Submit
-                                    </button>
+                            <div className="bg-gray-100 mb-2 max-w-full text-base px-4 py-2">
+                                <div className="max-w-full sm:max-w-full md:max-w-96 lg:max-w-96 xl:max-w-96">
+                                    {message != "" && message != undefined ? (
+                                        <div className="py-2 px-2 bg-gray-200 my-2 text-sm">
+                                            <p>{message}</p>
+                                        </div>
+                                    ) : (
+                                        <></>
+                                    )}
+
+                                    <form
+                                        onSubmit={submitComment}
+                                        className="mt-2"
+                                    >
+                                        <div className="bg-white py-2 px-3 rounded">
+                                            <textarea
+                                                className="w-full border-none rounded bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
+                                                onChange={(e) =>
+                                                    setContent(e.target.value)
+                                                }
+                                                value={content}
+                                                required
+                                                placeholder="Add Comment..."
+                                            ></textarea>
+                                            <div className="flex justify-end">
+                                                <button className="bg-blue-500 text-white px-3 py-1.5 text-sm rounded-full">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
+
+                            <div className="border-b bg-gray-400"></div>
                         </div>
                     </div>
                     <div className="w-full col-span-2">
                         <div className="bg-white py-2 px-4 mb-2">
-                            <h2>New Articles</h2>
+                            <h2 className="font-medium">New Articles</h2>
                         </div>
                         <div>
                             {latestNews?.map((newNews, index) => {
                                 return (
                                     <div className="box-news" key={index}>
-                                        <img src={newNews.image} />
-
                                         <div className="px-6 py-4 mb-6 bg-white">
-                                            <div className="text-white text-base lg:text-lg md:text-bae font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
+                                            <h2 className="text-gray-700 mt-1 text-lg lg:text-xl font-bold">
+                                                {newNews.title}
+                                            </h2>
+                                            <div className="text-gray-500 mt-1 text-sm font-bold">
                                                 {
                                                     newNews.news_category
                                                         .category.name
                                                 }
-                                            </div>
-                                            <div className="text-gray-500 mt-1 text-sm font-bold">
-                                                By {newNews.writer.name},{" "}
+                                                , By {newNews.writer.name},{" "}
                                                 {moment(
                                                     newNews.created_at
                                                 ).format("DD MMM YYYY")}
                                             </div>
-                                            <h2 className="text-gray-700 mt-1 text-lg lg:text-xl font-bold">
-                                                Exercitation Ullamco Laboris
-                                                Nisi Ut Aliquip
-                                            </h2>
                                             <Link
                                                 href="/"
-                                                className="block mt-2 p-2 bg-blue-500 w-fit text-white"
+                                                className="block mt-2 p-2 bg-blue-500 w-fit text-white text-sm"
                                             >
                                                 read more..
                                             </Link>
