@@ -17,6 +17,10 @@ export default function Single({ auth, news, menus }) {
     const [parentId, setParentId] = useState("");
     const [message, setMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [skip, setSkip] = useState(0);
+    const [take, setTake] = useState(5);
+    const [totalComment, setTotalComment] = useState(0);
+    const [comments, setComments] = useState([]);
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
@@ -57,14 +61,27 @@ export default function Single({ auth, news, menus }) {
             })
             .catch((err) => {
                 if (err.status == 401) {
-                    alert("Login hela");
+                    alert("Login heula");
                 }
+            });
+    };
+
+    const getComments = () => {
+        axios
+            .put(`/comment/${news.id}`, {
+                skip: skip,
+                take: take,
+            })
+            .then((res) => {
+                setComments(res.data.comments);
+                setTotalComment(res.data.total_comment);
             });
     };
 
     useEffect(() => {
         setEditorState(fromHtml(news.content));
         getLatestNews();
+        getComments();
     }, []);
 
     return (
@@ -169,7 +186,18 @@ export default function Single({ auth, news, menus }) {
                                 </div>
                             </div>
 
-                            <div className="border-b bg-gray-400"></div>
+                            <div className="border-b bg-gray-400 mt-4 mb-6"></div>
+
+                            <div className="comment-view">
+                                <div className="title flex justify-items-center">
+                                    <h2 className="font-bold text-lg">
+                                        Comments
+                                    </h2>{" "}
+                                    <span className="bg-indigo-500 rounded-full px-2.5 py-1 text-sm text-white ms-4">
+                                        {totalComment}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="w-full col-span-2">

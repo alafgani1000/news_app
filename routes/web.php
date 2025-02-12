@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
     // comment
     Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
     Route::put('/comment/{id}/update', [CommentController::class, 'update'])->name('comment.update');
-    Route::get('/comment/{news_id}/', [CommentController::class, 'getComments'])->name('comment.get_comments');
+    Route::put('/comment/{news_id}/', [CommentController::class, 'getComments'])->name('comment.get_comments');
     Route::get('/comment-replires/{comment_id}', [CommentController::class, 'getReplies'])->name('comment.get_repplies');
 
     Route::prefix('admin')->group(function () {

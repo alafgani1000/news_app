@@ -37,7 +37,13 @@ class CommentController extends Controller
         return response()->json($comment);
     }
 
-    public function getComments($news_id)
+    public function getTotalComment($news_id)
+    {
+        $comments = Comment::where('news_id', $news_id)->get()->count();
+        return $comments;
+    }
+
+    public function getComments(Request $request, $news_id)
     {
         $comments = Comment::where('news_id', $news_id)
             ->whereNull('parent_id')
@@ -47,8 +53,13 @@ class CommentController extends Controller
                 $comment->replies = Comment::where('parent_id', $comment->id)
                     ->get()
                     ->count();
+                return $comment;
             });
-        return response()->json($comments);
+        $totalComments = $this->getTotalComment($news_id);
+        return response()->json([
+            'comments' => $comments,
+            'total_comment' => $totalComments
+        ]);
     }
 
     public function getReplies($comment_id)
