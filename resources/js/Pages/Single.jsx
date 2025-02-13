@@ -138,7 +138,7 @@ export default function Single({ auth, news, menus }) {
                             <h2 className="text-gray-700 text-xl lg:text-3xl md:text-2xl font-bold mt-8">
                                 {news.title}
                             </h2>
-                            <div className="main-article mt-6 text-lg">
+                            <div className="main-article text-lg">
                                 <Editor
                                     toolbar={{
                                         options: [],
@@ -152,7 +152,7 @@ export default function Single({ auth, news, menus }) {
                         {/* comment news */}
                         <div className="news-comment bg-white px-4 py-2">
                             {/* menampilkan news */}
-                            <div className="bg-gray-100 mb-2 max-w-full text-base px-4 py-2">
+                            <div className="bg-gray-100 mb-2 max-w-full text-base px-2 py-2 rounded-lg">
                                 <div className="max-w-full sm:max-w-full">
                                     {message != "" && message != undefined ? (
                                         <div className="py-2 px-2 bg-gray-200 my-2 text-sm">
@@ -162,10 +162,7 @@ export default function Single({ auth, news, menus }) {
                                         <></>
                                     )}
 
-                                    <form
-                                        onSubmit={submitComment}
-                                        className="mt-2"
-                                    >
+                                    <form onSubmit={submitComment}>
                                         <div className="bg-white py-2 px-3 rounded-lg">
                                             <textarea
                                                 className="w-full border-none bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
@@ -196,6 +193,30 @@ export default function Single({ auth, news, menus }) {
                                     <span className="bg-indigo-500 rounded-full px-2.5 py-1 text-sm text-white ms-4">
                                         {totalComment}
                                     </span>
+                                </div>
+                                <div className="my-8">
+                                    {comments.map((comment, index) => {
+                                        return (
+                                            <div
+                                                className="view-comment my-4"
+                                                key={index}
+                                            >
+                                                <div className="flex items-center">
+                                                    <div className="bg-gray-100 text-2xl py-1 px-3 font-bold rounded-full me-2">
+                                                        {comment.user?.name
+                                                            .substring(1, 0)
+                                                            .toUpperCase()}
+                                                    </div>
+                                                    <div className="font-medium text-base">
+                                                        {comment.user?.name}
+                                                    </div>
+                                                </div>
+                                                <div className="ps-12 text-sm mt-2">
+                                                    {comment.content}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>

@@ -45,7 +45,8 @@ class CommentController extends Controller
 
     public function getComments(Request $request, $news_id)
     {
-        $comments = Comment::where('news_id', $news_id)
+        $comments = Comment::with('user')
+            ->where('news_id', $news_id)
             ->whereNull('parent_id')
             ->skip($request->skip)
             ->take($request->take)
@@ -64,7 +65,8 @@ class CommentController extends Controller
 
     public function getReplies($comment_id)
     {
-        $replies = Comment::where('parent_id', $comment_id)
+        $replies = Comment::with('user')
+            ->where('parent_id', $comment_id)
             ->get()->map(function ($comment, $key) {
                 $comment->replies = Comment::where('parent_id', $comment->id)
                     ->get()
