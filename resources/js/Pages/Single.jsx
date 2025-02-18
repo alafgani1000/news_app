@@ -58,6 +58,7 @@ export default function Single({ auth, news, menus }) {
             .then((res) => {
                 setMessage(res.data);
                 resetCommentForm();
+                getComments();
             })
             .catch((err) => {
                 if (err.status == 401) {
