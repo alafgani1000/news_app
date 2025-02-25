@@ -218,6 +218,11 @@ export default function Single({ auth, news, menus }) {
                                             </div>
                                         );
                                     })}
+                                    <div className="flex items-center justify-center">
+                                        <div className="bg-slate-500 px-8 py-2 rounded-full text-white">
+                                            Load More
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
