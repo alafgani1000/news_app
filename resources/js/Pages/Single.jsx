@@ -116,7 +116,7 @@ export default function Single({ auth, news, menus }) {
                             <div className="absolute inset-0 rounded-md bg-black opacity-20"></div>
                             <div className="absolute inset-0 flex items-end justify-start w-full">
                                 <div className="shadow p-4 ms-2">
-                                    <div className="text-white text-xl font-bold my-4 bg-indigo-500 w-fit py-2 px-4">
+                                    <div className="text-white text-xl font-bold my-4 bg-indigo-500 w-fit py-2 px-4 rounded-sm">
                                         {news.news_category.category.name}
                                     </div>
                                 </div>
@@ -126,10 +126,10 @@ export default function Single({ auth, news, menus }) {
                         <div className="bg-white px-4 py-4">
                             <div className="text-white mt-4 text-sm font-bold ">
                                 <ul className="flex gap-4">
-                                    <li className="py-2 px-3 bg-slate-600">
+                                    <li className="py-2 px-3 bg-slate-600 rounded-sm">
                                         By {news.writer.name}
                                     </li>
-                                    <li className="py-2 px-3 bg-slate-600">
+                                    <li className="py-2 px-3 bg-slate-600 rounded-sm">
                                         {moment(news.created_at).format(
                                             "DD MMM YYYY"
                                         )}
@@ -223,18 +223,18 @@ export default function Single({ auth, news, menus }) {
                         </div>
                     </div>
                     <div className="w-full col-span-2">
-                        <div className="bg-white py-2 px-4 mb-2">
-                            <h2 className="font-medium">New Articles</h2>
+                        <div className="bg-white py-3 px-4 mb-2">
+                            <h2 className="font-bold text-lg">New Articles</h2>
                         </div>
                         <div>
-                            {latestNews?.map((newNews, index) => {
-                                return (
-                                    <ul
-                                        className="box-news border-b divide-slate-300 last:border-b-0"
-                                        key={index}
-                                    >
-                                        <li className="px-6 py-4 bg-white">
-                                            <h2 className="text-gray-700 mt-1 text-lg lg:text-xl font-bold">
+                            <ul className="box-news">
+                                {latestNews?.map((newNews, index) => {
+                                    return (
+                                        <li
+                                            className="px-6 py-4 bg-white border-b border-slate-200 last:border-b-0"
+                                            key={index}
+                                        >
+                                            <h2 className="text-gray-700 mt-1 text-lg lg:text-lg font-bold">
                                                 {newNews.title}
                                             </h2>
                                             <div className="text-gray-500 mt-1 text-sm font-bold">
@@ -248,15 +248,18 @@ export default function Single({ auth, news, menus }) {
                                                 ).format("DD MMM YYYY")}
                                             </div>
                                             <Link
-                                                href="/"
+                                                href={route("single", {
+                                                    id: newNews.id,
+                                                    title: newNews.title,
+                                                })}
                                                 className="block mt-2 p-2 bg-indigo-500 w-fit text-white text-sm rounded-sm"
                                             >
                                                 read more..
                                             </Link>
                                         </li>
-                                    </ul>
-                                );
-                            })}
+                                    );
+                                })}
+                            </ul>
                         </div>
                     </div>
                 </div>
