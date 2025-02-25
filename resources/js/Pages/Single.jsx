@@ -229,8 +229,11 @@ export default function Single({ auth, news, menus }) {
                         <div>
                             {latestNews?.map((newNews, index) => {
                                 return (
-                                    <div className="box-news" key={index}>
-                                        <div className="px-6 py-4 mb-6 bg-white">
+                                    <ul
+                                        className="box-news border-b divide-slate-300 last:border-b-0"
+                                        key={index}
+                                    >
+                                        <li className="px-6 py-4 bg-white">
                                             <h2 className="text-gray-700 mt-1 text-lg lg:text-xl font-bold">
                                                 {newNews.title}
                                             </h2>
@@ -246,12 +249,12 @@ export default function Single({ auth, news, menus }) {
                                             </div>
                                             <Link
                                                 href="/"
-                                                className="block mt-2 p-2 bg-blue-500 w-fit text-white text-sm"
+                                                className="block mt-2 p-2 bg-indigo-500 w-fit text-white text-sm rounded-sm"
                                             >
                                                 read more..
                                             </Link>
-                                        </div>
-                                    </div>
+                                        </li>
+                                    </ul>
                                 );
                             })}
                         </div>
