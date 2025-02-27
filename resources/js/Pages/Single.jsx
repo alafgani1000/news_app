@@ -62,7 +62,7 @@ export default function Single({ auth, news, menus }) {
             })
             .catch((err) => {
                 if (err.status == 401) {
-                    alert("Login heula");
+                    window.open("/login", "_blank");
                 }
             });
     };
