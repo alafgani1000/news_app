@@ -8,6 +8,7 @@ import parse from "html-react-parser";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import axios from "axios";
+import { dateReadable } from "@/function/helper";
 
 export default function Single({ auth, news, menus }) {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -20,6 +21,8 @@ export default function Single({ auth, news, menus }) {
     const [skip, setSkip] = useState(0);
     const [take, setTake] = useState(5);
     const [totalComment, setTotalComment] = useState(0);
+    const [countComment, setCountComment] = useState(0);
+    const [totalParentComment, setTotalParentComment] = useState(0);
     const [comments, setComments] = useState([]);
 
     const toHtml = (data) => {
@@ -74,8 +77,18 @@ export default function Single({ auth, news, menus }) {
                 take: take,
             })
             .then((res) => {
-                setComments(res.data.comments);
+                let skip_new = parseInt(skip) + parseInt(take);
+                setSkip(skip_new);
+                let comment = res.data.comments;
+                setComments((prev) => [...prev, ...comment]);
+                if (comments.length == 0) {
+                    setCountComment(res.data.comments.length);
+                } else {
+                    setCountComment(comments.length);
+                }
                 setTotalComment(res.data.total_comment);
+                setTotalParentComment(res.data.total_parent_comment);
+                console.log(countComment + "!==" + totalParentComment);
             });
     };
 
@@ -208,8 +221,15 @@ export default function Single({ auth, news, menus }) {
                                                             .substring(1, 0)
                                                             .toUpperCase()}
                                                     </div>
-                                                    <div className="font-medium text-base">
-                                                        {comment.user?.name}
+                                                    <div className="">
+                                                        <div className="font-medium text-base">
+                                                            {comment.user?.name}
+                                                        </div>
+                                                        <div className="text-xs">
+                                                            {dateReadable(
+                                                                comment.created_at
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div className="ps-12 text-sm mt-2">
@@ -219,9 +239,15 @@ export default function Single({ auth, news, menus }) {
                                         );
                                     })}
                                     <div className="flex items-center justify-center">
-                                        <div className="bg-slate-500 px-8 py-2 rounded-full text-white">
-                                            Load More
-                                        </div>
+                                        {totalParentComment !==
+                                            countComment && (
+                                            <button
+                                                onClick={() => getComments()}
+                                                className="bg-slate-500 px-8 py-2 rounded-full text-white"
+                                            >
+                                                Load More
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

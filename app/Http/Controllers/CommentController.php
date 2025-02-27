@@ -43,6 +43,12 @@ class CommentController extends Controller
         return $comments;
     }
 
+    public function getTotalParentComment($news_id)
+    {
+        $comments = Comment::where('news_id', $news_id)->whereNull('parent_id')->get()->count();
+        return $comments;
+    }
+
     public function getComments(Request $request, $news_id)
     {
         $comments = Comment::with('user')
@@ -50,16 +56,19 @@ class CommentController extends Controller
             ->whereNull('parent_id')
             ->skip($request->skip)
             ->take($request->take)
+            ->orderBy('created_at','asc')
             ->get()->map(function ($comment, $key) {
                 $comment->replies = Comment::where('parent_id', $comment->id)
                     ->get()
                     ->count();
                 return $comment;
             });
+        $totalParentComment = $this->getTotalParentComment($news_id);
         $totalComments = $this->getTotalComment($news_id);
         return response()->json([
             'comments' => $comments,
-            'total_comment' => $totalComments
+            'total_comment' => $totalComments,
+            'total_parent_comment' => $totalParentComment
         ]);
     }
 
