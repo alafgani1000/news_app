@@ -46,12 +46,11 @@ export default function Authenticated({
 
                                 <NavLink
                                     href={route("page.index")}
-                                    active={route().current("pages.index")}
+                                    active={route().current("page.index")}
                                 >
                                     <i className="bi bi-journal-text me-2"></i>
                                     Pages
                                 </NavLink>
-
 
                                 <NavLink
                                     href={route("galery.index")}
@@ -88,16 +87,12 @@ export default function Authenticated({
                                         </Dropdown.Trigger>
                                         <Dropdown.Content>
                                             <Dropdown.Link
-                                                href={route(
-                                                    "menu.index"
-                                                )}
+                                                href={route("menu.index")}
                                             >
                                                 Menu
                                             </Dropdown.Link>
                                             <Dropdown.Link
-                                                href={route(
-                                                    "category.index"
-                                                )}
+                                                href={route("category.index")}
                                             >
                                                 Category
                                             </Dropdown.Link>
