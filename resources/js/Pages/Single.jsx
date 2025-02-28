@@ -235,6 +235,12 @@ export default function Single({ auth, news, menus }) {
                                                 <div className="ps-12 text-sm mt-2">
                                                     {comment.content}
                                                 </div>
+                                                <div className="ps-12 text-xs mt-2">
+                                                    <button className="bg-gray-200 shadow rounded-full py-0.5 px-1.5 text-black ms-4">
+                                                        <i class="bi bi-chat-fill me-1 text-sm text-white font-bold"></i>
+                                                        Reply
+                                                    </button>
+                                                </div>
                                             </div>
                                         );
                                     })}
