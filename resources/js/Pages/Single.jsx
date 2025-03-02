@@ -77,6 +77,25 @@ export default function Single({ auth, news, menus }) {
                 take: take,
             })
             .then((res) => {
+                setComments(res.data.comments);
+                let comment = res.data.comments;
+                if (comments.length == 0) {
+                    setCountComment(res.data.comments.length);
+                } else {
+                    setCountComment(comments.length);
+                }
+                setCountComment(comments.length);
+                setTotalParentComment(res.data.total_parent_comment);
+            });
+    };
+
+    const getMoreComments = () => {
+        axios
+            .put(`/comment/${news.id}`, {
+                skip: skip,
+                take: take,
+            })
+            .then((res) => {
                 let skip_new = parseInt(skip) + parseInt(take);
                 setSkip(skip_new);
                 let comment = res.data.comments;
@@ -88,7 +107,7 @@ export default function Single({ auth, news, menus }) {
                 }
                 setTotalComment(res.data.total_comment);
                 setTotalParentComment(res.data.total_parent_comment);
-                console.log(countComment + "!==" + totalParentComment);
+                // console.log(countComment + "===" + totalParentComment)
             });
     };
 
@@ -169,7 +188,7 @@ export default function Single({ auth, news, menus }) {
                             <div className="bg-gray-100 mb-2 max-w-full text-base px-2 py-2 rounded-lg">
                                 <div className="max-w-full sm:max-w-full">
                                     {message != "" && message != undefined ? (
-                                        <div className="py-2 px-2 bg-gray-200 my-2 text-sm">
+                                        <div className="py-2 px-2 bg-gray-100 my-2 text-sm rounded-sm">
                                             <p>{message}</p>
                                         </div>
                                     ) : (
@@ -237,7 +256,7 @@ export default function Single({ auth, news, menus }) {
                                                 </div>
                                                 <div className="ps-12 text-xs mt-2">
                                                     <button className="bg-gray-200 shadow rounded-full py-0.5 px-1.5 text-black ms-4">
-                                                        <i class="bi bi-chat-fill me-1 text-sm text-white font-bold"></i>
+                                                        <i className="bi bi-chat-fill me-1 text-sm text-white font-bold"></i>
                                                         Reply
                                                     </button>
                                                 </div>
@@ -245,15 +264,15 @@ export default function Single({ auth, news, menus }) {
                                         );
                                     })}
                                     <div className="flex items-center justify-center">
-                                        {totalParentComment !==
+                                        {totalParentComment >
                                             countComment && (
-                                            <button
-                                                onClick={() => getComments()}
-                                                className="bg-slate-500 px-8 py-2 rounded-full text-white"
-                                            >
-                                                Load More
-                                            </button>
-                                        )}
+                                                <button
+                                                    onClick={() => getMoreComments()}
+                                                    className="bg-slate-500 px-8 py-2 rounded-full text-white"
+                                                >
+                                                    Load More
+                                                </button>
+                                            )}
                                     </div>
                                 </div>
                             </div>

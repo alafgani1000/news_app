@@ -56,7 +56,7 @@ class CommentController extends Controller
             ->whereNull('parent_id')
             ->skip($request->skip)
             ->take($request->take)
-            ->orderBy('created_at','asc')
+            ->orderBy('created_at','desc')
             ->get()->map(function ($comment, $key) {
                 $comment->replies = Comment::where('parent_id', $comment->id)
                     ->get()
@@ -76,6 +76,7 @@ class CommentController extends Controller
     {
         $replies = Comment::with('user')
             ->where('parent_id', $comment_id)
+            ->orderBy('created_at', 'desc')
             ->get()->map(function ($comment, $key) {
                 $comment->replies = Comment::where('parent_id', $comment->id)
                     ->get()
