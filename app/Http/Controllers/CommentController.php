@@ -24,6 +24,21 @@ class CommentController extends Controller
         return response('Thanks for your comment');
     }
 
+    public function reply(Request $request, $id) {
+        $comment = Comment::find($id);
+        $request->validate([
+            'content' => 'required'
+        ]);
+        $reply = new Comment();
+        $reply->content = $request->content;
+        $reply->news_id = $comment->news_id;
+        $reply->user_id = auth()->id();
+        $reply->parent_id = $comment->id;
+        $reply->save();
+
+        return response('Thanks for your comment');
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([

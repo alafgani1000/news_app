@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
     Route::put('/comment/{id}/update', [CommentController::class, 'update'])->name('comment.update');
     Route::get('/comment-replies/{comment_id}', [CommentController::class, 'getReplies'])->name('comment.get_repplies');
+    Route::put('/comment/{id}/reply', [CommentController::class, 'reply'])->name('comment.reply');
 
     Route::prefix('admin')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
