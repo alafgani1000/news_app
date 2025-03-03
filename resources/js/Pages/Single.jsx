@@ -111,58 +111,89 @@ export default function Single({ auth, news, menus }) {
             });
     };
 
-
     const FormComment = ({ id, replies = 0 }) => {
-        const [formStatus, setFormStatus] = useState(false)
-        const [commentContent, setCommentContent] = useState("")
-        const [commentMessage, setCommentMessage] = useState("")
+        const [formStatus, setFormStatus] = useState(false);
+        const [commentContent, setCommentContent] = useState("");
+        const [commentMessage, setCommentMessage] = useState("");
 
         function replyComment(event) {
             event.preventDefault();
-            axios.put(`/comment/${id}/reply`, {
-                content: commentContent
-            }).then(function (res) {
-                setCommentMessage(res.data)
-            });
+            axios
+                .put(`/comment/${id}/reply`, {
+                    content: commentContent,
+                })
+                .then(function (res) {
+                    setCommentMessage(res.data);
+                });
         }
 
         if (formStatus == false) {
-            return <div className="flex ">
-                <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"><span><i class="bi bi-chevron-down me-2"></i>{replies} Reply</span></div>
-                <button onClick={() => setFormStatus(true)} className="bg-gray-200 shadow rounded-full py-1 px-4 text-black">
-                    Reply
-                </button>
-            </div >
-        } else {
-            return <>
+            return (
                 <div className="flex ">
-                    <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"><span><i class="bi bi-chevron-down me-2"></i>{replies} Reply</span></div>
-                    <button onClick={() => setFormStatus(false)} className="bg-gray-200 shadow rounded-full py-1 px-4 text-black">
+                    <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
+                        <span>
+                            <i class="bi bi-chevron-down me-2"></i>
+                            {replies} Replies
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => setFormStatus(true)}
+                        className="shadow rounded-full px-2 text-black"
+                    >
                         Reply
                     </button>
-                </div >
-                <form onSubmit={replyComment} className="bg-gray-300 py-2 px-2 rounded-md my-4">
-                    <div className="mb-4 mt-2">
-                        <p className="font-medium text-sm">{commentMessage}</p>
-                    </div>
-                    <div className="bg-white py-2 px-3 rounded-lg">
-                        <textarea
-                            onChange={(e) => setCommentContent(e.target.value)}
-                            value={commentContent}
-                            className="w-full border-none bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
-                            required
-                            placeholder="Add Comment..."
-                        ></textarea>
-                        <div className="flex justify-end">
-                            <button type="submit" className="bg-blue-500 text-white px-3 py-1.5 text-sm rounded-full">
-                                Submit
-                            </button>
+                </div>
+            );
+        } else {
+            return (
+                <>
+                    <div className="flex ">
+                        <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
+                            <span>
+                                <i class="bi bi-chevron-down me-2"></i>
+                                {replies} Replies
+                            </span>
                         </div>
+                        <button
+                            onClick={() => setFormStatus(false)}
+                            className="shadow rounded-full px-2 text-black"
+                        >
+                            Reply
+                        </button>
                     </div>
-                </form>
-            </>
+                    <form
+                        onSubmit={replyComment}
+                        className="bg-gray-300 py-2 px-2 rounded-md my-4"
+                    >
+                        <div className="mb-4 mt-2">
+                            <p className="font-medium text-sm">
+                                {commentMessage}
+                            </p>
+                        </div>
+                        <div className="bg-white py-2 px-3 rounded-lg">
+                            <textarea
+                                onChange={(e) =>
+                                    setCommentContent(e.target.value)
+                                }
+                                value={commentContent}
+                                className="w-full border-none bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
+                                required
+                                placeholder="Add Comment..."
+                            ></textarea>
+                            <div className="flex justify-end">
+                                <button
+                                    type="submit"
+                                    className="bg-blue-500 text-white px-3 py-1.5 text-sm rounded-full"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </>
+            );
         }
-    }
+    };
 
     useEffect(() => {
         setEditorState(fromHtml(news.content));
@@ -309,21 +340,27 @@ export default function Single({ auth, news, menus }) {
                                                 </div>
                                                 <div className="ps-12 text-xs mt-2">
                                                     {/* reply */}
-                                                    <FormComment id={comment.id} replies={comment.replies} />
+                                                    <FormComment
+                                                        id={comment.id}
+                                                        replies={
+                                                            comment.replies
+                                                        }
+                                                    />
                                                 </div>
                                             </div>
                                         );
                                     })}
                                     <div className="flex items-center justify-center">
-                                        {totalParentComment >
-                                            countComment && (
-                                                <button
-                                                    onClick={() => getMoreComments()}
-                                                    className="bg-slate-500 px-8 py-2 rounded-full text-white"
-                                                >
-                                                    Load More
-                                                </button>
-                                            )}
+                                        {totalParentComment > countComment && (
+                                            <button
+                                                onClick={() =>
+                                                    getMoreComments()
+                                                }
+                                                className="bg-slate-500 px-8 py-2 rounded-full text-white"
+                                            >
+                                                Load More
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
