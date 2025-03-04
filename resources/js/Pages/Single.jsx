@@ -111,6 +111,33 @@ export default function Single({ auth, news, menus }) {
             });
     };
 
+    const ViewReplies = ({ id, isClicked = false }) => {
+        const [replies, setReplies] = useState([]);
+        const [hasLoaded, setHasLoaded] = useState(false);
+
+        function getReplies() {
+            axios.get(`/comment-replies/${id}`).then((res) => {
+                setReplies(res.data);
+            });
+        }
+
+        useEffect(() => {
+            if (isClicked) {
+                getReplies();
+                setHasLoaded(true);
+            }
+        }, [isClicked]);
+
+        return (
+            <div>
+                {isClicked &&
+                    replies.map((reply, index) => {
+                        return <div key={index}>replay {index}</div>;
+                    })}
+            </div>
+        );
+    };
+
     const FormComment = ({ id, replies = 0 }) => {
         const [formStatus, setFormStatus] = useState(false);
         const [commentContent, setCommentContent] = useState("");
@@ -132,7 +159,10 @@ export default function Single({ auth, news, menus }) {
             return (
                 <div>
                     <div className="flex ">
-                        <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
+                        <div
+                            onClick={() => setShowReplies(!showReplies)}
+                            className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
+                        >
                             <span>
                                 <i className="bi bi-chevron-down me-2"></i>
                                 {replies} Replies
@@ -145,13 +175,19 @@ export default function Single({ auth, news, menus }) {
                             Reply
                         </button>
                     </div>
+                    <div>
+                        <ViewReplies id={id} isClicked={showReplies} />
+                    </div>
                 </div>
             );
         } else {
             return (
                 <>
                     <div>
-                        <div className="flex">
+                        <div
+                            onClick={() => setShowReplies(!showReplies)}
+                            className="flex"
+                        >
                             <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
                                 <span>
                                     <i className="bi bi-chevron-down me-2"></i>
@@ -164,6 +200,9 @@ export default function Single({ auth, news, menus }) {
                             >
                                 Reply
                             </button>
+                        </div>
+                        <div>
+                            <ViewReplies id={id} />
                         </div>
                     </div>
                     <form
