@@ -155,21 +155,21 @@ export default function Single({ auth, news, menus }) {
                 });
         }
 
-        if (formStatus == false) {
-            return (
+        return (
+            <>
                 <div>
-                    <div className="flex ">
-                        <div
-                            onClick={() => setShowReplies(!showReplies)}
-                            className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
-                        >
+                    <div
+
+                        className="flex"
+                    >
+                        <div onClick={() => setShowReplies(!showReplies)} className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
                             <span>
                                 <i className="bi bi-chevron-down me-2"></i>
                                 {replies} Replies
                             </span>
                         </div>
                         <button
-                            onClick={() => setFormStatus(true)}
+                            onClick={() => setFormStatus(!formStatus)}
                             className="shadow rounded-full px-2 text-black"
                         >
                             Reply
@@ -179,32 +179,7 @@ export default function Single({ auth, news, menus }) {
                         <ViewReplies id={id} isClicked={showReplies} />
                     </div>
                 </div>
-            );
-        } else {
-            return (
-                <>
-                    <div>
-                        <div
-                            onClick={() => setShowReplies(!showReplies)}
-                            className="flex"
-                        >
-                            <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
-                                <span>
-                                    <i className="bi bi-chevron-down me-2"></i>
-                                    {replies} Replies
-                                </span>
-                            </div>
-                            <button
-                                onClick={() => setFormStatus(false)}
-                                className="shadow rounded-full px-2 text-black"
-                            >
-                                Reply
-                            </button>
-                        </div>
-                        <div>
-                            <ViewReplies id={id} />
-                        </div>
-                    </div>
+                {formStatus && (
                     <form
                         onSubmit={replyComment}
                         className="bg-gray-300 py-2 px-2 rounded-md my-4"
@@ -233,10 +208,10 @@ export default function Single({ auth, news, menus }) {
                                 </button>
                             </div>
                         </div>
-                    </form>
-                </>
-            );
-        }
+                    </form>)}
+            </>
+        );
+
     };
 
     useEffect(() => {

@@ -44,6 +44,7 @@ Route::get('/news/latest-news', [NewsController::class, 'latestNews'])->name('ne
 
 // comment
 Route::put('/comment/{news_id}/', [CommentController::class, 'getComments'])->name('comment.get_comments');
+Route::get('/comment-replies/{comment_id}', [CommentController::class, 'getReplies'])->name('comment.get_repplies');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -53,7 +54,6 @@ Route::middleware('auth')->group(function () {
     // comment
     Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
     Route::put('/comment/{id}/update', [CommentController::class, 'update'])->name('comment.update');
-    Route::get('/comment-replies/{comment_id}', [CommentController::class, 'getReplies'])->name('comment.get_repplies');
     Route::put('/comment/{id}/reply', [CommentController::class, 'reply'])->name('comment.reply');
 
     Route::prefix('admin')->group(function () {
