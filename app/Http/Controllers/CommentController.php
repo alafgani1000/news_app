@@ -96,6 +96,7 @@ class CommentController extends Controller
                 $comment->replies = Comment::where('parent_id', $comment->id)
                     ->get()
                     ->count();
+                return $comment;
             });
 
         return response()->json($replies);

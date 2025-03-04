@@ -115,6 +115,7 @@ export default function Single({ auth, news, menus }) {
         const [formStatus, setFormStatus] = useState(false);
         const [commentContent, setCommentContent] = useState("");
         const [commentMessage, setCommentMessage] = useState("");
+        const [showReplies, setShowReplies] = useState(false);
 
         function replyComment(event) {
             event.preventDefault();
@@ -129,37 +130,41 @@ export default function Single({ auth, news, menus }) {
 
         if (formStatus == false) {
             return (
-                <div className="flex ">
-                    <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
-                        <span>
-                            <i class="bi bi-chevron-down me-2"></i>
-                            {replies} Replies
-                        </span>
+                <div>
+                    <div className="flex ">
+                        <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
+                            <span>
+                                <i className="bi bi-chevron-down me-2"></i>
+                                {replies} Replies
+                            </span>
+                        </div>
+                        <button
+                            onClick={() => setFormStatus(true)}
+                            className="shadow rounded-full px-2 text-black"
+                        >
+                            Reply
+                        </button>
                     </div>
-                    <button
-                        onClick={() => setFormStatus(true)}
-                        className="shadow rounded-full px-2 text-black"
-                    >
-                        Reply
-                    </button>
                 </div>
             );
         } else {
             return (
                 <>
-                    <div className="flex ">
-                        <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
-                            <span>
-                                <i class="bi bi-chevron-down me-2"></i>
-                                {replies} Replies
-                            </span>
+                    <div>
+                        <div className="flex">
+                            <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
+                                <span>
+                                    <i className="bi bi-chevron-down me-2"></i>
+                                    {replies} Replies
+                                </span>
+                            </div>
+                            <button
+                                onClick={() => setFormStatus(false)}
+                                className="shadow rounded-full px-2 text-black"
+                            >
+                                Reply
+                            </button>
                         </div>
-                        <button
-                            onClick={() => setFormStatus(false)}
-                            className="shadow rounded-full px-2 text-black"
-                        >
-                            Reply
-                        </button>
                     </div>
                     <form
                         onSubmit={replyComment}
