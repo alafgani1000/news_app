@@ -113,7 +113,23 @@ export default function Single({ auth, news, menus }) {
 
     const ViewReplies = ({ id, isClicked = false }) => {
         const [replies, setReplies] = useState([]);
+        const [formStatus, setFormStatus] = useState(false);
         const [hasLoaded, setHasLoaded] = useState(false);
+
+        const [commentContent, setCommentContent] = useState("");
+        const [commentMessage, setCommentMessage] = useState("");
+        const [showReplies, setShowReplies] = useState(false);
+
+        function replyComment(event) {
+            event.preventDefault();
+            axios
+                .put(`/comment/${id}/reply`, {
+                    content: commentContent,
+                })
+                .then(function (res) {
+                    setCommentMessage(res.data);
+                });
+        }
 
         function getReplies() {
             axios.get(`/comment-replies/${id}`).then((res) => {
@@ -125,6 +141,7 @@ export default function Single({ auth, news, menus }) {
             if (isClicked) {
                 getReplies();
                 setHasLoaded(true);
+                console.log(id);
             }
         }, [isClicked]);
 
@@ -132,7 +149,91 @@ export default function Single({ auth, news, menus }) {
             <div>
                 {isClicked &&
                     replies.map((reply, index) => {
-                        return <div key={index}>replay {index}</div>;
+                        return (
+                            <div className="view-comment my-4" key={reply.id}>
+                                <div className="flex items-center">
+                                    <div className="bg-gray-100 text-2xl py-1 px-3 font-bold rounded-full me-2">
+                                        {reply.user?.name
+                                            .substring(1, 0)
+                                            .toUpperCase()}
+                                    </div>
+                                    <div className="">
+                                        <div className="font-medium text-base">
+                                            {reply.user?.name}
+                                        </div>
+                                        <div className="text-xs">
+                                            {dateReadable(reply.created_at)}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="ps-12 text-sm mt-2">
+                                    {reply.content}
+                                </div>
+                                <div className="ps-12 text-xs mt-2">
+                                    {/* reply */}
+                                    <div>
+                                        <div className="flex">
+                                            <div
+                                                onClick={() =>
+                                                    setShowReplies(!showReplies)
+                                                }
+                                                className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
+                                            >
+                                                <span>
+                                                    <i className="bi bi-chevron-down me-2"></i>
+                                                    {reply.replies} Replies
+                                                </span>
+                                            </div>
+                                            <button
+                                                onClick={() =>
+                                                    setFormStatus(!formStatus)
+                                                }
+                                                className="shadow rounded-full px-2 text-black"
+                                            >
+                                                Reply
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <ViewReplies
+                                                id={reply.id}
+                                                isClicked={showReplies}
+                                            />
+                                        </div>
+                                    </div>
+                                    {formStatus && (
+                                        <form
+                                            onSubmit={replyComment}
+                                            className="bg-gray-300 py-2 px-2 rounded-md my-4"
+                                        >
+                                            <div className="mb-4 mt-2">
+                                                <p className="font-medium text-sm"></p>
+                                            </div>
+                                            <div className="bg-white py-2 px-3 rounded-lg">
+                                                <textarea
+                                                    onChange={(e) =>
+                                                        setCommentContent(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    value={commentContent}
+                                                    className="w-full border-none bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
+                                                    required
+                                                    placeholder="Add Comment..."
+                                                ></textarea>
+                                                <div className="flex justify-end">
+                                                    <button
+                                                        type="submit"
+                                                        className="bg-blue-500 text-white px-3 py-1.5 text-sm rounded-full"
+                                                    >
+                                                        Submit
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    )}
+                                </div>
+                            </div>
+                        );
                     })}
             </div>
         );
@@ -158,11 +259,11 @@ export default function Single({ auth, news, menus }) {
         return (
             <>
                 <div>
-                    <div
-
-                        className="flex"
-                    >
-                        <div onClick={() => setShowReplies(!showReplies)} className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
+                    <div className="flex">
+                        <div
+                            onClick={() => setShowReplies(!showReplies)}
+                            className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
+                        >
                             <span>
                                 <i className="bi bi-chevron-down me-2"></i>
                                 {replies} Replies
@@ -208,10 +309,10 @@ export default function Single({ auth, news, menus }) {
                                 </button>
                             </div>
                         </div>
-                    </form>)}
+                    </form>
+                )}
             </>
         );
-
     };
 
     useEffect(() => {
@@ -335,7 +436,7 @@ export default function Single({ auth, news, menus }) {
                                         return (
                                             <div
                                                 className="view-comment my-4"
-                                                key={index}
+                                                key={comment.id}
                                             >
                                                 <div className="flex items-center">
                                                     <div className="bg-gray-100 text-2xl py-1 px-3 font-bold rounded-full me-2">
