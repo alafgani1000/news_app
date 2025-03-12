@@ -26,6 +26,10 @@ export default function Single({ auth, news, menus }) {
     const [comments, setComments] = useState([]);
     const [showReplies, setShowReplies] = useState(false);
     const [commentClicked, setCommentClicked] = useState({});
+    const [formStatusComment, setFormStatusComment] = useState(false);
+    const [commentMessage, setCommentMessage] = useState("");
+    const [commentContent, setCommentContent] = useState("");
+    const [commentReplyClick, setCommentReplyClick] = useState("");
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
@@ -71,6 +75,17 @@ export default function Single({ auth, news, menus }) {
                 }
             });
     };
+
+    function replyComment(event) {
+        event.preventDefault();
+        axios
+            .put(`/comment/${id}/reply`, {
+                content: commentContent,
+            })
+            .then(function (res) {
+                setCommentMessage(res.data);
+            });
+    }
 
     const getComments = () => {
         axios
@@ -150,25 +165,27 @@ export default function Single({ auth, news, menus }) {
                 <div className="ps-12 text-xs mt-2">
                     {/* reply */}
                     <div>
-                        <div className="flex">
-                            <div
-                                onClick={() => {
-                                    setShowReplies(!showReplies);
-                                    setCommentClicked(reply);
-                                }}
-                                className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
-                            >
-                                <span>
-                                    <i className="bi bi-chevron-down me-2"></i>
-                                    {reply.replies} Replies
-                                </span>
+                        <div>
+                            <div className="flex">
+                                <div
+                                    onClick={() => {
+                                        setShowReplies(!showReplies);
+                                        setCommentClicked(reply);
+                                    }}
+                                    className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
+                                >
+                                    <span>
+                                        <i className="bi bi-chevron-down me-2"></i>
+                                        {reply.replies} Replies
+                                    </span>
+                                </div>
+                                <button
+                                    onClick={() => setFormStatus(!formStatus)}
+                                    className="shadow rounded-full px-2 text-black"
+                                >
+                                    Reply
+                                </button>
                             </div>
-                            <button
-                                onClick={() => setFormStatus(!formStatus)}
-                                className="shadow rounded-full px-2 text-black"
-                            >
-                                Reply
-                            </button>
                             {formStatus && (
                                 <form
                                     onSubmit={replyComment}
@@ -383,33 +400,85 @@ export default function Single({ auth, news, menus }) {
                                                 <div className="ps-12 text-sm mt-2">
                                                     {comment.content}
                                                 </div>
-                                                <div className="flex ms-10 text-xs">
-                                                    <div
-                                                        onClick={() => {
-                                                            setCommentClicked(
-                                                                comment
-                                                            );
-                                                            showReplies =
-                                                                !showReplies;
-                                                        }}
-                                                        className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
-                                                    >
-                                                        <span>
-                                                            <i className="bi bi-chevron-down me-2"></i>
-                                                            {comment.replies}{" "}
-                                                            Replies
-                                                        </span>
+                                                <div className="ms-10 text-xs">
+                                                    <div className="flex">
+                                                        <div
+                                                            onClick={() => {
+                                                                setCommentClicked(
+                                                                    comment
+                                                                );
+                                                                showReplies =
+                                                                    !showReplies;
+                                                            }}
+                                                            className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
+                                                        >
+                                                            <span>
+                                                                <i className="bi bi-chevron-down me-2"></i>
+                                                                {
+                                                                    comment.replies
+                                                                }{" "}
+                                                                Replies
+                                                            </span>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => {
+                                                                setFormStatusComment(
+                                                                    !formStatusComment
+                                                                );
+                                                                setCommentClicked(
+                                                                    comment.id
+                                                                );
+                                                            }}
+                                                            className="shadow rounded-full px-2 text-black"
+                                                        >
+                                                            Reply
+                                                        </button>
                                                     </div>
-                                                    <button
-                                                        onClick={() =>
-                                                            setFormStatus(
-                                                                !formStatus
-                                                            )
-                                                        }
-                                                        className="shadow rounded-full px-2 text-black"
-                                                    >
-                                                        Reply
-                                                    </button>
+                                                    {formStatusComment &&
+                                                        commentClicked ==
+                                                            comment.id && (
+                                                            <form
+                                                                onSubmit={
+                                                                    replyComment
+                                                                }
+                                                                className="bg-gray-300 py-2 px-2 rounded-md my-4"
+                                                            >
+                                                                <div className="mb-4 mt-2">
+                                                                    <p className="font-medium text-sm">
+                                                                        {
+                                                                            commentMessage
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                                <div className="bg-white py-2 px-3 rounded-lg">
+                                                                    <textarea
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
+                                                                            setCommentContent(
+                                                                                e
+                                                                                    .target
+                                                                                    .value
+                                                                            )
+                                                                        }
+                                                                        value={
+                                                                            commentContent
+                                                                        }
+                                                                        className="w-full border-none bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
+                                                                        required
+                                                                        placeholder="Add Comment..."
+                                                                    ></textarea>
+                                                                    <div className="flex justify-end">
+                                                                        <button
+                                                                            type="submit"
+                                                                            className="bg-blue-500 text-white px-3 py-1.5 text-sm rounded-full"
+                                                                        >
+                                                                            Submit
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        )}
                                                 </div>
                                                 <div className="ps-12 text-xs mt-2">
                                                     {/* reply */}
