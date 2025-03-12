@@ -79,6 +79,8 @@ export default function Single({ auth, news, menus }) {
                 take: take,
             })
             .then((res) => {
+                let skip_new = parseInt(skip) + parseInt(take);
+                setSkip(skip_new);
                 setComments(res.data.comments);
                 let comment = res.data.comments;
                 if (comments.length == 0) {
@@ -207,12 +209,7 @@ export default function Single({ auth, news, menus }) {
         );
     };
 
-    const FormComment = ({
-        id,
-        countComment = 0,
-        commentClicked,
-        showReplies,
-    }) => {
+    const FormComment = ({ id }) => {
         const [replies, setReplies] = useState();
 
         function getReplies() {
@@ -227,20 +224,18 @@ export default function Single({ auth, news, menus }) {
         }, []);
 
         return (
-            <>
-                <div>
-                    <div>
-                        {replies?.map((reply, index) => {
-                            return (
-                                reply.parent_id == commentClicked.id &&
-                                showReplies && (
-                                    <ViewReplies key={index} reply={reply} />
-                                )
-                            );
-                        })}
-                    </div>
-                </div>
-            </>
+            <div>
+                {replies?.map((reply, index) => {
+                    return (
+                        <div key={reply.id}>
+                            <ViewReplies key={index} reply={reply} />
+                            <div className="ps-12 mt-2 text-xs">
+                                <FormComment id={reply.id} />
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         );
     };
 
@@ -362,6 +357,7 @@ export default function Single({ auth, news, menus }) {
                                 </div>
                                 <div className="my-8">
                                     {comments.map((comment, index) => {
+                                        let showReplies = false;
                                         return (
                                             <div
                                                 className="view-comment my-4"
@@ -393,9 +389,8 @@ export default function Single({ auth, news, menus }) {
                                                             setCommentClicked(
                                                                 comment
                                                             );
-                                                            setShowReplies(
-                                                                !showReplies
-                                                            );
+                                                            showReplies =
+                                                                !showReplies;
                                                         }}
                                                         className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
                                                     >
@@ -420,15 +415,6 @@ export default function Single({ auth, news, menus }) {
                                                     {/* reply */}
                                                     <FormComment
                                                         id={comment.id}
-                                                        countComment={
-                                                            comment.replies
-                                                        }
-                                                        commentClicked={
-                                                            commentClicked
-                                                        }
-                                                        showReplies={
-                                                            showReplies
-                                                        }
                                                     />
                                                 </div>
                                             </div>

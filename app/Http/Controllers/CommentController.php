@@ -71,7 +71,7 @@ class CommentController extends Controller
             ->whereNull('parent_id')
             ->skip($request->skip)
             ->take($request->take)
-            ->orderBy('created_at','desc')
+            ->orderBy('created_at','asc')
             ->get()->map(function ($comment, $key) {
                 $comment->replies = Comment::where('parent_id', $comment->id)
                     ->get()
@@ -80,6 +80,7 @@ class CommentController extends Controller
             });
         $totalParentComment = $this->getTotalParentComment($news_id);
         $totalComments = $this->getTotalComment($news_id);
+        // dd($comments);
         return response()->json([
             'comments' => $comments,
             'total_comment' => $totalComments,
