@@ -246,6 +246,7 @@ export default function Single({ auth, news, menus }) {
                     return (
                         <div key={reply.id}>
                             <ViewReplies key={index} reply={reply} />
+
                             <div className="ps-12 mt-2 text-xs">
                                 <FormComment id={reply.id} />
                             </div>
@@ -402,16 +403,7 @@ export default function Single({ auth, news, menus }) {
                                                 </div>
                                                 <div className="ms-10 text-xs">
                                                     <div className="flex">
-                                                        <div
-                                                            onClick={() => {
-                                                                setCommentClicked(
-                                                                    comment
-                                                                );
-                                                                showReplies =
-                                                                    !showReplies;
-                                                            }}
-                                                            className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
-                                                        >
+                                                        <div className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer">
                                                             <span>
                                                                 <i className="bi bi-chevron-down me-2"></i>
                                                                 {
