@@ -96,8 +96,11 @@ export default function Single({ auth, news, menus }) {
             .then((res) => {
                 let skip_new = parseInt(skip) + parseInt(take);
                 setSkip(skip_new);
-                setComments(res.data.comments);
-                let comment = res.data.comments;
+                let commentMap = res.data.comments.map((val, index) => {
+                    val['show_replies'] = false;
+                    return val;
+                })
+                setComments(commentMap);
                 if (comments.length == 0) {
                     setCountComment(res.data.comments.length);
                 } else {
@@ -232,7 +235,7 @@ export default function Single({ auth, news, menus }) {
         function getReplies() {
             axios.get(`/comment-replies/${id}`).then((res) => {
                 setReplies(res.data);
-                console.log(res.data);
+                // console.log(res.data);
             });
         }
 
@@ -404,11 +407,8 @@ export default function Single({ auth, news, menus }) {
                                                     <div className="flex">
                                                         <div
                                                             onClick={() => {
-                                                                setCommentClicked(
-                                                                    comment
-                                                                );
-                                                                showReplies =
-                                                                    !showReplies;
+                                                                comment.show_replies = true
+
                                                             }}
                                                             className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
                                                         >
@@ -436,7 +436,7 @@ export default function Single({ auth, news, menus }) {
                                                     </div>
                                                     {formStatusComment &&
                                                         commentClicked ==
-                                                            comment.id && (
+                                                        comment.id && (
                                                             <form
                                                                 onSubmit={
                                                                     replyComment
@@ -482,9 +482,11 @@ export default function Single({ auth, news, menus }) {
                                                 </div>
                                                 <div className="ps-12 text-xs mt-2">
                                                     {/* reply */}
-                                                    <FormComment
-                                                        id={comment.id}
-                                                    />
+                                                    {comment.show_replies &&
+                                                        <FormComment
+                                                            id={comment.id}
+
+                                                        />}
                                                 </div>
                                             </div>
                                         );
