@@ -24,7 +24,6 @@ export default function Single({ auth, news, menus }) {
     const [countComment, setCountComment] = useState(0);
     const [totalParentComment, setTotalParentComment] = useState(0);
     const [comments, setComments] = useState([]);
-    const [commentMessage, setCommentMessage] = useState("");
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
@@ -127,11 +126,12 @@ export default function Single({ auth, news, menus }) {
         const [formStatus, setFormStatus] = useState(false);
         const [commentContent, setCommentContent] = useState("");
         const [commentMessage, setCommentMessage] = useState("");
+        const [replyClicked, setReplyClicked] = useState({})
 
         function replyComment(event) {
             event.preventDefault();
             axios
-                .put(`/comment/${id}/reply`, {
+                .put(`/comment/${replyClicked.id}/reply`, {
                     content: commentContent,
                 })
                 .then(function (res) {
@@ -170,7 +170,10 @@ export default function Single({ auth, news, menus }) {
                                     </span>
                                 </div>
                                 <button
-                                    onClick={() => setFormStatus(!formStatus)}
+                                    onClick={() => {
+                                        setFormStatus(!formStatus);
+                                        setReplyClicked(reply)
+                                    }}
                                     className="shadow rounded-full px-2 text-black"
                                 >
                                     Reply
@@ -269,15 +272,21 @@ export default function Single({ auth, news, menus }) {
         const [commentClicked, setCommentClicked] = useState({});
         const [formStatusComment, setFormStatusComment] = useState(false);
         const [commentContent, setCommentContent] = useState("")
+        const [commentMessage, setCommentMessage] = useState("");
 
         function replyComment(event) {
             event.preventDefault();
             axios
-                .put(`/comment/${id}/reply`, {
+                .put(`/comment/${commentClicked.id}/reply`, {
                     content: commentContent,
                 })
                 .then(function (res) {
                     setCommentMessage(res.data);
+                })
+                .catch((err) => {
+                    if (err.status == 401) {
+                        window.open("/login", "_blank");
+                    }
                 });
         }
 
@@ -322,7 +331,7 @@ export default function Single({ auth, news, menus }) {
                                 !formStatusComment
                             );
                             setCommentClicked(
-                                comment.id
+                                comment
                             );
                         }}
                         className="shadow rounded-full px-2 text-black"
@@ -331,7 +340,7 @@ export default function Single({ auth, news, menus }) {
                     </button>
                 </div>
                 {formStatusComment &&
-                    commentClicked ==
+                    commentClicked.id ==
                     comment.id && (
                         <form
                             onSubmit={
