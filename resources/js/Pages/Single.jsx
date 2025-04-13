@@ -24,12 +24,7 @@ export default function Single({ auth, news, menus }) {
     const [countComment, setCountComment] = useState(0);
     const [totalParentComment, setTotalParentComment] = useState(0);
     const [comments, setComments] = useState([]);
-    const [showReplies, setShowReplies] = useState(false);
-    const [commentClicked, setCommentClicked] = useState({});
-    const [formStatusComment, setFormStatusComment] = useState(false);
     const [commentMessage, setCommentMessage] = useState("");
-    const [commentContent, setCommentContent] = useState("");
-    const [commentReplyClick, setCommentReplyClick] = useState("");
 
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
@@ -76,17 +71,6 @@ export default function Single({ auth, news, menus }) {
             });
     };
 
-    function replyComment(event) {
-        event.preventDefault();
-        axios
-            .put(`/comment/${id}/reply`, {
-                content: commentContent,
-            })
-            .then(function (res) {
-                setCommentMessage(res.data);
-            });
-    }
-
     const getComments = () => {
         axios
             .put(`/comment/${news.id}`, {
@@ -102,28 +86,16 @@ export default function Single({ auth, news, menus }) {
                 })
                 setComments(commentMap);
                 if (comments.length == 0) {
+                    // console.log(res.data.comments.length)
                     setCountComment(res.data.comments.length);
                 } else {
                     setCountComment(comments.length);
                 }
+                setTotalComment(res.data.total_comment);
                 setCountComment(comments.length);
                 setTotalParentComment(res.data.total_parent_comment);
             });
     };
-
-    const changeShowReplies = (id) => {
-        const commentData = comments;
-        let commentMap = commentData.find((value) => {
-            return value.id == id;
-        });
-        if (commentMap.show_replies == false) {
-            commentMap.show_replies = true;
-        } else {
-            commentMap.show_replies = false;
-        }
-        setComments(comments.map((prev) => ({ ...prev, commentMap })))
-        // console.log(commentMap)
-    }
 
     const getMoreComments = () => {
         axios
@@ -293,6 +265,142 @@ export default function Single({ auth, news, menus }) {
         );
     };
 
+    const ViewComment = ({ comment, commentShow }) => {
+        const [commentClicked, setCommentClicked] = useState({});
+        const [formStatusComment, setFormStatusComment] = useState(false);
+        const [commentContent, setCommentContent] = useState("")
+
+        function replyComment(event) {
+            event.preventDefault();
+            axios
+                .put(`/comment/${id}/reply`, {
+                    content: commentContent,
+                })
+                .then(function (res) {
+                    setCommentMessage(res.data);
+                });
+        }
+
+        return <>
+            <div className="flex items-center">
+                <div className="bg-gray-100 text-2xl py-1 px-3 font-bold rounded-full me-2">
+                    {comment.user?.name
+                        .substring(1, 0)
+                        .toUpperCase()}
+                </div>
+                <div className="">
+                    <div className="font-medium text-base">
+                        {comment.user?.name}
+                    </div>
+                    <div className="text-xs">
+                        {dateReadable(
+                            comment.created_at
+                        )}
+                    </div>
+                </div>
+            </div>
+            <div className="ps-12 text-sm mt-2">
+                {comment.content}
+            </div>
+            <div className="ms-10 text-xs">
+                <div className="flex">
+                    <div
+                        onClick={commentShow}
+                        className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
+                    >
+                        <span>
+                            <i className="bi bi-chevron-down me-2"></i>
+                            {
+                                comment.replies
+                            }{" "}
+                            Replies
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => {
+                            setFormStatusComment(
+                                !formStatusComment
+                            );
+                            setCommentClicked(
+                                comment.id
+                            );
+                        }}
+                        className="shadow rounded-full px-2 text-black"
+                    >
+                        Reply
+                    </button>
+                </div>
+                {formStatusComment &&
+                    commentClicked ==
+                    comment.id && (
+                        <form
+                            onSubmit={
+                                replyComment
+                            }
+                            className="bg-gray-300 py-2 px-2 rounded-md my-4"
+                        >
+                            <div className="mb-4 mt-2">
+                                <p className="font-medium text-sm">
+                                    {
+                                        commentMessage
+                                    }
+                                </p>
+                            </div>
+                            <div className="bg-white py-2 px-3 rounded-lg">
+                                <textarea
+                                    onChange={(
+                                        e
+                                    ) =>
+                                        setCommentContent(
+                                            e
+                                                .target
+                                                .value
+                                        )
+                                    }
+                                    value={
+                                        commentContent
+                                    }
+                                    className="w-full border-none bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
+                                    required
+                                    placeholder="Add Comment..."
+                                ></textarea>
+                                <div className="flex justify-end">
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-500 text-white px-3 py-1.5 text-sm rounded-full"
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    )}
+            </div>
+        </>
+    }
+
+    const ViewComments = ({ comment }) => {
+        const [isShowComment, setIsShowComment] = useState(false)
+
+        const changeShowReplies = () => {
+            setIsShowComment(!isShowComment);
+        }
+        return <div
+            className="view-comment my-4"
+        >
+            <ViewComment comment={comment} commentShow={() => changeShowReplies()} />
+
+            <div className="ps-12 text-xs mt-2">
+                {/* reply */}
+                {isShowComment &&
+                    <FormComment
+                        id={comment.id}
+
+                    />}
+            </div>
+        </div>
+    }
+
     useEffect(() => {
         setEditorState(fromHtml(news.content));
         getLatestNews();
@@ -411,117 +519,7 @@ export default function Single({ auth, news, menus }) {
                                 </div>
                                 <div className="my-8">
                                     {comments.map((comment, index) => {
-                                        return (
-                                            <div
-                                                className="view-comment my-4"
-                                                key={comment.id}
-                                            >
-                                                <div className="flex items-center">
-                                                    <div className="bg-gray-100 text-2xl py-1 px-3 font-bold rounded-full me-2">
-                                                        {comment.user?.name
-                                                            .substring(1, 0)
-                                                            .toUpperCase()}
-                                                    </div>
-                                                    <div className="">
-                                                        <div className="font-medium text-base">
-                                                            {comment.user?.name}
-                                                        </div>
-                                                        <div className="text-xs">
-                                                            {dateReadable(
-                                                                comment.created_at
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="ps-12 text-sm mt-2">
-                                                    {comment.content}
-                                                </div>
-                                                <div className="ms-10 text-xs">
-                                                    <div className="flex">
-                                                        <div
-                                                            onClick={() => {
-                                                                changeShowReplies(comment.id)
-                                                            }}
-                                                            className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
-                                                        >
-                                                            <span>
-                                                                <i className="bi bi-chevron-down me-2"></i>
-                                                                {
-                                                                    comment.replies
-                                                                }{" "}
-                                                                Replies
-                                                            </span>
-                                                        </div>
-                                                        <button
-                                                            onClick={() => {
-                                                                setFormStatusComment(
-                                                                    !formStatusComment
-                                                                );
-                                                                setCommentClicked(
-                                                                    comment.id
-                                                                );
-                                                            }}
-                                                            className="shadow rounded-full px-2 text-black"
-                                                        >
-                                                            Reply
-                                                        </button>
-                                                    </div>
-                                                    {formStatusComment &&
-                                                        commentClicked ==
-                                                        comment.id && (
-                                                            <form
-                                                                onSubmit={
-                                                                    replyComment
-                                                                }
-                                                                className="bg-gray-300 py-2 px-2 rounded-md my-4"
-                                                            >
-                                                                <div className="mb-4 mt-2">
-                                                                    <p className="font-medium text-sm">
-                                                                        {
-                                                                            commentMessage
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                                <div className="bg-white py-2 px-3 rounded-lg">
-                                                                    <textarea
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            setCommentContent(
-                                                                                e
-                                                                                    .target
-                                                                                    .value
-                                                                            )
-                                                                        }
-                                                                        value={
-                                                                            commentContent
-                                                                        }
-                                                                        className="w-full border-none bg-white ring-transparent hover:border-none hover:ring-transparent focus:border-none focus:ring-transparent"
-                                                                        required
-                                                                        placeholder="Add Comment..."
-                                                                    ></textarea>
-                                                                    <div className="flex justify-end">
-                                                                        <button
-                                                                            type="submit"
-                                                                            className="bg-blue-500 text-white px-3 py-1.5 text-sm rounded-full"
-                                                                        >
-                                                                            Submit
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        )}
-                                                </div>
-                                                <div className="ps-12 text-xs mt-2">
-                                                    {/* reply */}
-                                                    {comment.show_replies &&
-                                                        <FormComment
-                                                            id={comment.id}
-
-                                                        />}
-                                                </div>
-                                            </div>
-                                        );
+                                        return <ViewComments comment={comment} key={index} />
                                     })}
                                     <div className="flex items-center justify-center">
                                         {totalParentComment > countComment && (
