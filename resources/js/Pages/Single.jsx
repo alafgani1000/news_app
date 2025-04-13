@@ -111,6 +111,20 @@ export default function Single({ auth, news, menus }) {
             });
     };
 
+    const changeShowReplies = (id) => {
+        const commentData = comments;
+        let commentMap = commentData.find((value) => {
+            return value.id == id;
+        });
+        if (commentMap.show_replies == false) {
+            commentMap.show_replies = true;
+        } else {
+            commentMap.show_replies = false;
+        }
+        setComments(comments.map((prev) => ({ ...prev, commentMap })))
+        // console.log(commentMap)
+    }
+
     const getMoreComments = () => {
         axios
             .put(`/comment/${news.id}`, {
@@ -121,7 +135,11 @@ export default function Single({ auth, news, menus }) {
                 let skip_new = parseInt(skip) + parseInt(take);
                 setSkip(skip_new);
                 let comment = res.data.comments;
-                setComments((prev) => [...prev, ...comment]);
+                let commentMap = comment.map((val, index) => {
+                    val['show_replies'] = false;
+                    return val;
+                })
+                setComments((prev) => [...prev, ...commentMap]);
                 if (comments.length == 0) {
                     setCountComment(res.data.comments.length);
                 } else {
@@ -133,7 +151,7 @@ export default function Single({ auth, news, menus }) {
             });
     };
 
-    const ViewReplies = ({ reply }) => {
+    const ViewReplies = ({ reply, onShow }) => {
         const [formStatus, setFormStatus] = useState(false);
         const [commentContent, setCommentContent] = useState("");
         const [commentMessage, setCommentMessage] = useState("");
@@ -171,10 +189,7 @@ export default function Single({ auth, news, menus }) {
                         <div>
                             <div className="flex">
                                 <div
-                                    onClick={() => {
-                                        setShowReplies(!showReplies);
-                                        setCommentClicked(reply);
-                                    }}
+                                    onClick={onShow}
                                     className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
                                 >
                                     <span>
@@ -234,9 +249,27 @@ export default function Single({ auth, news, menus }) {
 
         function getReplies() {
             axios.get(`/comment-replies/${id}`).then((res) => {
-                setReplies(res.data);
+                let commentMap = res.data.map((val, index) => {
+                    val['show_replies'] = false;
+                    return val;
+                })
+                setReplies(commentMap);
                 // console.log(res.data);
             });
+        }
+
+        const handleShowReplies = (id) => {
+            const repliesData = replies;
+            let replyData = repliesData.find((value) => {
+                return value.id == id;
+            });
+            if (replyData.show_replies == false) {
+                replyData.show_replies = true;
+            } else {
+                replyData.show_replies = false;
+            }
+            setReplies(replies.map((prev) => ({ ...prev, replyData })))
+            // console.log(commentMap)
         }
 
         useEffect(() => {
@@ -248,10 +281,10 @@ export default function Single({ auth, news, menus }) {
                 {replies?.map((reply, index) => {
                     return (
                         <div key={reply.id}>
-                            <ViewReplies key={index} reply={reply} />
+                            <ViewReplies key={index} reply={reply} onShow={() => handleShowReplies(reply.id)} />
 
                             <div className="ps-12 mt-2 text-xs">
-                                <FormComment id={reply.id} />
+                                {reply.show_replies && <FormComment id={reply.id} />}
                             </div>
                         </div>
                     );
@@ -378,7 +411,6 @@ export default function Single({ auth, news, menus }) {
                                 </div>
                                 <div className="my-8">
                                     {comments.map((comment, index) => {
-                                        let showReplies = false;
                                         return (
                                             <div
                                                 className="view-comment my-4"
@@ -408,11 +440,7 @@ export default function Single({ auth, news, menus }) {
                                                     <div className="flex">
                                                         <div
                                                             onClick={() => {
-                                                                setCommentClicked(
-                                                                    comment
-                                                                );
-                                                                showReplies =
-                                                                    !showReplies;
+                                                                changeShowReplies(comment.id)
                                                             }}
                                                             className="me-4 hover:bg-gray-200 py-2 px-2 hover:rounded-full cursor-pointer"
                                                         >
