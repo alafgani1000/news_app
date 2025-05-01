@@ -66,7 +66,9 @@ export default function Header({ user, menus, children, path }) {
                                         <NavLinkFront
                                             key={index}
                                             href={menu.url}
-                                            active={menu.url == path ? true : false}
+                                            active={
+                                                menu.url == path ? true : false
+                                            }
                                         >
                                             {menu?.name}
                                         </NavLinkFront>
@@ -227,7 +229,7 @@ export default function Header({ user, menus, children, path }) {
                         </ResponsiveNavLink>
                     )}
                 </div>
-            </nav >
+            </nav>
 
             <main className="my-10">{children}</main>
 
@@ -282,6 +284,6 @@ export default function Header({ user, menus, children, path }) {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }

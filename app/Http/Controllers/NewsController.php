@@ -178,12 +178,16 @@ class NewsController extends Controller
     {
         $latest1 = [];
         $latest2 = [];
-        $latests = News::with(['writer','newsCategory', 'newsCategory.category'])
+        $latests = News::with([
+                'writer',
+                'newsCategory', 
+                'newsCategory.category'
+            ])
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
         $latest1 = $latests->sortByDesc('created_at')->take(1)->first();
-        if (isset($latest)) {
+        if (!is_null($latest1)) {
             $latest2 = News::with(['writer','newsCategory', 'newsCategory.category'])
                 ->where('id','!=',$latest1->id)
                 ->orderBy('created_at', 'desc')
@@ -192,7 +196,7 @@ class NewsController extends Controller
         }
         return [
             'latest1' => $latest1,
-            'latest2' => $latest2 
+            'latest2' => $latest2
         ];
     }
 
@@ -290,7 +294,7 @@ class NewsController extends Controller
             'path' => $path
         ]);
     }
-    
+
 
     public function single($id)
     {

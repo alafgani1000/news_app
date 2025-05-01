@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\MenuCategory;
 use App\Models\News;
+use App\Models\Comment;
 
 
 class User extends Authenticatable
@@ -61,5 +62,10 @@ class User extends Authenticatable
     public function news()
     {
         return $this->hasMany(News::class, 'writer');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

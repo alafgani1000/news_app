@@ -9,6 +9,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,11 +42,20 @@ Route::get('/category/{name}', [NewsController::class, 'newsByCategory'])->name(
 Route::get('/page/{name}', [NewsController::class, 'page'])->name('news.page');
 Route::get('/news/latest-news', [NewsController::class, 'latestNews'])->name('news.latest-news');
 
+// comment
+Route::put('/comment/{news_id}/', [CommentController::class, 'getComments'])->name('comment.get_comments');
+Route::get('/comment-replies/{comment_id}', [CommentController::class, 'getReplies'])->name('comment.get_repplies');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // comment
+    Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
+    Route::put('/comment/{id}/update', [CommentController::class, 'update'])->name('comment.update');
+    Route::put('/comment/{id}/reply', [CommentController::class, 'reply'])->name('comment.reply');
+
     Route::prefix('admin')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -75,7 +85,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/role-permission-revoke', [RolePermissionController::class, 'revoke'])->name('role-perms.revoke');
         Route::get('/role-permission/{id}/data', [RolePermissionCOntroller::class, 'dataPermission'])->name('role-perms.data');
 
-        // pages 
+        // pages
         Route::get('/page', [PagesController::class, 'index'])->name('page.index');
         Route::get('/page-data', [PagesController::class, 'data'])->name('page.data');
         Route::put('/page/{code}/store', [PagesController::class, 'store'])->name('page.store');
