@@ -20,7 +20,9 @@ export default function Creates({ auth, code, news }) {
     const [title, setTitle] = useState(news?.title || "");
     const [keyword, setKeyword] = useState(news?.keywords || "");
     const [tag, setTag] = useState(news?.tag || "");
-    const [category, setCategory] = useState(news?.news_category?.category_id || "");
+    const [category, setCategory] = useState(
+        news?.news_category?.category_id || ""
+    );
     const [imageCover, setImageCover] = useState(news?.image || "");
     const [publishConfirm, setPublishConfirm] = useState(false);
     const [toastData, setToastData] = useState({
@@ -29,7 +31,7 @@ export default function Creates({ auth, code, news }) {
     });
     const [errors, setErrors] = useState({
         title: "",
-        category: ""
+        category: "",
     });
     const [showToast, setShowToast] = useState(false);
 
@@ -40,14 +42,16 @@ export default function Creates({ auth, code, news }) {
     const toHtml = (data) => {
         const rawContentState = convertToRaw(data);
         // const htmlContent = draftToHtml(rawContentState);
-        const htmlContent = JSON.stringify(rawContentState)
+        const htmlContent = JSON.stringify(rawContentState);
         return htmlContent;
     };
 
     const fromHtml = (data) => {
         // const newState = convertFromHTML(data);
-        const newState = JSON.parse(data)
-        const newEditorState = EditorState.createWithContent(convertFromRaw(newState));
+        const newState = JSON.parse(data);
+        const newEditorState = EditorState.createWithContent(
+            convertFromRaw(newState)
+        );
         return newEditorState;
     };
 
@@ -69,14 +73,15 @@ export default function Creates({ auth, code, news }) {
                     color: "success",
                 });
                 setShowToast(true);
-            }).catch((err) => {
+            })
+            .catch((err) => {
                 let errors = err.response.data.errors;
-                let messageError = err.response.data.message
-                let text = ""
+                let messageError = err.response.data.message;
+                let text = "";
                 Swal.fire({
-                    title: 'Message',
-                    text: messageError
-                })
+                    title: "Message",
+                    text: messageError,
+                });
             });
     };
 
@@ -93,7 +98,7 @@ export default function Creates({ auth, code, news }) {
                 image: imageCover,
             })
             .then((res) => {
-                resetForm();
+                // resetForm();
                 resetError();
                 setToastData({
                     message: res.data,
@@ -113,7 +118,7 @@ export default function Creates({ auth, code, news }) {
     useEffect(() => {
         getDataCategory();
         if (news?.content !== undefined) {
-            setEditorState(fromHtml(news.content))
+            setEditorState(fromHtml(news.content));
         }
     }, []);
 
@@ -242,9 +247,7 @@ export default function Creates({ auth, code, news }) {
                                 </div>
                             </div>
                             <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
-                                <div
-                                    className="p-6 text-gray-600"
-                                >
+                                <div className="p-6 text-gray-600">
                                     <Editor
                                         editorState={editorState}
                                         onEditorStateChange={
