@@ -15,9 +15,10 @@ Here are the steps to install a Laravel application from GitHub:
 7. Create a Database: Set up a new database matching the name specified in the `.env` file.
 8. Run Database Migrations: Use `php artisan migrate` to create the necessary tables in the database.
 9. Run the command php artisan db:seed for initial rule input
-10. Start the Laravel Server: Launch the server with `php artisan serve` and access the application at `http://localhost:8000`.
+10. Run command `npm run dev` or `yarn dev`
+11. Start the Laravel Server: Launch the server with `php artisan serve` and access the application at `http://localhost:8000`.
 
-11. Please login with the username and password in UserSeeder
+12. Please login with the username and password in UserSeeder
 
 ## License
 
