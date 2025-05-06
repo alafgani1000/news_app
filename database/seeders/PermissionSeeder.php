@@ -16,6 +16,6 @@ class PermissionSeeder extends Seeder
     {
         $create_news = Permission::create(['name' => 'create_news']);
         $update_news = Permission::create(['name' => 'update_news']);
-        $publish_news = Permission::create(['name' => 'publish_news'])
+        $publish_news = Permission::create(['name' => 'publish_news']);
     }
 }
