@@ -180,7 +180,7 @@ class NewsController extends Controller
         $latest2 = [];
         $latests = News::with([
                 'writer',
-                'newsCategory', 
+                'newsCategory',
                 'newsCategory.category'
             ])
             ->orderBy('created_at', 'desc')
@@ -305,11 +305,19 @@ class NewsController extends Controller
         ])
         ->where('id',$id)
         ->first();
+        $this->updateNewsClick($news);
         $menus = Menu::all();
         return Inertia::render('Single', [
             'news' => $news,
             'menus' => $menus,
         ]);
+    }
+
+    public function updateNewsClick(News $data)
+    {
+        // add plus 1 if user click articles
+        $data->click = $data->click + 1;
+        $data->save();
     }
 
     public function latestNews()
