@@ -65,7 +65,7 @@ class SettingController extends Controller
         $menus = Menu::with('menuCategories')
             ->with(['menuCategories.category'])
             ->with(['menuCategories.user'])
-            ->orderBy('name', 'asc')
+            ->orderBy('order_index', 'asc')
             ->get();
         return $menus;
         return $menus;
@@ -86,6 +86,7 @@ class SettingController extends Controller
             'name' => $request->name,
             'url' => $request->url,
             'status' => $status,
+            'order_index' > $request->order_index,
             'user_id' => Auth::user()->id
         ]);
         return 'Menu Created';
@@ -99,7 +100,8 @@ class SettingController extends Controller
         $menu = Menu::where('id',$id)->update([
             'name' => $request->name,
             'url' => $request->url,
-            'status' => $request->status
+            'status' => $request->status,
+            'order_index' => $request->order_index
         ]);
         return 'Menu Updated';
     }

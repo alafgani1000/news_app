@@ -20,6 +20,7 @@ export default function Setting({ auth }) {
     const [menuUrl, setMenuUrl] = useState("");
     const [menuStatus, setMenuStatus] = useState(true);
     const [menuId, setMenuId] = useState("");
+    const [orderIndex, setOrderIndex] = useState(0);
     const [isMenuEdit, setIsMenuEdit] = useState(false);
     const [showConfirmDelMenu, setShowConfirmDelMenu] = useState(false);
     const [menuError, setMenuError] = useState({
@@ -59,6 +60,7 @@ export default function Setting({ auth }) {
                     name: menuName,
                     url: menuUrl,
                     status: menuStatus,
+                    order_index: orderIndex,
                 })
                 .then((res) => {
                     setToastData({
@@ -88,6 +90,7 @@ export default function Setting({ auth }) {
                     name: menuName,
                     url: menuUrl,
                     status: menuStatus,
+                    order_index: orderIndex
                 })
                 .then((res) => {
                     setToastData({
@@ -160,6 +163,7 @@ export default function Setting({ auth }) {
         setMenuName(menu.name);
         setMenuId(menu.id);
         setMenuUrl(menu.url || "");
+        setOrderIndex(menu.order_index);
         if (menu.status === 0) {
             setMenuStatus(false);
         } else {
@@ -304,8 +308,19 @@ export default function Setting({ auth }) {
                     <div className="overflow-hidden grid grid-cols-1">
                         <div className="px-5 py-3 text-gray-700 bg-white border-gray-100 col-span-1">
                             <form onSubmit={handleSubmitMenu}>
-                                <div className="mb-2">
-                                    <button type="button" onClick={() => showChooseMenu()} className="bg-blue-500 rounded-full px-3 py-2 text-sm text-white">Chose Category / Page</button>
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div className="mb-2 grid">
+                                        <label className="mb-2 font-normal">
+                                            Category or Page:
+                                        </label>
+                                        <button type="button" onClick={() => showChooseMenu()} className="bg-blue-500 rounded-full px-3 py-2 text-sm text-white">Chose Category / Page</button>
+                                    </div>
+                                    <div className="mb-2 grid">
+                                        <label className="mb-2 font-normal">
+                                            Order Index:
+                                        </label>
+                                        <input onChange={(e) => setOrderIndex(e.target.value)} value={orderIndex} type="number" className="rounded-lg ring-gray-300 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" />
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="mt-4 grid">
@@ -413,6 +428,9 @@ export default function Setting({ auth }) {
                                                 Status
                                             </th>
                                             <th className="text-left p-3">
+                                                Order Index
+                                            </th>
+                                            <th className="text-left p-3">
                                                 Categories
                                             </th>
                                             <th className="text-center p-3">
@@ -442,6 +460,9 @@ export default function Setting({ auth }) {
                                                         ) : (
                                                             "Disable"
                                                         )}
+                                                    </td>
+                                                    <td className="px-3 py-2">
+                                                        {menu.order_index}
                                                     </td>
                                                     <td className="px-3 py-2">
                                                         {menu.menu_categories?.map(

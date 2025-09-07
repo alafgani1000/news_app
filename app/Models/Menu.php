@@ -15,7 +15,7 @@ class Menu extends Model
 
     protected $table = 'menus';
 
-    protected $fillable = ['name', 'url', 'status', 'user_id'];
+    protected $fillable = ['name', 'url', 'status', 'user_id', 'order_index'];
 
     /**
      * The roles that belong to the Menu

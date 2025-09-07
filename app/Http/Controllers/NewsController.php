@@ -229,7 +229,7 @@ class NewsController extends Controller
         $latests = $this->latest_post();
         $latest1 = $latests['latest1'];
         $latest2 = $latests['latest2'];
-        $menus = Menu::all();
+        $menus = Menu::orderBy('order_index', 'asc')->get();
         return Inertia::render('Home', [
             'latest1' => $latest1,
             'latest2' => $latest2,
@@ -253,7 +253,7 @@ class NewsController extends Controller
     public function newsByCategory(Request $request, $name)
     {
         $path = '/'.$request->path();
-        $menus = Menu::all();
+        $menus = Menu::orderBy('order_index', 'asc')->get();
         $search = $request->search;
         $perPage = isset($request->perPage) ? $request->perPage : 10;
         $sort = isset($request->sort) ? $request->sort : 'created_at';
@@ -286,7 +286,7 @@ class NewsController extends Controller
     public function page(Request $request, $name)
     {
         $path = '/'.$request->path();
-        $menus = Menu::all();
+        $menus = Menu::orderBy('order_index', 'asc')->get();
         $page = Page::where('name',$name)->first();
         return Inertia::render('Page', [
             'page' => $page,
@@ -306,7 +306,7 @@ class NewsController extends Controller
         ->where('id',$id)
         ->first();
         $this->updateNewsClick($news);
-        $menus = Menu::all();
+        $menus = Menu::orderBy('order_index', 'asc')->get();
         return Inertia::render('Single', [
             'news' => $news,
             'menus' => $menus,
